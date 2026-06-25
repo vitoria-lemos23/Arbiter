@@ -1,15 +1,16 @@
 "use client";
 
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { useConnect, useConnection, useConnectors, useDisconnect } from "wagmi";
 
 function shorten(address: `0x${string}`) {
   return `${address.slice(0, 6)}…${address.slice(-4)}`;
 }
 
 export function WalletConnect() {
-  const { address, isConnected } = useAccount();
-  const { connectors, connect, isPending } = useConnect();
-  const { disconnect } = useDisconnect();
+  const { address, isConnected } = useConnection();
+  const { mutate: connect, isPending } = useConnect();
+  const connectors = useConnectors();
+  const { mutate: disconnect } = useDisconnect();
 
   if (isConnected && address) {
     return (

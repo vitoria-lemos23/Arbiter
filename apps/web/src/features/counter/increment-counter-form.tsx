@@ -2,10 +2,10 @@
 
 import { counterAbi } from "@arbiter/contracts";
 import { useRouter } from "next/navigation";
-import { type FormEvent, useEffect } from "react";
+import { type SubmitEvent, useEffect } from "react";
 import {
-  useAccount,
   useChainId,
+  useConnection,
   useSwitchChain,
   useWaitForTransactionReceipt,
   useWriteContract,
@@ -16,10 +16,10 @@ type ConfiguredChainId = (typeof config.chains)[number]["id"];
 
 export function IncrementCounterForm() {
   const router = useRouter();
-  const { isConnected } = useAccount();
+  const { isConnected } = useConnection();
   const chainId = useChainId();
-  const { switchChain } = useSwitchChain();
-  const { writeContract, data: hash, isPending, error } = useWriteContract();
+  const { mutate: switchChain } = useSwitchChain();
+  const { mutate: writeContract, data: hash, isPending, error } = useWriteContract();
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
     hash,
   });
@@ -31,7 +31,7 @@ export function IncrementCounterForm() {
 
   const wrongChain = isConnected && chainId !== counterChainId;
 
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
+  function onSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!counterAddress) return;
     const raw = new FormData(event.currentTarget).get("by");

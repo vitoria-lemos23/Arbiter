@@ -19,6 +19,7 @@ Use the following links to access the documentation for the libraries and framew
 - Viem: [https://viem.sh/docs/getting-started.md](https://viem.sh/docs/getting-started.md)
 - Next.js: [https://nextjs.org/docs.md](https://nextjs.org/docs.md)
 - Drizzle ORM: [https://orm.drizzle.team/docs/](https://orm.drizzle.team/docs/)
+- Wagmi: [https://wagmi.sh/react/getting-started.md](https://wagmi.sh/react/getting-started.md)
 
 # AI Guideline
 
