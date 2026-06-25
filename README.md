@@ -49,8 +49,9 @@ The web app runs at http://localhost:3000.
 
 ### Connecting the Counter contract (optional)
 
-The home page reads and increments the on-chain `Counter` contract via viem. To
-exercise it end-to-end against a local chain:
+The home page reads the on-chain `Counter` value on the server (viem) and lets
+you increment it from a connected browser wallet (wagmi). To exercise it
+end-to-end against a local chain:
 
 ```bash
 # In one terminal — start a local Hardhat node (chain id 31337, port 8545)
@@ -61,17 +62,22 @@ pnpm --filter @arbiter/contracts exec hardhat ignition deploy \
   ignition/modules/Counter.ts --network localhost
 ```
 
-Then set the deployed address and a funded dev key in `apps/web/.env.local`:
+Then set the deployed address in `apps/web/.env.local` (these are exposed to
+the browser, so they hold only public values — no private key):
 
 ```
-RPC_URL=http://127.0.0.1:8545
-CHAIN_ID=31337
-COUNTER_ADDRESS=0x...        # address printed by the deploy
-COUNTER_PRIVATE_KEY=0x...    # a prefunded account from `hardhat node`
+NEXT_PUBLIC_RPC_URL=http://127.0.0.1:8545
+NEXT_PUBLIC_CHAIN_ID=31337
+NEXT_PUBLIC_COUNTER_ADDRESS=0x...   # address printed by the deploy
 ```
 
-Until `COUNTER_ADDRESS` is set the page still loads — it just shows that the
-contract is unreachable.
+Finally, connect a browser wallet (e.g. MetaMask) to the local node — add a
+network for `http://127.0.0.1:8545` / chain id `31337` and import one of the
+prefunded accounts printed by `hardhat node` — then click **Connect** and
+**Increment** on the home page.
+
+Until `NEXT_PUBLIC_COUNTER_ADDRESS` is set the page still loads — it just shows
+that the contract is unreachable.
 
 ## Common scripts
 
