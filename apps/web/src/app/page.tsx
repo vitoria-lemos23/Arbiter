@@ -1,8 +1,8 @@
-import { listSamples } from "@/server/samples";
-import { getCount } from "@/server/counter";
-import { CreateSampleForm } from "./create-sample-form";
-import { IncrementCounterForm } from "./increment-counter-form";
-import { WalletConnect } from "./wallet-connect";
+import { listSamples } from "@/features/samples/samples";
+import { getCount } from "@/features/counter/counter";
+import { CreateSampleForm } from "@/features/samples/create-sample-form";
+import { IncrementCounterForm } from "@/features/counter/increment-counter-form";
+import { WalletConnect } from "@/shared/web3/wallet-connect";
 
 // Reads live data per request — not prerendered at build.
 export const dynamic = "force-dynamic";
