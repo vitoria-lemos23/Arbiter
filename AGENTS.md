@@ -20,6 +20,7 @@ Use the following links to access the documentation for the libraries and framew
 - Next.js: [https://nextjs.org/docs.md](https://nextjs.org/docs.md)
 - Drizzle ORM: [https://orm.drizzle.team/docs/](https://orm.drizzle.team/docs/)
 - Wagmi: [https://wagmi.sh/react/getting-started.md](https://wagmi.sh/react/getting-started.md)
+- Shadcn UI: [https://ui.shadcn.com/docs.md](https://ui.shadcn.com/docs.md) — installation guide: [https://ui.shadcn.com/docs/installation.md](https://ui.shadcn.com/docs/installation.md)
 
 # AI Guideline
 
