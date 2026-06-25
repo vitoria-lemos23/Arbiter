@@ -1,6 +1,8 @@
 "use client";
 
 import { useActionState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { createSampleAction, type CreateSampleState } from "./actions";
 
 const initialState: CreateSampleState = {};
@@ -13,20 +15,14 @@ export function CreateSampleForm() {
 
   return (
     <form action={formAction} className="flex gap-2">
-      <input
-        name="name"
-        placeholder="Sample name"
-        className="border rounded px-3 py-1.5 text-sm"
-      />
-      <button
-        type="submit"
-        disabled={pending}
-        className="rounded bg-black px-3 py-1.5 text-sm text-white disabled:opacity-50"
-      >
+      <Input name="name" placeholder="Sample name" />
+      <Button type="submit" disabled={pending}>
         {pending ? "Adding…" : "Add"}
-      </button>
+      </Button>
       {state.error ? (
-        <span className="self-center text-sm text-red-600">{state.error}</span>
+        <span className="self-center text-sm text-destructive">
+          {state.error}
+        </span>
       ) : null}
     </form>
   );

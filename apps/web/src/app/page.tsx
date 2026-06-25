@@ -3,6 +3,7 @@ import { getCount } from "@/features/counter/counter";
 import { CreateSampleForm } from "@/features/samples/create-sample-form";
 import { IncrementCounterForm } from "@/features/counter/increment-counter-form";
 import { WalletConnect } from "@/shared/web3/wallet-connect";
+import { Card, CardContent } from "@/components/ui/card";
 
 // Reads live data per request — not prerendered at build.
 export const dynamic = "force-dynamic";
@@ -24,7 +25,7 @@ export default async function Home() {
     <main className="mx-auto flex max-w-xl flex-col gap-6 p-12">
       <header>
         <h1 className="text-3xl font-bold tracking-tight">Arbiter</h1>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-muted-foreground">
           Decentralized tournament platform — tRPC wiring test
         </p>
       </header>
@@ -35,7 +36,7 @@ export default async function Home() {
           <WalletConnect />
         </div>
         {countError ? (
-          <p className="text-sm text-red-600">{countError}</p>
+          <p className="text-sm text-destructive">{countError}</p>
         ) : (
           <p className="text-sm">
             Current value: <span className="font-mono">{count?.toString()}</span>
@@ -46,20 +47,22 @@ export default async function Home() {
 
       <CreateSampleForm />
 
-      <ul className="flex flex-col gap-1">
-        {samples.length === 0 ? (
-          <li className="text-sm text-gray-500">No samples yet.</li>
-        ) : (
-          samples.map((s) => (
-            <li key={s.id} className="rounded border px-3 py-2 text-sm">
-              {s.name}
-              <span className="ml-2 text-gray-400">
-                {s.createdAt.toISOString()}
-              </span>
-            </li>
-          ))
-        )}
-      </ul>
+      {samples.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No samples yet.</p>
+      ) : (
+        <div className="flex flex-col gap-2">
+          {samples.map((s) => (
+            <Card key={s.id} size="sm">
+              <CardContent className="flex items-center justify-between gap-2">
+                <span>{s.name}</span>
+                <span className="text-muted-foreground">
+                  {s.createdAt.toISOString()}
+                </span>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </main>
   );
 }

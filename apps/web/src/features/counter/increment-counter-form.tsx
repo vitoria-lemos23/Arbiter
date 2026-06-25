@@ -10,6 +10,8 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { config, counterAddress, counterChainId } from "@/shared/web3/wagmi";
 
 type ConfiguredChainId = (typeof config.chains)[number]["id"];
@@ -46,7 +48,7 @@ export function IncrementCounterForm() {
 
   if (!isConnected) {
     return (
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-muted-foreground">
         Connect a wallet to increment the counter.
       </p>
     );
@@ -54,15 +56,15 @@ export function IncrementCounterForm() {
 
   if (wrongChain) {
     return (
-      <button
+      <Button
         type="button"
         onClick={() =>
           switchChain({ chainId: counterChainId as ConfiguredChainId })
         }
-        className="self-start rounded bg-black px-3 py-1.5 text-sm text-white"
+        className="self-start"
       >
         Switch network
-      </button>
+      </Button>
     );
   }
 
@@ -70,22 +72,18 @@ export function IncrementCounterForm() {
 
   return (
     <form onSubmit={onSubmit} className="flex gap-2">
-      <input
+      <Input
         name="by"
         type="number"
         min={1}
         defaultValue={1}
-        className="border rounded px-3 py-1.5 text-sm w-24"
+        className="w-24"
       />
-      <button
-        type="submit"
-        disabled={busy || !counterAddress}
-        className="rounded bg-black px-3 py-1.5 text-sm text-white disabled:opacity-50"
-      >
+      <Button type="submit" disabled={busy || !counterAddress}>
         {isPending ? "Confirm in wallet…" : isConfirming ? "Mining…" : "Increment"}
-      </button>
+      </Button>
       {error ? (
-        <span className="self-center text-sm text-red-600">
+        <span className="self-center text-sm text-destructive">
           {error.message.split("\n")[0]}
         </span>
       ) : null}
