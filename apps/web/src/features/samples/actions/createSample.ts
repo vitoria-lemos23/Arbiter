@@ -1,7 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createSample, createSampleSchema } from "./samples";
+import { createSampleSchema } from "../schema/sample";
+import { createSample } from "../server/samples";
 
 export type CreateSampleState = { error?: string; ok?: boolean };
 

@@ -3,7 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { type ReactNode, useState } from "react";
 import { type State, WagmiProvider } from "wagmi";
-import { config } from "./wagmi";
+import { config } from "../config/wagmi";
 
 export function Providers({
   children,

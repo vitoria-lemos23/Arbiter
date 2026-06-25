@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { headers } from "next/headers";
 import { cookieToInitialState } from "wagmi";
-import { config } from "@/shared/web3/wagmi";
-import { Providers } from "@/shared/web3/providers";
+import { config } from "@/shared/web3/config/wagmi";
+import { Providers } from "@/shared/web3/components/Providers";
 import "./globals.css";
 
 const geistSans = Geist({

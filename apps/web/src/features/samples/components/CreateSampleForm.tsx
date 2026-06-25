@@ -1,17 +1,11 @@
 "use client";
 
-import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { createSampleAction, type CreateSampleState } from "./actions";
-
-const initialState: CreateSampleState = {};
+import { useCreateSample } from "../hooks/useCreateSample";
 
 export function CreateSampleForm() {
-  const [state, formAction, pending] = useActionState(
-    createSampleAction,
-    initialState,
-  );
+  const { state, formAction, pending } = useCreateSample();
 
   return (
     <form action={formAction} className="flex gap-2">

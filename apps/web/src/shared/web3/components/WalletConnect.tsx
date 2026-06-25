@@ -1,17 +1,15 @@
 "use client";
 
-import { useConnect, useConnection, useConnectors, useDisconnect } from "wagmi";
 import { Button } from "@/components/ui/button";
+import { useWalletConnect } from "../hooks/useWalletConnect";
 
 function shorten(address: `0x${string}`) {
   return `${address.slice(0, 6)}…${address.slice(-4)}`;
 }
 
 export function WalletConnect() {
-  const { address, isConnected } = useConnection();
-  const { mutate: connect, isPending } = useConnect();
-  const connectors = useConnectors();
-  const { mutate: disconnect } = useDisconnect();
+  const { address, isConnected, connect, connectors, disconnect, isPending } =
+    useWalletConnect();
 
   if (isConnected && address) {
     return (

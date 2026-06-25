@@ -1,8 +1,8 @@
-import { listSamples } from "@/features/samples/samples";
-import { getCount } from "@/features/counter/counter";
-import { CreateSampleForm } from "@/features/samples/create-sample-form";
-import { IncrementCounterForm } from "@/features/counter/increment-counter-form";
-import { WalletConnect } from "@/shared/web3/wallet-connect";
+import { listSamples } from "@/features/samples/server/samples";
+import { getCount } from "@/features/counter/server/getCount";
+import { CreateSampleForm } from "@/features/samples/components/CreateSampleForm";
+import { IncrementCounterForm } from "@/features/counter/components/IncrementCounterForm";
+import { WalletConnect } from "@/shared/web3/components/WalletConnect";
 import { Card, CardContent } from "@/components/ui/card";
 
 // Reads live data per request — not prerendered at build.
