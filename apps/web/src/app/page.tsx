@@ -2,6 +2,7 @@ import { listSamples } from "@/server/samples";
 import { getCount } from "@/server/counter";
 import { CreateSampleForm } from "./create-sample-form";
 import { IncrementCounterForm } from "./increment-counter-form";
+import { WalletConnect } from "./wallet-connect";
 
 // Reads live data per request — not prerendered at build.
 export const dynamic = "force-dynamic";
@@ -29,7 +30,10 @@ export default async function Home() {
       </header>
 
       <section className="flex flex-col gap-2">
-        <h2 className="text-lg font-semibold">Counter contract</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold">Counter contract</h2>
+          <WalletConnect />
+        </div>
         {countError ? (
           <p className="text-sm text-red-600">{countError}</p>
         ) : (
