@@ -22,7 +22,7 @@ export default async function Home() {
   }
 
   return (
-    <main className="mx-auto flex max-w-xl flex-col gap-6 p-12">
+    <main className="mx-auto flex w-full max-w-4xl flex-col gap-6 p-12">
       <header>
         <h1 className="text-3xl font-bold tracking-tight">Arbiter</h1>
         <p className="text-sm text-muted-foreground">
