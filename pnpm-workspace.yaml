@@ -16,3 +16,6 @@ minimumReleaseAgeExclude:
   - '@turbo/windows-arm64@2.10.0'
   - turbo@2.10.0
   - '@types/node@26.0.1'
+  - '@wagmi/connectors@8.0.19'
+  - '@wagmi/core@3.5.4'
+  - wagmi@3.6.20
