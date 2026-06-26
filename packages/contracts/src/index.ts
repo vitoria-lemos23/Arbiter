@@ -7,4 +7,4 @@
  * during `build` — never edit them by hand.
  */
 
-export { counterAbi } from "./generated/abi.js";
+export { counterAbi } from "./generated/abi";
