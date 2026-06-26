@@ -40,13 +40,19 @@ Use the following links to access the documentation for the libraries and framew
 
 # Project Conventions
 
-- **Monorepo:** pnpm workspaces + TurboRepo. Run scripts from the repo root; target a workspace with `pnpm --filter @arbiter/<name> <script>`.
-- **Formatting/linting:** Biome owns formatting and linting (`pnpm check`, `pnpm format`); a husky pre-commit hook runs Biome on staged files. Do not add conflicting Prettier/ESLint *formatting* — the web app keeps `eslint-config-next` for Next-specific lint rules only. CSS, `public/`, drizzle, and generated files are excluded from Biome.
-- **Web app structure:** `src/app` holds App Router files only. Feature code lives in `src/features/<feature>/{components,hooks,actions,server,schema}`; cross-cutting code in `src/shared/`; shadcn primitives in `src/components/ui`.
-- **File naming:** component files are PascalCase `.tsx` (e.g. `IncrementCounterForm.tsx`); other modules are camelCase `.ts`. Leave Next.js framework files (`layout.tsx`, `page.tsx`, `error.tsx`, …) and shadcn `components/ui/*` in their conventional lowercase names.
-- **Environment variables:** access through the validated `apps/web/src/env.ts` (zod), not raw `process.env`. `@arbiter/db` requires `DATABASE_URL`.
-- **Contract ABIs:** generated from compiled artifacts into `packages/contracts/src/generated/` by `scripts/generate-abi.mjs` during `build` — never hand-edit them.
-- **Verify real builds:** type-checking alone misses cross-package/bundler issues — run `pnpm build` (and exercise the app) before claiming a change works.
+- Monorepo: pnpm workspaces + TurboRepo. Run scripts from the repo root; target a workspace with `pnpm --filter @arbiter/<name> <script>`.
+- Formatting/linting: Biome owns formatting and linting (`pnpm check`, `pnpm format`); a husky pre-commit hook runs Biome on staged files. Do not add conflicting Prettier/ESLint *formatting* — the web app keeps `eslint-config-next` for Next-specific lint rules only. CSS, `public/`, drizzle, and generated files are excluded from Biome.
+- Web app structure: `src/app` holds App Router files only. Feature code lives in `src/features/<feature>/{components,hooks,actions,server,schema}`; cross-cutting code in `src/shared/`; shadcn primitives in `src/components/ui`.
+- File naming: component files are PascalCase `.tsx` (e.g. `IncrementCounterForm.tsx`); other modules are camelCase `.ts`. Leave Next.js framework files (`layout.tsx`, `page.tsx`, `error.tsx`, …) and shadcn `components/ui/*` in their conventional lowercase names.
+- Environment variables: access through the validated `apps/web/src/env.ts` (zod), not raw `process.env`. `@arbiter/db` requires `DATABASE_URL`.
+- Contract ABIs: generated from compiled artifacts into `packages/contracts/src/generated/` by `scripts/generate-abi.mjs` during `build` — never hand-edit them.
+- Verify real builds: type-checking alone misses cross-package/bundler issues — run `pnpm build` (and exercise the app) before claiming a change works.
+
+## UI Components
+
+- Use shadcn UI components for all UI elements. Do not create custom primitives unless necessary.
+- Use Tailwind CSS for styling. Avoid inline styles and prefer utility classes.
+- Create reusable components for common UI patterns and interactions. Avoid duplicating code across different parts of the application.
 
 ## Code style
 
