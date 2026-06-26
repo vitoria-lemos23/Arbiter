@@ -1,24 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+The Arbiter web app (Next.js App Router). See the repository root `README.md`
+for full monorepo setup; this file covers app-specific details.
 
 ## Getting Started
 
-First, run the development server:
+This is a pnpm + Turborepo monorepo — run scripts from the repo root:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm dev                        # all workspaces in watch mode
+pnpm --filter @arbiter/web dev  # or just this app
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). Edit `src/app/page.tsx`; the page auto-updates.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Fonts are loaded via [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts): **Outfit** (sans, the active theme font) and **Geist Mono** (monospace).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Source layout
+
+`src/app` holds App Router files only (routing, layouts, `error`/`loading`/`not-found`). Application code is feature-based:
+
+```
+src/
+  app/                 App Router (routing only)
+  features/<feature>/  components/ hooks/ actions/ server/ schema/
+  shared/              cross-cutting code (web3, theme, …)
+  components/ui/        shadcn primitives
+  lib/                 utilities (cn)
+  env.ts               validated environment (zod)
+```
+
+Component files are PascalCase (`.tsx`); other modules are camelCase (`.ts`). Next.js framework files and `components/ui/*` keep their conventional lowercase names.
 
 ## UI Components — shadcn/ui
 
@@ -26,8 +36,9 @@ This app uses [shadcn/ui](https://ui.shadcn.com/docs) for shared UI primitives. 
 
 **Setup in this repo**
 
-- Config: [`components.json`](./components.json) — style `radix-nova`, base color `neutral`, RSC enabled, Tailwind v4 (no `tailwind.config`), icons via [`lucide-react`](https://lucide.dev), primitives via [`radix-ui`](https://www.radix-ui.com).
+- Config: [`components.json`](./components.json) — style `radix-luma`, base color `olive`, RSC enabled, Tailwind v4 (no `tailwind.config`), icon library Phosphor, primitives via [`radix-ui`](https://www.radix-ui.com). (The mode toggle currently uses [`lucide-react`](https://lucide.dev) icons.)
 - Theme tokens live in [`src/app/globals.css`](./src/app/globals.css) (CSS variables, light + `.dark`).
+- Dark mode via [`next-themes`](https://github.com/pacocoursey/next-themes): `ThemeProvider` and `ModeToggle` under [`src/shared/theme/`](./src/shared/theme); toggling switches the `.dark` class.
 - The `cn()` class-merge helper is at [`src/lib/utils.ts`](./src/lib/utils.ts) (`@/lib/utils`).
 - Components are written to `src/components/ui` (alias `@/components/ui`).
 
@@ -39,6 +50,10 @@ pnpm dlx shadcn@latest add <component> -c apps/web
 ```
 
 Docs: [ui.shadcn.com/docs](https://ui.shadcn.com/docs.md) · [installation](https://ui.shadcn.com/docs/installation.md) · [components](https://ui.shadcn.com/docs/components.md). Always read the markdown docs before using the library (see the repo `AGENTS.md`), and check the installed `shadcn` CLI version rather than assuming flags.
+
+## Testing
+
+Unit tests run with [Vitest](https://vitest.dev): `pnpm --filter @arbiter/web test` (or `pnpm test` from the root). Tests live next to source as `*.test.ts`.
 
 ## Learn More
 

@@ -6,10 +6,10 @@ results.
 
 ## Tech stack
 
-- **Web:** Next.js, React, Tailwind CSS, TypeScript
+- **Web:** Next.js, React, Tailwind CSS, shadcn/ui, wagmi/viem, TypeScript
 - **Blockchain:** Solidity, Hardhat 3, viem
 - **Database:** PostgreSQL with Drizzle ORM
-- **Tooling:** pnpm workspaces, Turborepo, Docker
+- **Tooling:** pnpm workspaces, Turborepo, Biome, Vitest, GitHub Actions, Docker
 
 ## Repository layout
 
@@ -33,10 +33,11 @@ packages/
 # 1. Install dependencies
 pnpm install
 
-# 2. Start PostgreSQL and apply migrations
+# 2. Start PostgreSQL, apply migrations, and (optionally) seed sample data
 pnpm db:up
 cp packages/db/.env.example packages/db/.env
 pnpm db:migrate
+pnpm db:seed   # optional: insert a few sample rows
 
 # 3. Configure the web app
 cp apps/web/.env.example apps/web/.env.local
@@ -90,8 +91,11 @@ Run from the repository root (Turborepo orchestrates each workspace):
 | `pnpm lint`       | Lint every workspace                         |
 | `pnpm typecheck`  | Type-check every workspace                   |
 | `pnpm test`       | Run all tests                                |
+| `pnpm format`     | Format the codebase with Biome               |
+| `pnpm check`      | Biome format + lint check (no writes)        |
 | `pnpm db:up`      | Start the PostgreSQL container               |
 | `pnpm db:down`    | Stop the PostgreSQL container                |
 | `pnpm db:migrate` | Apply database migrations                    |
+| `pnpm db:seed`    | Seed the database with sample rows           |
 | `pnpm clean`      | Remove build artifacts and `node_modules`    |
 ```
