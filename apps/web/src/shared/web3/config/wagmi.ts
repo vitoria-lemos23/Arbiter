@@ -1,6 +1,7 @@
 import { cookieStorage, createConfig, createStorage, http } from "wagmi";
 import { hardhat, sepolia } from "wagmi/chains";
 import { injected } from "wagmi/connectors";
+import { env } from "@/env";
 
 /**
  * wagmi configuration shared by the server (for SSR hydration) and the client.
@@ -10,15 +11,13 @@ import { injected } from "wagmi/connectors";
  * `initialState` to `WagmiProvider`, avoiding a hydration mismatch.
  */
 
-const localRpcUrl = process.env.NEXT_PUBLIC_RPC_URL ?? "http://127.0.0.1:8545";
-
 export const config = createConfig({
   chains: [hardhat, sepolia],
   connectors: [injected()],
   storage: createStorage({ storage: cookieStorage }),
   ssr: true,
   transports: {
-    [hardhat.id]: http(localRpcUrl),
+    [hardhat.id]: http(env.NEXT_PUBLIC_RPC_URL),
     [sepolia.id]: http(),
   },
 });
@@ -30,11 +29,7 @@ declare module "wagmi" {
 }
 
 /** Chain the Counter contract is expected to live on (defaults to local Hardhat). */
-export const counterChainId = Number(
-  process.env.NEXT_PUBLIC_CHAIN_ID ?? hardhat.id,
-);
+export const counterChainId = env.NEXT_PUBLIC_CHAIN_ID;
 
 /** Deployed Counter address, exposed to the browser for wallet-signed writes. */
-export const counterAddress = process.env.NEXT_PUBLIC_COUNTER_ADDRESS as
-  | `0x${string}`
-  | undefined;
+export const counterAddress = env.NEXT_PUBLIC_COUNTER_ADDRESS;
