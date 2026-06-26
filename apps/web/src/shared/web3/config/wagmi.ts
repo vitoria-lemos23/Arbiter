@@ -30,7 +30,9 @@ declare module "wagmi" {
 }
 
 /** Chain the Counter contract is expected to live on (defaults to local Hardhat). */
-export const counterChainId = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? hardhat.id);
+export const counterChainId = Number(
+  process.env.NEXT_PUBLIC_CHAIN_ID ?? hardhat.id,
+);
 
 /** Deployed Counter address, exposed to the browser for wallet-signed writes. */
 export const counterAddress = process.env.NEXT_PUBLIC_COUNTER_ADDRESS as

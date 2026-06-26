@@ -1,7 +1,7 @@
 import "server-only";
 import { db, samples } from "@arbiter/db";
 import { desc } from "drizzle-orm";
-import { createSampleSchema, type CreateSampleInput } from "../schema/sample";
+import { type CreateSampleInput, createSampleSchema } from "../schema/sample";
 
 /**
  * Data-access functions for the sample table. Kept as tidy, transport-agnostic

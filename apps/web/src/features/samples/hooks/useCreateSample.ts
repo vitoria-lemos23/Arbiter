@@ -2,8 +2,8 @@
 
 import { useActionState } from "react";
 import {
-  createSampleAction,
   type CreateSampleState,
+  createSampleAction,
 } from "../actions/createSample";
 
 const initialState: CreateSampleState = {};

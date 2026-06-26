@@ -1,10 +1,10 @@
-import { listSamples } from "@/features/samples/server/samples";
+import { Card, CardContent } from "@/components/ui/card";
+import { IncrementCounterForm } from "@/features/counter/components/IncrementCounterForm";
 import { getCount } from "@/features/counter/server/getCount";
 import { CreateSampleForm } from "@/features/samples/components/CreateSampleForm";
-import { IncrementCounterForm } from "@/features/counter/components/IncrementCounterForm";
-import { WalletConnect } from "@/shared/web3/components/WalletConnect";
+import { listSamples } from "@/features/samples/server/samples";
 import { ModeToggle } from "@/shared/theme/ModeToggle";
-import { Card, CardContent } from "@/components/ui/card";
+import { WalletConnect } from "@/shared/web3/components/WalletConnect";
 
 // Reads live data per request — not prerendered at build.
 export const dynamic = "force-dynamic";
@@ -43,7 +43,8 @@ export default async function Home() {
           <p className="text-sm text-destructive">{countError}</p>
         ) : (
           <p className="text-sm">
-            Current value: <span className="font-mono">{count?.toString()}</span>
+            Current value:{" "}
+            <span className="font-mono">{count?.toString()}</span>
           </p>
         )}
         <IncrementCounterForm />

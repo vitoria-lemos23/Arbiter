@@ -24,9 +24,7 @@ export const counterAbi = [
     type: "function",
   },
   {
-    inputs: [
-      { internalType: "uint256", name: "by", type: "uint256" },
-    ],
+    inputs: [{ internalType: "uint256", name: "by", type: "uint256" }],
     name: "incBy",
     outputs: [],
     stateMutability: "nonpayable",

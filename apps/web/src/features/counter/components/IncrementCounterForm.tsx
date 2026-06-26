@@ -35,9 +35,19 @@ export function IncrementCounterForm() {
 
   return (
     <form onSubmit={increment} className="flex gap-2">
-      <Input name="by" type="number" min={1} defaultValue={1} className="w-24" />
+      <Input
+        name="by"
+        type="number"
+        min={1}
+        defaultValue={1}
+        className="w-24"
+      />
       <Button type="submit" disabled={busy || !canSubmit}>
-        {isPending ? "Confirm in wallet…" : isConfirming ? "Mining…" : "Increment"}
+        {isPending
+          ? "Confirm in wallet…"
+          : isConfirming
+            ? "Mining…"
+            : "Increment"}
       </Button>
       {error ? (
         <span className="self-center text-sm text-destructive">

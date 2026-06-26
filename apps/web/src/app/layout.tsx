@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Geist_Mono, Outfit } from "next/font/google";
 import { headers } from "next/headers";
 import { cookieToInitialState } from "wagmi";
-import { config } from "@/shared/web3/config/wagmi";
-import { Providers } from "@/shared/web3/components/Providers";
 import { ThemeProvider } from "@/shared/theme/ThemeProvider";
+import { Providers } from "@/shared/web3/components/Providers";
+import { config } from "@/shared/web3/config/wagmi";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 

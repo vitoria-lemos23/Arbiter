@@ -1,6 +1,6 @@
 import "server-only";
 import { counterAbi } from "@arbiter/contracts";
-import { createPublicClient, defineChain, http, type Hex } from "viem";
+import { createPublicClient, defineChain, type Hex, http } from "viem";
 
 /**
  * Server-side read access to the on-chain Counter contract.
@@ -19,7 +19,9 @@ const chain = defineChain({
   rpcUrls: { default: { http: [rpcUrl] } },
 });
 
-const counterAddress = process.env.NEXT_PUBLIC_COUNTER_ADDRESS as Hex | undefined;
+const counterAddress = process.env.NEXT_PUBLIC_COUNTER_ADDRESS as
+  | Hex
+  | undefined;
 
 const publicClient = createPublicClient({ chain, transport: http(rpcUrl) });
 

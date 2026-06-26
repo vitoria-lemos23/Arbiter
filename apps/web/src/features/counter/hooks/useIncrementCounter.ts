@@ -10,7 +10,11 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import { config, counterAddress, counterChainId } from "@/shared/web3/config/wagmi";
+import {
+  type config,
+  counterAddress,
+  counterChainId,
+} from "@/shared/web3/config/wagmi";
 
 type ConfiguredChainId = (typeof config.chains)[number]["id"];
 
