@@ -4,6 +4,12 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
+      "env": [
+        "DATABASE_URL",
+        "NEXT_PUBLIC_RPC_URL",
+        "NEXT_PUBLIC_CHAIN_ID",
+        "NEXT_PUBLIC_COUNTER_ADDRESS"
+      ],
       "outputs": [
         ".next/**",
         "!.next/cache/**",
