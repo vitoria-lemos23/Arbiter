@@ -28,7 +28,7 @@ export default async function Home() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Arbiter</h1>
           <p className="text-sm text-muted-foreground">
-            Decentralized tournament platform — tRPC wiring test
+            Decentralized tournament platform
           </p>
         </div>
         <ModeToggle />

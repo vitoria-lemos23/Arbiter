@@ -7,7 +7,6 @@ Arbiter is a decentralized tournament platform that allows users to create, mana
 - **Frontend:** React.js, Next.js, Tailwind CSS, Shadcn UI, Drizzle ORM, and TypeScript
 - **Blockchain:** Ethereum, Solidity, Hardhat and Viem
 - **Database:** PostgreSQL
-- **Authentication:** Auth.js for user authentication and authorization
 - **Tools**: GitHub Actions for CI/CD, Docker for containerization, and TurboRepo for monorepo management.
 
 # Libraries Documentation URLs 
