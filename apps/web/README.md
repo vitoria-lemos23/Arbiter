@@ -36,7 +36,7 @@ This app uses [shadcn/ui](https://ui.shadcn.com/docs) for shared UI primitives. 
 
 **Setup in this repo**
 
-- Config: [`components.json`](./components.json) — style `radix-luma`, base color `olive`, RSC enabled, Tailwind v4 (no `tailwind.config`), icon library Phosphor, primitives via [`radix-ui`](https://www.radix-ui.com). (The mode toggle currently uses [`lucide-react`](https://lucide.dev) icons.)
+- Config: [`components.json`](./components.json) — style `radix-luma`, base color `olive`, RSC enabled, Tailwind v4 (no `tailwind.config`), icons via [`@phosphor-icons/react`](https://phosphoricons.com), primitives via [`radix-ui`](https://www.radix-ui.com).
 - Theme tokens live in [`src/app/globals.css`](./src/app/globals.css) (CSS variables, light + `.dark`).
 - Dark mode via [`next-themes`](https://github.com/pacocoursey/next-themes): `ThemeProvider` and `ModeToggle` under [`src/shared/theme/`](./src/shared/theme); toggling switches the `.dark` class.
 - The `cn()` class-merge helper is at [`src/lib/utils.ts`](./src/lib/utils.ts) (`@/lib/utils`).
