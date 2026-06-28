@@ -7,7 +7,7 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "build": "hardhat build",
+    "build": "hardhat build && node scripts/generate-abi.mjs",
     "test": "hardhat test",
     "typecheck": "tsc --noEmit",
     "clean": "hardhat clean && rm -rf .turbo node_modules"

@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Outfit } from "next/font/google";
 import { headers } from "next/headers";
 import { cookieToInitialState } from "wagmi";
-import { config } from "@/lib/wagmi";
-import { Providers } from "./providers";
+import { ThemeProvider } from "@/shared/theme/ThemeProvider";
+import { Providers } from "@/shared/web3/components/Providers";
+import { config } from "@/shared/web3/config/wagmi";
 import "./globals.css";
+import { cn } from "@/lib/utils";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const outfit = Outfit({
+  variable: "--font-sans",
   subsets: ["latin"],
 });
 
@@ -36,10 +38,22 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
+      className={cn(
+        "h-full font-sans antialiased",
+        outfit.variable,
+        geistMono.variable,
+      )}
     >
       <body className="min-h-full flex flex-col">
-        <Providers initialState={initialState}>{children}</Providers>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Providers initialState={initialState}>{children}</Providers>
+        </ThemeProvider>
       </body>
     </html>
   );

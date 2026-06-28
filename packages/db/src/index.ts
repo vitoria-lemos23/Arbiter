@@ -9,9 +9,16 @@ declare global {
   var __arbiterDbClient: ReturnType<typeof postgres> | undefined;
 }
 
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+  throw new Error(
+    "DATABASE_URL is not set. Copy .env.example to .env and set it (see the repo README).",
+  );
+}
+
 const client =
   globalThis.__arbiterDbClient ??
-  postgres(process.env.DATABASE_URL ?? "", { prepare: false });
+  postgres(connectionString, { prepare: false });
 
 if (process.env.NODE_ENV !== "production") {
   globalThis.__arbiterDbClient = client;

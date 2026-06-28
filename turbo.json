@@ -4,7 +4,19 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**", "artifacts/**", "typechain-types/**"]
+      "env": [
+        "DATABASE_URL",
+        "NEXT_PUBLIC_RPC_URL",
+        "NEXT_PUBLIC_CHAIN_ID",
+        "NEXT_PUBLIC_COUNTER_ADDRESS"
+      ],
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**",
+        "dist/**",
+        "artifacts/**",
+        "typechain-types/**"
+      ]
     },
     "dev": {
       "cache": false,

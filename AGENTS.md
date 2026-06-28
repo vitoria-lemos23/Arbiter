@@ -4,11 +4,10 @@ Arbiter is a decentralized tournament platform that allows users to create, mana
 
 # Tech Stack
 
-- **Frontend:** React.js, Next.js, Tailwind CSS, Shadcn UI, Drizzle ORM, and TypeScript
-- **Blockchain:** Ethereum, Solidity, Hardhat and Viem
-- **Database:** PostgreSQL
-- **Authentication:** Auth.js for user authentication and authorization
-- **Tools**: GitHub Actions for CI/CD, Docker for containerization, and TurboRepo for monorepo management.
+- **Frontend:** React, Next.js, Tailwind CSS, Shadcn UI, wagmi/viem, and TypeScript
+- **Blockchain:** Ethereum, Solidity, Hardhat, and Viem
+- **Database:** PostgreSQL with Drizzle ORM
+- **Tooling**: pnpm + TurboRepo (monorepo), Biome (format/lint), Vitest (tests), GitHub Actions (CI/CD), and Docker.
 
 # Libraries Documentation URLs 
 
@@ -19,6 +18,12 @@ Use the following links to access the documentation for the libraries and framew
 - Viem: [https://viem.sh/docs/getting-started.md](https://viem.sh/docs/getting-started.md)
 - Next.js: [https://nextjs.org/docs.md](https://nextjs.org/docs.md)
 - Drizzle ORM: [https://orm.drizzle.team/docs/](https://orm.drizzle.team/docs/)
+- Wagmi: [https://wagmi.sh/react/getting-started.md](https://wagmi.sh/react/getting-started.md)
+- Shadcn UI: [https://ui.shadcn.com/docs.md](https://ui.shadcn.com/docs.md) — installation guide: [https://ui.shadcn.com/docs/installation.md](https://ui.shadcn.com/docs/installation.md)
+- Hardhat: [https://hardhat.org/llms.txt](https://hardhat.org/llms.txt)
+- Tailwind CSS: [https://tailwindcss.com/docs](https://tailwindcss.com/docs)
+- Biome: [https://biomejs.dev/guides/getting-started/](https://biomejs.dev/guides/getting-started/)
+- Zod: [https://zod.dev/](https://zod.dev/)
 
 # AI Guideline
 
@@ -28,4 +33,74 @@ Use the following links to access the documentation for the libraries and framew
 - When using external libraries, always check for documentation in the official repository or website.
 
 ## Package Management
-- Check for the latest version of each package before iFncluding it in the project.
+- Check for the latest version of each package before including it in the project.
+
+## Versions and Deprecations
+- Do not rely on training-data knowledge of a library's API. Check the installed version (`node_modules/<pkg>/package.json`) and its type declarations/docs for `@deprecated` markers before using an API, and trust the type-checker/IDE hints over memory. This repo pins newer-than-default versions (Next 16, React 19, wagmi 3, Tailwind 4, Zod 4, Hardhat 3).
+
+# Project Conventions
+
+- Monorepo: pnpm workspaces + TurboRepo. Run scripts from the repo root; target a workspace with `pnpm --filter @arbiter/<name> <script>`.
+- Formatting/linting: Biome owns formatting and linting (`pnpm check`, `pnpm format`); a husky pre-commit hook runs Biome on staged files. Do not add conflicting Prettier/ESLint *formatting* — the web app keeps `eslint-config-next` for Next-specific lint rules only. CSS, `public/`, drizzle, and generated files are excluded from Biome.
+- Web app structure: `src/app` holds App Router files only. Feature code lives in `src/features/<feature>/{components,hooks,actions,server,schema}`; cross-cutting code in `src/shared/`; shadcn primitives in `src/components/ui`.
+- File naming: component files are PascalCase `.tsx` (e.g. `IncrementCounterForm.tsx`); other modules are camelCase `.ts`. Leave Next.js framework files (`layout.tsx`, `page.tsx`, `error.tsx`, …) and shadcn `components/ui/*` in their conventional lowercase names.
+- Environment variables: access through the validated `apps/web/src/env.ts` (zod), not raw `process.env`. `@arbiter/db` requires `DATABASE_URL`.
+- Contract ABIs: generated from compiled artifacts into `packages/contracts/src/generated/` by `scripts/generate-abi.mjs` during `build` — never hand-edit them.
+- Verify real builds: type-checking alone misses cross-package/bundler issues — run `pnpm build` (and exercise the app) before claiming a change works.
+
+## UI Components
+
+- Use shadcn UI components for all UI elements. Do not create custom primitives unless necessary.
+- Use Tailwind CSS for styling. Avoid inline styles and prefer utility classes.
+- Create reusable components for common UI patterns and interactions. Avoid duplicating code across different parts of the application.
+
+## Code style
+
+- Functions: 4-20 lines. Split if longer.
+- Files: under 500 lines. Split by responsibility.
+- One thing per function, one responsibility per module (SRP).
+- Names: specific and unique. Avoid `data`, `handler`, `Manager`.
+  Prefer names that return <5 grep hits in the codebase.
+- Types: explicit. No `any`, no `Dict`, no untyped functions.
+- No code duplication. Extract shared logic into a function/module.
+- Early returns over nested ifs. Max 2 levels of indentation.
+- Exception messages must include the offending value and expected shape.
+
+## Comments
+
+- Keep your own comments. Don't strip them on refactor — they carry
+  intent and provenance.
+- Write WHY, not WHAT. Skip `// increment counter` above `i++`.
+- Docstrings on public functions: intent + one usage example.
+- Reference issue numbers / commit SHAs when a line exists because
+  of a specific bug or upstream constraint.
+
+## Tests
+
+- Tests run with a single command: `pnpm test`.
+- Every new function gets a test. Bug fixes get a regression test.
+- Mock external I/O (API, DB, filesystem) with named fake classes,
+  not inline stubs.
+- Tests must be F.I.R.S.T: fast, independent, repeatable,
+  self-validating, timely.
+
+
+## Dependencies
+
+- Inject dependencies through constructor/parameter, not global/import.
+- Wrap third-party libs behind a thin interface owned by this project.
+
+## Structure
+
+- Follow the framework's convention Next.js.
+- Prefer small focused modules over god files.
+- Predictable paths: controller/model/view, src/lib/test, etc.
+
+## Formatting
+
+- Use the language default formatter of biome. Don't discuss style beyond that.
+
+## Logging
+
+- Structured JSON when logging for debugging / observability.
+- Plain text only for user-facing CLI output.
