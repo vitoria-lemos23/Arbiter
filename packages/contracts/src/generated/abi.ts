@@ -172,6 +172,12 @@ export const tournamentAbi = [
       },
       {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "prize",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
         "internalType": "uint64",
         "name": "startDate",
         "type": "uint64"
@@ -328,7 +334,7 @@ export const tournamentAbi = [
     ],
     "name": "initialize",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -352,6 +358,19 @@ export const tournamentAbi = [
         "internalType": "address",
         "name": "",
         "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "prize",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -445,6 +464,42 @@ export const tournamentFactoryAbi = [
         "internalType": "uint256",
         "name": "index",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum TournamentFormat",
+        "name": "format",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "maxPlayers",
+        "type": "uint32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "entryFee",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "prize",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint64",
+        "name": "startDate",
+        "type": "uint64"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint64",
+        "name": "endDate",
+        "type": "uint64"
       }
     ],
     "name": "TournamentCreated",
@@ -488,6 +543,11 @@ export const tournamentFactoryAbi = [
         "internalType": "struct TournamentParams",
         "name": "params",
         "type": "tuple"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "salt",
+        "type": "bytes32"
       }
     ],
     "name": "createTournament",
@@ -498,7 +558,7 @@ export const tournamentFactoryAbi = [
         "type": "address"
       }
     ],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -528,6 +588,25 @@ export const tournamentFactoryAbi = [
   {
     "inputs": [],
     "name": "implementation",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "salt",
+        "type": "bytes32"
+      }
+    ],
+    "name": "predictTournamentAddress",
     "outputs": [
       {
         "internalType": "address",

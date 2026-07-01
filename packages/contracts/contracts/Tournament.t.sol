@@ -21,6 +21,7 @@ contract TournamentTest is Test {
     TournamentFormat format,
     uint32 maxPlayers,
     uint256 entryFee,
+    uint256 prize,
     uint64 startDate,
     uint64 endDate
   );
@@ -102,9 +103,29 @@ contract TournamentTest is Test {
     Tournament t = _clone();
     vm.expectEmit(true, false, false, true, address(t));
     emit TournamentInitialized(
-      organizer, TournamentFormat.SingleElimination, 8, 1 ether, START, END
+      organizer, TournamentFormat.SingleElimination, 8, 1 ether, 0, START, END
     );
     t.initialize(organizer, _params());
+  }
+
+  function test_InitializeStoresPrizeFromValue() public {
+    Tournament t = _clone();
+    vm.deal(address(this), 5 ether);
+    vm.expectEmit(true, false, false, true, address(t));
+    emit TournamentInitialized(
+      organizer, TournamentFormat.SingleElimination, 8, 1 ether, 3 ether, START, END
+    );
+    t.initialize{value: 3 ether}(organizer, _params());
+
+    assertEq(t.prize(), 3 ether);
+    assertEq(address(t).balance, 3 ether);
+  }
+
+  function test_ZeroPrizeSucceeds() public {
+    Tournament t = _clone();
+    t.initialize(organizer, _params());
+    assertEq(t.prize(), 0);
+    assertEq(address(t).balance, 0);
   }
 
   function test_ZeroEntryFeeAndEmptyJudgesSucceed() public {

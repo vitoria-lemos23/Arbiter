@@ -33,3 +33,9 @@ export const counterChainId = env.NEXT_PUBLIC_CHAIN_ID;
 
 /** Deployed Counter address, exposed to the browser for wallet-signed writes. */
 export const counterAddress = env.NEXT_PUBLIC_COUNTER_ADDRESS;
+
+/** Chain the TournamentFactory lives on (same deployment target as the Counter). */
+export const tournamentChainId = env.NEXT_PUBLIC_CHAIN_ID;
+
+/** Deployed TournamentFactory address, for wallet-signed `createTournament` writes. */
+export const tournamentFactoryAddress = env.NEXT_PUBLIC_FACTORY_ADDRESS;

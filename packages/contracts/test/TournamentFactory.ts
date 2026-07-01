@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
 import { network } from "hardhat";
-import { getAddress } from "viem";
+import { getAddress, parseEther, toHex } from "viem";
 
 describe("TournamentFactory", async () => {
   const { viem, networkHelpers } = await network.create();
@@ -30,14 +30,25 @@ describe("TournamentFactory", async () => {
     };
   }
 
+  // Distinct 32-byte salt per call so CREATE2 addresses never collide.
+  let saltNonce = 0;
+  function nextSalt() {
+    return toHex(++saltNonce, { size: 32 });
+  }
+
   // createTournament returns the clone address, but a write tx resolves to a
   // hash — recover the address from the TournamentCreated event.
   async function createAndGetAddress(
     factory: Awaited<ReturnType<typeof deployFactory>>["factory"],
     params: Awaited<ReturnType<typeof makeParams>>,
     account: (typeof alice)["account"],
+    salt: `0x${string}` = nextSalt(),
+    value = 0n,
   ) {
-    const hash = await factory.write.createTournament([params], { account });
+    const hash = await factory.write.createTournament([params, salt], {
+      account,
+      value,
+    });
     const receipt = await publicClient.waitForTransactionReceipt({ hash });
     const [log] = await publicClient.getContractEvents({
       address: factory.address,
@@ -50,16 +61,84 @@ describe("TournamentFactory", async () => {
     return log.args.tournament;
   }
 
-  it("emits TournamentCreated with the caller as organizer and index 0", async () => {
+  it("emits TournamentCreated with enriched params and the caller as organizer", async () => {
     const { factory } = await networkHelpers.loadFixture(deployFactory);
     const params = await makeParams();
+    const salt = nextSalt();
+    const predicted = await factory.read.predictTournamentAddress([salt]);
 
     await viem.assertions.emitWithArgs(
-      factory.write.createTournament([params], { account: alice.account }),
+      factory.write.createTournament([params, salt], {
+        account: alice.account,
+      }),
       factory,
       "TournamentCreated",
-      // clone address isn't known ahead of time — match it with a predicate
-      [() => true, getAddress(alice.account.address), 0n],
+      [
+        getAddress(predicted),
+        getAddress(alice.account.address),
+        0n,
+        params.format,
+        params.maxPlayers,
+        params.entryFee,
+        0n, // prize (no value sent)
+        params.startDate,
+        params.endDate,
+      ],
+    );
+  });
+
+  it("deposits msg.value as the tournament prize", async () => {
+    const { factory } = await networkHelpers.loadFixture(deployFactory);
+    const params = await makeParams();
+    const prize = parseEther("2");
+
+    const address = await createAndGetAddress(
+      factory,
+      params,
+      alice.account,
+      nextSalt(),
+      prize,
+    );
+
+    const clone = await viem.getContractAt("Tournament", address);
+    assert.equal(await clone.read.prize(), prize);
+    assert.equal(await publicClient.getBalance({ address }), prize);
+  });
+
+  it("allows a zero prize", async () => {
+    const { factory } = await networkHelpers.loadFixture(deployFactory);
+    const params = await makeParams();
+    const address = await createAndGetAddress(factory, params, alice.account);
+    const clone = await viem.getContractAt("Tournament", address);
+    assert.equal(await clone.read.prize(), 0n);
+  });
+
+  it("deploys the clone at the predicted CREATE2 address", async () => {
+    const { factory } = await networkHelpers.loadFixture(deployFactory);
+    const params = await makeParams();
+    const salt = nextSalt();
+
+    const predicted = await factory.read.predictTournamentAddress([salt]);
+    const deployed = await createAndGetAddress(
+      factory,
+      params,
+      alice.account,
+      salt,
+    );
+
+    assert.equal(getAddress(deployed), getAddress(predicted));
+  });
+
+  it("reverts when a salt is reused", async () => {
+    const { factory } = await networkHelpers.loadFixture(deployFactory);
+    const params = await makeParams();
+    const salt = nextSalt();
+
+    await createAndGetAddress(factory, params, alice.account, salt);
+    await assert.rejects(
+      factory.write.createTournament([params, salt], {
+        account: bob.account,
+      }),
     );
   });
 

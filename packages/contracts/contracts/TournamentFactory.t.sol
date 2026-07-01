@@ -19,10 +19,18 @@ contract TournamentFactoryTest is Test {
   address alice = makeAddr("alice");
   address bob = makeAddr("bob");
 
+  // Monotonic salt source so each create in a test lands on a distinct
+  // CREATE2 address (reused salts revert).
+  uint256 private _saltNonce;
+
   function setUp() public {
     impl = new Tournament();
     factory = new TournamentFactory(address(impl));
     vm.warp(NOW_TS);
+  }
+
+  function _nextSalt() internal returns (bytes32) {
+    return bytes32(++_saltNonce);
   }
 
   function _params() internal pure returns (TournamentParams memory) {
@@ -47,26 +55,67 @@ contract TournamentFactoryTest is Test {
 
   function test_CreateSetsOrganizerToCaller() public {
     vm.prank(bob);
-    address t = factory.createTournament(_params());
+    address t = factory.createTournament(_params(), _nextSalt());
 
     assertEq(Tournament(t).organizer(), bob);
     assertEq(factory.tournamentCount(), 1);
     assertEq(factory.tournamentAt(0), t);
   }
 
-  function test_CreateEmitsEvent() public {
+  function test_CreateEmitsEnrichedEvent() public {
+    bytes32 salt = _nextSalt();
+    address predicted = factory.predictTournamentAddress(salt);
+
     vm.prank(alice);
-    vm.expectEmit(false, true, true, false);
-    // tournament address is unknown ahead of time; only check organizer + index
-    emit TournamentFactory.TournamentCreated(address(0), alice, 0);
-    factory.createTournament(_params());
+    vm.expectEmit(true, true, true, true);
+    emit TournamentFactory.TournamentCreated(
+      predicted, alice, 0, TournamentFormat.SingleElimination, 8, 1 ether, 0, START, END
+    );
+    factory.createTournament(_params(), salt);
+  }
+
+  function test_CreateDepositsPrizeFromValue() public {
+    bytes32 salt = _nextSalt();
+    address predicted = factory.predictTournamentAddress(salt);
+    vm.deal(alice, 10 ether);
+
+    vm.prank(alice);
+    vm.expectEmit(true, true, true, true);
+    emit TournamentFactory.TournamentCreated(
+      predicted, alice, 0, TournamentFormat.SingleElimination, 8, 1 ether, 2 ether, START, END
+    );
+    address t = factory.createTournament{value: 2 ether}(_params(), salt);
+
+    assertEq(Tournament(t).prize(), 2 ether);
+    assertEq(t.balance, 2 ether);
+  }
+
+  function test_PredictMatchesDeployedAddress() public {
+    bytes32 salt = _nextSalt();
+    address predicted = factory.predictTournamentAddress(salt);
+
+    vm.prank(alice);
+    address t = factory.createTournament(_params(), salt);
+
+    assertEq(t, predicted);
+  }
+
+  function test_RevertWhenSaltReused() public {
+    bytes32 salt = _nextSalt();
+    vm.prank(alice);
+    factory.createTournament(_params(), salt);
+
+    // Second deploy at the same CREATE2 address must revert.
+    vm.prank(bob);
+    vm.expectRevert();
+    factory.createTournament(_params(), salt);
   }
 
   function test_CreatesIsolatedClones() public {
     vm.prank(alice);
-    address a = factory.createTournament(_params());
+    address a = factory.createTournament(_params(), _nextSalt());
     vm.prank(bob);
-    address b = factory.createTournament(_params());
+    address b = factory.createTournament(_params(), _nextSalt());
 
     assertTrue(a != b);
     assertEq(Tournament(a).organizer(), alice);
@@ -75,11 +124,11 @@ contract TournamentFactoryTest is Test {
 
   function test_TournamentsOfTracksPerOrganizer() public {
     vm.prank(alice);
-    address a1 = factory.createTournament(_params());
+    address a1 = factory.createTournament(_params(), _nextSalt());
     vm.prank(alice);
-    address a2 = factory.createTournament(_params());
+    address a2 = factory.createTournament(_params(), _nextSalt());
     vm.prank(bob);
-    factory.createTournament(_params());
+    factory.createTournament(_params(), _nextSalt());
 
     address[] memory aliceTournaments = factory.tournamentsOf(alice);
     assertEq(aliceTournaments.length, 2);
@@ -99,7 +148,7 @@ contract TournamentFactoryTest is Test {
     address[] memory created = new address[](3);
     for (uint256 i = 0; i < 3; i++) {
       vm.prank(alice);
-      created[i] = factory.createTournament(_params());
+      created[i] = factory.createTournament(_params(), _nextSalt());
     }
 
     address[] memory firstTwo = factory.getTournaments(0, 2);

@@ -35,6 +35,9 @@ contract Tournament is Initializable {
   TournamentFormat public format;
   uint32 public maxPlayers;
   uint256 public entryFee;
+  /// @notice Prize pot deposited by the organizer at creation, held by this
+  ///         clone as ETH (`msg.value`). Distribution/claiming is out of scope.
+  uint256 public prize;
   uint64 public startDate;
   uint64 public endDate;
   address[] private _judges;
@@ -46,6 +49,7 @@ contract Tournament is Initializable {
     TournamentFormat format,
     uint32 maxPlayers,
     uint256 entryFee,
+    uint256 prize,
     uint64 startDate,
     uint64 endDate
   );
@@ -57,14 +61,16 @@ contract Tournament is Initializable {
   }
 
   /// @notice One-time configuration of a freshly cloned tournament.
-  /// @dev Called by the factory immediately after cloning. The `initializer`
-  ///      modifier reverts on any second call. `organizer_` is supplied by the
-  ///      factory (it derives it from `msg.sender`), not by the organizer, to
-  ///      prevent spoofing.
+  /// @dev Called by the factory immediately after cloning, forwarding the
+  ///      organizer's `msg.value` as the prize pot. The `initializer` modifier
+  ///      reverts on any second call. `organizer_` is supplied by the factory
+  ///      (it derives it from `msg.sender`), not by the organizer, to prevent
+  ///      spoofing. `payable` so the clone can hold the deposited prize.
   /// @param organizer_ The tournament owner; the factory's caller.
   /// @param params Validated-on-entry creation parameters.
   function initialize(address organizer_, TournamentParams calldata params)
     external
+    payable
     initializer
   {
     _validate(params);
@@ -73,6 +79,7 @@ contract Tournament is Initializable {
     format = params.format;
     maxPlayers = params.maxPlayers;
     entryFee = params.entryFee;
+    prize = msg.value;
     startDate = params.startDate;
     endDate = params.endDate;
     _storeJudges(params.judges);
@@ -82,6 +89,7 @@ contract Tournament is Initializable {
       params.format,
       params.maxPlayers,
       params.entryFee,
+      msg.value,
       params.startDate,
       params.endDate
     );

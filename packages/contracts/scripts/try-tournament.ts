@@ -7,7 +7,7 @@
 // the two clones don't leak each other's config. Not a test — just a sandbox.
 
 import { network } from "hardhat";
-import { getAddress } from "viem";
+import { getAddress, toHex } from "viem";
 
 const { viem, networkHelpers } = await network.create();
 const publicClient = await viem.getPublicClient();
@@ -33,11 +33,16 @@ const baseParams = {
 
 // createTournament returns the clone address on-chain, but a write tx resolves
 // to a hash — recover the address from the TournamentCreated event.
+let saltNonce = 0;
+
 async function createTournament(
   params: typeof baseParams,
   account: (typeof alice)["account"],
 ) {
-  const hash = await factory.write.createTournament([params], { account });
+  const salt = toHex(++saltNonce, { size: 32 });
+  const hash = await factory.write.createTournament([params, salt], {
+    account,
+  });
   const receipt = await publicClient.waitForTransactionReceipt({ hash });
   const [log] = await publicClient.getContractEvents({
     address: factory.address,

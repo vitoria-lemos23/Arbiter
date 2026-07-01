@@ -18,7 +18,7 @@ export function Header() {
         <MainNav className="ml-3.5 hidden md:flex" />
         <div className="flex-1" />
         <Button asChild size="sm" className="gap-1.5">
-          <Link href="/create">
+          <Link href="/tournaments/new">
             <PlusIcon weight="bold" />
             Create
           </Link>
