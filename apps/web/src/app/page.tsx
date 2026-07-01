@@ -3,7 +3,6 @@ import { IncrementCounterForm } from "@/features/counter/components/IncrementCou
 import { getCount } from "@/features/counter/server/getCount";
 import { CreateSampleForm } from "@/features/samples/components/CreateSampleForm";
 import { listSamples } from "@/features/samples/server/samples";
-import { ModeToggle } from "@/shared/theme/ModeToggle";
 import { WalletConnect } from "@/shared/web3/components/WalletConnect";
 
 // Reads live data per request — not prerendered at build.
@@ -24,16 +23,6 @@ export default async function Home() {
 
   return (
     <main className="mx-auto flex w-full max-w-4xl flex-col gap-6 p-12">
-      <header className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Arbiter</h1>
-          <p className="text-sm text-muted-foreground">
-            Decentralized tournament platform
-          </p>
-        </div>
-        <ModeToggle />
-      </header>
-
       <section className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">Counter contract</h2>
