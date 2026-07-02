@@ -2,7 +2,7 @@
 
 import { tournamentFactoryAbi } from "@arbiter/contracts";
 import { useState } from "react";
-import { type Address, getContractAddress, type Hex, toHex } from "viem";
+import { type Address, type Hex, toHex } from "viem";
 import {
   useChainId,
   useConnection,
@@ -16,6 +16,7 @@ import {
   tournamentChainId,
   tournamentFactoryAddress,
 } from "@/shared/web3/config/wagmi";
+import { predictCloneAddress } from "../lib/predictCloneAddress";
 import {
   type CreateTournamentValues,
   prizeWei,
@@ -23,17 +24,6 @@ import {
 } from "../schema/createTournament";
 
 type ConfiguredChainId = (typeof config.chains)[number]["id"];
-
-/**
- * EIP-1167 minimal-proxy creation code for a clone of `implementation`, byte for
- * byte what {Clones.cloneDeterministic} feeds to CREATE2. Hashing it lets us
- * derive the clone's address client-side — no pre-sign RPC read. See
- * OpenZeppelin `Clones.sol`.
- */
-function cloneInitCode(implementation: Address): Hex {
-  const impl = implementation.slice(2).toLowerCase();
-  return `0x3d602d80600a3d3981f3363d3d373d3d3d363d73${impl}5af43d82803e903d91602b57fd5bf3`;
-}
 
 /** Fresh 32 random bytes per submission (a new salt ⇒ a new CREATE2 address). */
 function randomSalt(): Hex {
@@ -92,10 +82,9 @@ export function useCreateTournament() {
 
     // Predict the clone address before signing (pure fn of impl+salt+factory).
     const predicted = implementation
-      ? getContractAddress({
-          bytecode: cloneInitCode(implementation),
-          from: tournamentFactoryAddress,
-          opcode: "CREATE2",
+      ? predictCloneAddress({
+          implementation,
+          factory: tournamentFactoryAddress,
           salt,
         })
       : null;
