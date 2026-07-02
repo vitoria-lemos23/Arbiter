@@ -18,9 +18,12 @@ const ethAmount = z
   .string()
   .trim()
   .refine((v) => /^\d+(\.\d+)?$/.test(v), "Enter a non-negative amount")
+  // The regex already bars negatives; this just guards against parseEther
+  // throwing (e.g. too many decimals) before it reaches the contract.
   .refine((v) => {
     try {
-      return parseEther(v) >= 0n;
+      parseEther(v);
+      return true;
     } catch {
       return false;
     }

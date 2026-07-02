@@ -6,18 +6,23 @@ import {
   toTournamentParams,
 } from "./createTournament";
 
+// `<input type="datetime-local">` yields a LOCAL wall-clock string with no
+// timezone, and the schema parses it as local time. Build fixtures the same way
+// (local getters, not `toISOString()`), or the test flips in non-UTC zones.
+function localDatetime(offsetMs: number): string {
+  const d = new Date(Date.now() + offsetMs);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
 // A far-future / valid baseline the individual cases override per assertion.
 function base(overrides: Record<string, unknown> = {}) {
-  const inOneHour = new Date(Date.now() + 3_600_000).toISOString().slice(0, 16);
-  const inTwoHours = new Date(Date.now() + 7_200_000)
-    .toISOString()
-    .slice(0, 16);
   return {
     name: "Spring Cup",
     format: "0",
     maxPlayers: "8",
-    startDate: inOneHour,
-    endDate: inTwoHours,
+    startDate: localDatetime(3_600_000),
+    endDate: localDatetime(7_200_000),
     prize: "1.5",
     entryFee: "0.1",
     judges: "",
@@ -57,14 +62,14 @@ describe("createTournamentSchema", () => {
   });
 
   it("rejects a start date in the past", () => {
-    const past = new Date(Date.now() - 3_600_000).toISOString().slice(0, 16);
+    const past = localDatetime(-3_600_000);
     const result = createTournamentSchema.safeParse(base({ startDate: past }));
     expect(result.success).toBe(false);
   });
 
   it("rejects an end date before the start date", () => {
-    const start = new Date(Date.now() + 7_200_000).toISOString().slice(0, 16);
-    const end = new Date(Date.now() + 3_600_000).toISOString().slice(0, 16);
+    const start = localDatetime(7_200_000);
+    const end = localDatetime(3_600_000);
     const result = createTournamentSchema.safeParse(
       base({ startDate: start, endDate: end }),
     );
@@ -124,16 +129,12 @@ describe("conversion helpers", () => {
   });
 
   it("converts the datetimes to unix seconds and format to 0", () => {
-    const start = new Date(Date.now() + 3_600_000);
-    const parsed = createTournamentSchema.parse(
-      base({ startDate: start.toISOString().slice(0, 16) }),
-    );
+    const startDate = localDatetime(3_600_000);
+    const parsed = createTournamentSchema.parse(base({ startDate }));
     const params = toTournamentParams(parsed);
     expect(params.format).toBe(0);
     expect(params.startDate).toBe(
-      BigInt(
-        Math.floor(new Date(start.toISOString().slice(0, 16)).getTime() / 1000),
-      ),
+      BigInt(Math.floor(new Date(startDate).getTime() / 1000)),
     );
   });
 
