@@ -16,8 +16,9 @@ results.
 ```
 apps/
   web/             Next.js application (UI + server actions)
+  indexer/         Ponder indexer (writes the on-chain `tournament` table)
 packages/
-  contracts/       Hardhat 3 + viem Solidity contracts (Counter sample)
+  contracts/       Hardhat 3 + viem Solidity contracts (Counter, Tournament, TournamentFactory)
   db/              Drizzle ORM schema, migrations, and client
 ```
 
@@ -47,6 +48,11 @@ pnpm dev
 ```
 
 The web app runs at http://localhost:3000.
+
+> `pnpm dev` also starts the Ponder indexer, which needs a deployed factory
+> (`INDEXER_FACTORY_ADDRESS`) — see [Creating a tournament](#creating-a-tournament-optional).
+> Without it the indexer task errors while the web app keeps running; to run just
+> the web app use `pnpm --filter @arbiter/web dev`.
 
 ### Connecting the Counter contract (optional)
 
@@ -80,6 +86,36 @@ prefunded accounts printed by `hardhat node` — then click **Connect** and
 Until `NEXT_PUBLIC_COUNTER_ADDRESS` is set the page still loads — it just shows
 that the contract is unreachable.
 
+### Creating a tournament (optional)
+
+The **Create** button routes to `/tournaments/new`, a wallet-signed form that
+calls `TournamentFactory.createTournament` (depositing the prize as the tx
+value) and deploys a `Tournament` clone at a deterministic CREATE2 address. A
+Ponder indexer then writes the created tournament into Postgres.
+
+Building on the local chain from the Counter steps above:
+
+```bash
+# 1. Deploy the TournamentFactory to the local Hardhat node
+pnpm --filter @arbiter/contracts exec hardhat ignition deploy \
+  ignition/modules/TournamentFactory.ts --network localhost
+
+# 2. Point the web app at the factory (address printed by the deploy)
+#    apps/web/.env.local:
+#    NEXT_PUBLIC_FACTORY_ADDRESS=0x...
+
+# 3. Start the indexer against the same node + database
+cp apps/indexer/.env.example apps/indexer/.env.local
+#    then set INDEXER_FACTORY_ADDRESS=0x... (the deployed factory)
+pnpm --filter @arbiter/indexer dev
+```
+
+With the factory address set, connect a wallet on the local network, fill in the
+form, and click **Create**. On success the page shows the new tournament's
+address, and a row appears in the Ponder-owned `tournament` table. Until
+`NEXT_PUBLIC_FACTORY_ADDRESS` is set the form disables submit with a
+configuration notice.
+
 ## Common scripts
 
 Run from the repository root (Turborepo orchestrates each workspace):
@@ -98,4 +134,3 @@ Run from the repository root (Turborepo orchestrates each workspace):
 | `pnpm db:migrate` | Apply database migrations                    |
 | `pnpm db:seed`    | Seed the database with sample rows           |
 | `pnpm clean`      | Remove build artifacts and `node_modules`    |
-```

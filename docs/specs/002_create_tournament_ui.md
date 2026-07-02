@@ -1,7 +1,7 @@
-# 002 — Create Tournament Form
+# 002 — Create Tournament Wizard
 
-> A wallet-signed form that creates a tournament on-chain (with a prize deposit)
-> via `TournamentFactory.createTournament`, indexed into Postgres by Ponder.
+> A wallet-signed, 5-step wizard that creates a tournament on-chain (with a prize
+> deposit) via `TournamentFactory.createTournament`, indexed into Postgres by Ponder.
 
 ## Meta
 
@@ -10,7 +10,7 @@
 | **Status**     | Draft |
 | **Author**     | Ricardo Vinicius |
 | **Created**    | 2026-07-01 |
-| **Updated**    | 2026-07-01 |
+| **Updated**    | 2026-07-02 |
 | **Depends on** | `TournamentFactory` / `Tournament` contracts (commit `81f7d63`) + the contract change below |
 
 ---
@@ -29,7 +29,7 @@ created on-chain, prize deposited, and indexed into Postgres."
 
 ### Goals
 - **Create Tournament** page at `/tournaments/new`, reachable from a **Create** CTA in the main nav.
-- Validated form mapping onto the on-chain `TournamentParams` struct, plus a **prize** amount.
+- A **5-step wizard** (Name → Format → Prize → Apply → Review) matching the TournyBox design, validated **per step** before advancing, mapping onto the on-chain `TournamentParams` struct plus a **prize** amount.
 - Deposit the prize on-chain at creation (as `msg.value`).
 - Submit as a wallet-signed `createTournament` write, mirroring `useIncrementCounter`.
 - Surface tx lifecycle: idle → confirm-in-wallet → mining → success/error.
@@ -43,7 +43,8 @@ created on-chain, prize deposited, and indexed into Postgres."
 - **Metadata write path** — `tournament_metadata` is defined/migrated but not written (still `console.log`'d).
 - **Listing / discovery / detail pages** — any page besides the creation form.
 - **Bracket formats beyond single-elimination** — the only format the contract supports.
-- **Prize distribution / claiming / refunds** — depositing is in scope; payout is not.
+- **Prize distribution / claiming / refunds** — depositing is in scope; payout is not. The wizard's **payout split** (beyond 1st = 100%) is a disabled placeholder.
+- **Design features the contract can't back yet** — ERC-20 token selection, registration-field toggles, judge-selection modes (Invite/Application/Open), and cover-image upload are rendered as **disabled "coming soon" placeholders** for design fidelity; none are wired.
 
 ---
 
@@ -124,19 +125,25 @@ sequenceDiagram
 A **Create** button in the main nav routes to `/tournaments/new` (always visible;
 the page gates on wallet connection).
 
+The wizard shows a **stepper** (5 nodes; completed = lime ✓, current = lime, upcoming = outlined), a "Step X/5" counter, a per-step card, and a **Back / Continue** footer (final step: **Deploy**).
+
 **Happy path**
 1. Click **Create** → `/tournaments/new`.
 2. No wallet → "Connect a wallet to create a tournament."
 3. Wrong chain → **Switch network** button.
-4. Fill: name, format, max players, start/end date-time, **prize**, (optional) entry fee, (optional) judges.
-5. Click **Create** → button reflects state (`Confirm in wallet…` → `Mining…`); wallet shows the prize as tx value.
-6. On success, show the new tournament's address and reset the form. *(Temporary — a future iteration redirects to the details page.)*
+4. **Step 1 · Name** — name (required), description, game/category (off-chain metadata); cover-image upload is a disabled placeholder.
+5. **Step 2 · Format** — format (single-elimination), max players (segmented power-of-two buttons), start date, end date.
+6. **Step 3 · Prize** — prize amount (ETH) with a live **escrow preview**; token selector + payout split are disabled placeholders.
+7. **Step 4 · Apply** — entry fee (stored, not collected), judges (addresses); registration fields + judge-selection modes are disabled placeholders.
+8. **Step 5 · Review** — a summary grid + an "on-chain action required" notice. Click **Deploy** → button reflects state (`Confirm in wallet…` → `Mining…`); wallet shows the prize as tx value.
+9. On success, show the new tournament's address and reset the wizard to step 1. *(Temporary — a future iteration redirects to the details page.)*
 
 **Edge cases**
-- Validation errors render inline per-field before any wallet interaction.
-- Insufficient balance / user rejects / tx reverts → show the first line of the error; form stays editable.
-- `startDate` revalidated `> now` at submit (inline error, not a contract revert).
-- Missing factory address (env) → disable submit, show a configuration notice.
+- Each **Continue** validates only the current step's fields; invalid fields render inline and block advancing.
+- **Deploy** runs a full validation; if a field is invalid the wizard jumps to the earliest offending step.
+- Insufficient balance / user rejects / tx reverts → show the first line of the error; the wizard stays editable.
+- `startDate` revalidated `> now` (inline error, not a contract revert).
+- Missing factory address (env) → show a configuration notice in place of the wizard.
 
 ### Data Model
 
@@ -211,11 +218,14 @@ No REST endpoint — the "API" is a single wallet-signed contract write.
 
 | Component / Module | Path | Description |
 |--------------------|------|-------------|
-| `CreateTournamentPage` | `app/tournaments/new/page.tsx` | Route shell; renders the form in a `Card`. |
-| `CreateTournamentForm` | `features/tournaments/components/CreateTournamentForm.tsx` | Presentational form + inline validation. No wallet logic. |
+| `CreateTournamentPage` | `app/tournaments/new/page.tsx` | Thin route shell; renders `CreateTournamentWizard`. |
+| `CreateTournamentWizard` | `features/tournaments/components/CreateTournamentWizard.tsx` | Holds the raw wizard state + step index, validates per step, wires the gates and the final **Deploy**. No wallet logic beyond calling the hook. |
+| `Stepper` | `features/tournaments/components/wizard/Stepper.tsx` | Presentational 5-node progress rail. |
+| Step field groups | `features/tournaments/components/wizard/steps.tsx` | `StepName` / `StepFormat` / `StepPrize` / `StepApply` / `StepReview` — presentational, receive `{ values, errors, set }`. |
+| Shared controls | `features/tournaments/components/wizard/fields.tsx` | `Field`, `EthInput` (Ξ/ETH), `ChoiceGroup` (segmented), `Notice`. |
 | `useCreateTournament` | `features/tournaments/hooks/useCreateTournament.ts` | Wallet/chain/tx logic. Exposes `{ isConnected, wrongChain, canSubmit, busy, isPending, isConfirming, error, predictedAddress, switchNetwork, createTournament }`. Generates `salt`, computes `predictedAddress` client-side, writes with `args: [params, salt]` + `value: prizeWei`. |
-| `createTournamentSchema` | `features/tournaments/schema/createTournament.ts` | Zod schema + inferred type + `toTournamentParams(values)` + `prizeWei(values)`. |
-| Nav **Create** CTA | `shared/layout/MainNav.tsx` | Link to `/tournaments/new`. |
+| `createTournamentSchema` + wizard helpers | `features/tournaments/schema/createTournament.ts` | Zod schema + inferred type + `toTournamentParams(values)` + `prizeWei(values)`; plus `WizardValues`, `INITIAL_WIZARD_VALUES`, `WIZARD_STEPS`, `collectFieldErrors`, `stepFieldErrors`, `firstStepWithError`. |
+| Nav **Create** CTA | `shared/layout/Header.tsx` | Link to `/tournaments/new`. |
 
 ### Indexer (Ponder)
 
@@ -230,7 +240,7 @@ No REST endpoint — the "API" is a single wallet-signed contract write.
 Client validation reproduces the contract's `_validate` plus prize:
 
 1. `format` — only `SingleElimination` (index `0`) selectable.
-2. `maxPlayers` — **fixed select** of powers of two (2, 4, 8, 16, 32, 64, 128).
+2. `maxPlayers` — **segmented buttons** of powers of two (2, 4, 8, 16, 32, 64, 128).
 3. `startDate` — future at submit time (`> now`).
 4. `endDate` — strictly after `startDate`.
 5. `prize` — non-negative **ETH**, → wei via `parseEther`, sent as `msg.value`. `0` allowed.
@@ -238,7 +248,19 @@ Client validation reproduces the contract's `_validate` plus prize:
 7. `judges` — optional distinct valid `0x…` addresses; no zero address; empty allowed.
 8. Datetimes collected local, converted to **unix seconds** (`uint64`).
 9. `salt` — fresh 32 random bytes per submission (`crypto.getRandomValues`), used for both client-side prediction and the write. Regenerate on retry (avoids CREATE2 collision) — this **changes the predicted address**, so the deferred metadata-write must key off the *final successful* salt's address.
-10. Submit disabled unless wallet connected, on the right chain, and `NEXT_PUBLIC_FACTORY_ADDRESS` set.
+10. Deploy disabled unless wallet connected, on the right chain, and `NEXT_PUBLIC_FACTORY_ADDRESS` set.
+
+**Wizard step ↔ field mapping** (all validation lives in the one Zod schema; each step owns a subset via `WIZARD_STEPS[i].fields`):
+
+| Step | Fields | On-chain? |
+|------|--------|-----------|
+| 1 · Name | `name`, `description`, `game` | off-chain metadata (`console.log`'d; cover deferred) |
+| 2 · Format | `format`, `maxPlayers`, `startDate`, `endDate` | on-chain |
+| 3 · Prize | `prize` | on-chain (`msg.value`); token/payout-split are disabled placeholders |
+| 4 · Apply | `entryFee`, `judges` | on-chain; registration fields / judge modes are disabled placeholders |
+| 5 · Review | — (validates the whole form) | — |
+
+**Design reconciliation.** `description`/`game` are new off-chain metadata fields (logged, not persisted). The design's "judges per match" is realized as the contract's `judges` **address list**. The design's second date is realized as the contract's `endDate` (not "registration closes"). Everything the contract can't back is a disabled "coming soon" placeholder (see Non-Goals).
 
 ---
 
@@ -252,12 +274,12 @@ Client validation reproduces the contract's `_validate` plus prize:
 ### Frontend
 1. **Env** — `env.ts`: add optional `NEXT_PUBLIC_FACTORY_ADDRESS` (reuse the `0x…` validator); update `env.test.ts`.
 2. **wagmi config** — export `tournamentFactoryAddress` + chain id.
-3. **Schema** — Zod 4 schema + type + `toTournamentParams()` (datetime→unix, fee→wei, format→`0`) + `prizeWei()`.
+3. **Schema** — Zod 4 schema + type + `toTournamentParams()` (datetime→unix, fee→wei, format→`0`) + `prizeWei()`; plus the wizard helpers (`WizardValues`, `INITIAL_WIZARD_VALUES`, `WIZARD_STEPS`, `collectFieldErrors`, `stepFieldErrors`, `firstStepWithError`) with unit tests.
 4. **Hook** — adapt `useIncrementCounter`; generate `salt`; compute `predictedAddress` client-side (viem CREATE2 over EIP-1167 init code — needs factory address + `implementation()`); `console.log` metadata + address; write with `args: [params, salt]`, `value: prizeWei`.
-5. **Form** — shadcn `Input`/`Button`/`Card`/`Select`; inline errors; state-driven submit label.
-6. **Page** — client route rendering the form in a `Card`.
-7. **Nav** — add the **Create** CTA to `MainNav`.
-8. **Design import** — import the referenced Claude Design layout via `claude_design` MCP; reconcile with `components/ui`.
+5. **Wizard** — `CreateTournamentWizard` (controlled state, per-step validation, stepper, Back/Continue/Deploy) + `Stepper` + `steps.tsx` + shared `fields.tsx`; shadcn `Input`/`Textarea`/`Button`/`Card`/`Select`; disabled placeholders for unsupported design fields.
+6. **Page** — thin client route rendering `CreateTournamentWizard`.
+7. **Nav** — the **Create** CTA in `Header` links to `/tournaments/new`.
+8. **Design import** — imported the TournyBox layout via the `claude_design` MCP (`DesignSync`); the app theme already matched (Stone + Lime, Geist Mono).
 
 ### Indexer
 1. Scaffold `apps/indexer/` as a Ponder project; add to pnpm workspace + Turbo pipeline.
@@ -309,6 +331,11 @@ Client validation reproduces the contract's `_validate` plus prize:
 | 2026-07-01 | Indexer lives at **`apps/indexer/`** (new workspace). | Confirmed. |
 | 2026-07-01 | Prize + entry fee entered in **ETH**, converted with `parseEther`. | Confirmed. |
 | 2026-07-01 | `salt` is **random 32 bytes** per submission; regenerate on retry. | Avoids CREATE2 collision. |
+| 2026-07-02 | Rebuild the form as a **5-step wizard** (Name → Format → Prize → Apply → Review) matching the TournyBox design. | Per direction + design examples. |
+| 2026-07-02 | Validate **per step** (each step owns a field subset of the one Zod schema); Deploy re-validates all and jumps to the first bad step. | Keeps a single source of truth while gating step navigation. |
+| 2026-07-02 | Design features the contract can't back (payout split, ERC-20 token, registration fields, judge modes, cover upload) are **disabled "coming soon" placeholders**. | Confirmed — max design fidelity without dead/misleading behaviour. |
+| 2026-07-02 | The wizard collects real **judge addresses** (not the design's "judges per match" count). | The count doesn't map on-chain; `judges[]` does. |
+| 2026-07-02 | Added off-chain **`description` + `game`** metadata fields (`console.log`'d, not persisted). | Matches the design's Name step; consistent with the deferred metadata-write. |
 
 ---
 
