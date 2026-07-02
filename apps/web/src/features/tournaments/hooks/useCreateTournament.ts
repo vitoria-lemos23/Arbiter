@@ -90,9 +90,12 @@ export function useCreateTournament() {
       : null;
     setPredictedAddress(predicted);
 
-    // Off-chain metadata; persisting it (name/image/description) is deferred.
+    // Off-chain metadata; persisting it (name/description/game/image) is
+    // deferred to the metadata-write spec.
     console.log("Creating tournament", {
       name: values.name,
+      description: values.description,
+      game: values.game,
       predictedAddress: predicted,
       salt,
     });

@@ -67,6 +67,8 @@ export const createTournamentSchema = z
   .object({
     // Off-chain metadata (console.log'd for now, persisted in a later spec).
     name: z.string().trim().min(1, "Name is required").max(255),
+    description: z.string().trim().max(2000).optional(),
+    game: z.string().trim().max(100).optional(),
     format: z.coerce.number().refine((n) => n === 0, "Unsupported format"),
     maxPlayers: z.coerce
       .number()
@@ -129,4 +131,108 @@ export function toTournamentParams(values: CreateTournamentValues) {
 /** Prize deposit in wei, sent as the tx `value` (`msg.value`). */
 export function prizeWei(values: CreateTournamentValues): bigint {
   return parseEther(values.prize);
+}
+
+// ---------------------------------------------------------------------------
+// Wizard support
+//
+// The create flow is a 5-step wizard (Name → Format → Prize → Apply → Review),
+// so the form state is the RAW string inputs (every field a string; the schema
+// coerces them). Each step owns a subset of fields for per-step validation.
+// ---------------------------------------------------------------------------
+
+/** Raw, all-string wizard state — the input the Zod schema parses. */
+export type WizardValues = {
+  name: string;
+  description: string;
+  game: string;
+  format: string;
+  maxPlayers: string;
+  startDate: string;
+  endDate: string;
+  prize: string;
+  entryFee: string;
+  judges: string;
+};
+
+export const INITIAL_WIZARD_VALUES: WizardValues = {
+  name: "",
+  description: "",
+  game: "",
+  format: "0",
+  maxPlayers: "8",
+  startDate: "",
+  endDate: "",
+  prize: "0",
+  entryFee: "0",
+  judges: "",
+};
+
+/**
+ * The five wizard steps. `fields` drives per-step validation (an error on a
+ * field surfaces on its step) — Review owns none, it validates the whole form.
+ */
+export const WIZARD_STEPS = [
+  {
+    title: "Name",
+    heading: "Tournament name",
+    description: "Give your tournament a name, description, and cover.",
+    fields: ["name", "description", "game"],
+  },
+  {
+    title: "Format",
+    heading: "Format",
+    description: "Configure bracket structure and schedule.",
+    fields: ["format", "maxPlayers", "startDate", "endDate"],
+  },
+  {
+    title: "Prize",
+    heading: "Prize & escrow",
+    description: "Your prize is locked in escrow until a champion is decided.",
+    fields: ["prize"],
+  },
+  {
+    title: "Apply",
+    heading: "Apply settings",
+    description: "Configure entry requirements and judges.",
+    fields: ["entryFee", "judges"],
+  },
+  {
+    title: "Review",
+    heading: "Review & deploy",
+    description: "Publishing deploys an EIP-1167 proxy and deposits the prize.",
+    fields: [],
+  },
+] as const;
+
+export type FieldErrors = Partial<Record<string, string>>;
+
+/** Full validation error map (first message per field), or `{}` when valid. */
+export function collectFieldErrors(values: WizardValues): FieldErrors {
+  const result = createTournamentSchema.safeParse(values);
+  if (result.success) return {};
+  const errors: FieldErrors = {};
+  for (const issue of result.error.issues) {
+    const key = String(issue.path[0] ?? "form");
+    errors[key] ??= issue.message;
+  }
+  return errors;
+}
+
+/** Errors owned by one wizard step (used to gate its "Continue" button). */
+export function stepFieldErrors(
+  step: number,
+  errors: FieldErrors,
+): FieldErrors {
+  const fields = WIZARD_STEPS[step]?.fields ?? [];
+  const scoped: FieldErrors = {};
+  for (const field of fields) {
+    if (errors[field]) scoped[field] = errors[field];
+  }
+  return scoped;
+}
+
+/** Index of the earliest step carrying an error, or -1 when the form is valid. */
+export function firstStepWithError(errors: FieldErrors): number {
+  return WIZARD_STEPS.findIndex((s) => s.fields.some((f) => errors[f]));
 }
