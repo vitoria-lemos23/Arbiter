@@ -58,6 +58,7 @@ export function CreateTournamentWizard() {
     predictedAddress,
     switchNetwork,
     createTournament,
+    reset,
   } = useCreateTournament();
 
   const [step, setStep] = useState(0);
@@ -98,6 +99,7 @@ export function CreateTournamentWizard() {
       <SuccessCard
         address={predictedAddress}
         onReset={() => {
+          reset();
           form.reset(INITIAL_WIZARD_VALUES);
           setStep(0);
         }}

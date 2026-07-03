@@ -45,6 +45,7 @@ export function useCreateTournament() {
   const { mutate: switchChain } = useSwitchChain();
   const {
     mutate: writeContract,
+    reset: resetWrite,
     data: hash,
     isPending,
     error,
@@ -72,6 +73,13 @@ export function useCreateTournament() {
 
   function switchNetwork() {
     switchChain({ chainId: tournamentChainId as ConfiguredChainId });
+  }
+
+  // Clear the mined tx (so `hash`/`isSuccess` go back to idle) and the
+  // predicted address, letting the wizard leave the success screen.
+  function reset() {
+    resetWrite();
+    setPredictedAddress(null);
   }
 
   function createTournament(values: CreateTournamentValues) {
@@ -121,5 +129,6 @@ export function useCreateTournament() {
     predictedAddress,
     switchNetwork,
     createTournament,
+    reset,
   };
 }
