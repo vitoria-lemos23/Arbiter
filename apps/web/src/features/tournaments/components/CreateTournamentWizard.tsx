@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import { useState } from "react";
+import { type Path, type Resolver, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,14 +11,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Form } from "@/components/ui/form";
 import { useCreateTournament } from "../hooks/useCreateTournament";
 import {
-  collectFieldErrors,
   createTournamentSchema,
-  type FieldErrors,
   firstStepWithError,
   INITIAL_WIZARD_VALUES,
-  stepFieldErrors,
   WIZARD_STEPS,
   type WizardValues,
 } from "../schema/createTournament";
@@ -32,11 +32,18 @@ import {
 
 const LAST_STEP = WIZARD_STEPS.length - 1;
 
+// The schema coerces string inputs to typed output, so its parsed type differs
+// from the raw all-string form values; cast the resolver to the form's shape.
+// (Standard Schema resolver — zod 4 implements the `~standard` spec.)
+const resolver = standardSchemaResolver(
+  createTournamentSchema,
+) as unknown as Resolver<WizardValues>;
+
 /**
  * Five-step create-tournament wizard (Name → Format → Prize → Apply → Review).
- * Holds the raw form state, validates per step before advancing, and hands the
- * parsed values to {useCreateTournament} on the final "Deploy" step. All
- * wallet/tx logic lives in the hook; this component is state + presentation.
+ * React Hook Form owns the raw string form state and per-field validation
+ * (Zod resolver); each step validates its own fields before advancing. The
+ * parsed values are handed to {useCreateTournament} on the final "Deploy" step.
  */
 export function CreateTournamentWizard() {
   const {
@@ -54,19 +61,11 @@ export function CreateTournamentWizard() {
   } = useCreateTournament();
 
   const [step, setStep] = useState(0);
-  const [values, setValues] = useState<WizardValues>(INITIAL_WIZARD_VALUES);
-  const [errors, setErrors] = useState<FieldErrors>({});
-  const idPrefix = useId();
-
-  // Reset the whole wizard once the deploy tx is mined (temporary UX — a later
-  // iteration redirects to the tournament's details page instead).
-  useEffect(() => {
-    if (isSuccess) {
-      setValues(INITIAL_WIZARD_VALUES);
-      setErrors({});
-      setStep(0);
-    }
-  }, [isSuccess]);
+  const form = useForm<WizardValues>({
+    resolver,
+    defaultValues: INITIAL_WIZARD_VALUES,
+    mode: "onTouched",
+  });
 
   if (!isConnected) {
     return <Notice>Connect a wallet to create a tournament.</Notice>;
@@ -91,37 +90,42 @@ export function CreateTournamentWizard() {
     );
   }
 
-  function set(field: keyof WizardValues, value: string) {
-    setValues((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => ({ ...prev, [field]: undefined }));
+  // Success screen instead of resetting the form in an effect — the reset only
+  // happens on the explicit "Create another" click (a later iteration will
+  // redirect to the tournament's details page instead).
+  if (isSuccess && predictedAddress) {
+    return (
+      <SuccessCard
+        address={predictedAddress}
+        onReset={() => {
+          form.reset(INITIAL_WIZARD_VALUES);
+          setStep(0);
+        }}
+      />
+    );
   }
 
-  function goNext() {
-    const scoped = stepFieldErrors(step, collectFieldErrors(values));
-    setErrors(scoped);
-    if (Object.keys(scoped).length === 0) setStep((s) => s + 1);
+  async function goNext() {
+    const fields = [...WIZARD_STEPS[step].fields] as Path<WizardValues>[];
+    const valid = await form.trigger(fields);
+    if (valid) setStep((s) => Math.min(LAST_STEP, s + 1));
   }
 
   function goBack() {
-    setErrors({});
     setStep((s) => Math.max(0, s - 1));
   }
 
-  function deploy() {
-    const result = createTournamentSchema.safeParse(values);
-    if (!result.success) {
-      const all = collectFieldErrors(values);
-      setErrors(all);
-      const target = firstStepWithError(all);
+  const deploy = form.handleSubmit(
+    // Valid: re-parse to the coerced on-chain shape and submit.
+    () => createTournament(createTournamentSchema.parse(form.getValues())),
+    // Invalid: jump back to the earliest step that owns a failing field.
+    (errors) => {
+      const target = firstStepWithError(errors);
       if (target >= 0) setStep(target);
-      return;
-    }
-    setErrors({});
-    createTournament(result.data);
-  }
+    },
+  );
 
   const meta = WIZARD_STEPS[step];
-  const stepProps = { idPrefix, values, errors, set };
   const deployLabel = isPending
     ? "Confirm in wallet…"
     : isConfirming
@@ -129,63 +133,86 @@ export function CreateTournamentWizard() {
       : "Deploy →";
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-baseline justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Create Tournament</h1>
-        <span className="text-sm text-muted-foreground">
-          Step {step + 1}/{WIZARD_STEPS.length}
-        </span>
-      </div>
+    <Form {...form}>
+      <form onSubmit={deploy} className="flex flex-col gap-6" noValidate>
+        <div className="flex items-baseline justify-between">
+          <h1 className="text-3xl font-bold tracking-tight">
+            Create Tournament
+          </h1>
+          <span className="text-sm text-muted-foreground">
+            Step {step + 1}/{WIZARD_STEPS.length}
+          </span>
+        </div>
 
-      <Stepper steps={WIZARD_STEPS} current={step} />
+        <Stepper steps={WIZARD_STEPS} current={step} />
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-xl">{meta.heading}</CardTitle>
-          <CardDescription>{meta.description}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {step === 0 && <StepName {...stepProps} />}
-          {step === 1 && <StepFormat {...stepProps} />}
-          {step === 2 && <StepPrize {...stepProps} />}
-          {step === 3 && <StepApply {...stepProps} />}
-          {step === 4 && <StepReview values={values} />}
-        </CardContent>
-      </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xl">{meta.heading}</CardTitle>
+            <CardDescription>{meta.description}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {step === 0 && <StepName />}
+            {step === 1 && <StepFormat />}
+            {step === 2 && <StepPrize />}
+            {step === 3 && <StepApply />}
+            {step === 4 && <StepReview />}
+          </CardContent>
+        </Card>
 
-      <div className="flex items-center gap-3">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={goBack}
-          disabled={step === 0 || busy}
-        >
-          ← Back
+        <div className="flex items-center gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={goBack}
+            disabled={step === 0 || busy}
+          >
+            ← Back
+          </Button>
+          <div className="flex-1" />
+          {step === LAST_STEP ? (
+            <Button type="submit" disabled={busy}>
+              {deployLabel}
+            </Button>
+          ) : (
+            <Button type="button" onClick={goNext}>
+              Continue →
+            </Button>
+          )}
+        </div>
+
+        {error ? (
+          <p className="text-sm text-destructive">
+            {error.message.split("\n")[0]}
+          </p>
+        ) : null}
+      </form>
+    </Form>
+  );
+}
+
+/** Post-deploy confirmation with the mined clone address. */
+function SuccessCard({
+  address,
+  onReset,
+}: {
+  address: string;
+  onReset: () => void;
+}) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-xl">Tournament created 🎉</CardTitle>
+        <CardDescription>
+          Your tournament is live at{" "}
+          <span className="font-mono break-all text-primary">{address}</span>.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Button type="button" onClick={onReset}>
+          Create another
         </Button>
-        <div className="flex-1" />
-        {step === LAST_STEP ? (
-          <Button type="button" onClick={deploy} disabled={busy}>
-            {deployLabel}
-          </Button>
-        ) : (
-          <Button type="button" onClick={goNext}>
-            Continue →
-          </Button>
-        )}
-      </div>
-
-      {error ? (
-        <p className="text-sm text-destructive">
-          {error.message.split("\n")[0]}
-        </p>
-      ) : null}
-
-      {isSuccess && predictedAddress ? (
-        <p className="text-sm text-primary">
-          Tournament created at{" "}
-          <span className="font-mono break-all">{predictedAddress}</span>
-        </p>
-      ) : null}
-    </div>
+      </CardContent>
+    </Card>
   );
 }

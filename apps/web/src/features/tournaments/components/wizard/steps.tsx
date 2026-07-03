@@ -1,5 +1,13 @@
 "use client";
 
+import { useFormContext, useWatch } from "react-hook-form";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -11,19 +19,11 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import {
-  type FieldErrors,
   MAX_PLAYERS_OPTIONS,
   TOURNAMENT_FORMATS,
   type WizardValues,
 } from "../../schema/createTournament";
-import { ChoiceGroup, EthInput, Field } from "./fields";
-
-export type StepProps = {
-  idPrefix: string;
-  values: WizardValues;
-  errors: FieldErrors;
-  set: (field: keyof WizardValues, value: string) => void;
-};
+import { ChoiceGroup, EthInput } from "./fields";
 
 /** Blank ETH input ⇒ "0" for read-only display. */
 function ethDisplay(value: string): string {
@@ -42,49 +42,71 @@ function judgeCount(value: string): number {
   return value.split(/[\s,]+/).filter(Boolean).length;
 }
 
+/** Label row with an optional right-aligned hint, shared across step fields. */
+function LabelWithHint({ label, hint }: { label: string; hint?: string }) {
+  if (!hint) return <FormLabel>{label}</FormLabel>;
+  return (
+    <div className="flex items-baseline justify-between gap-2">
+      <FormLabel>{label}</FormLabel>
+      <span className="text-xs text-muted-foreground">{hint}</span>
+    </div>
+  );
+}
+
 // --- Step 1 · Name -------------------------------------------------------
 
-export function StepName({ idPrefix, values, errors, set }: StepProps) {
+export function StepName() {
+  const { control } = useFormContext<WizardValues>();
   return (
     <div className="flex flex-col gap-5">
-      <Field id={`${idPrefix}-name`} label="Name" error={errors.name}>
-        <Input
-          id={`${idPrefix}-name`}
-          value={values.name}
-          onChange={(e) => set("name", e.target.value)}
-          placeholder="e.g. Winter Clash 2025"
-          aria-invalid={Boolean(errors.name)}
-        />
-      </Field>
+      <FormField
+        control={control}
+        name="name"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Name</FormLabel>
+            <FormControl>
+              <Input placeholder="e.g. Winter Clash 2025" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
-      <Field
-        id={`${idPrefix}-description`}
-        label="Description"
-        error={errors.description}
-      >
-        <Textarea
-          id={`${idPrefix}-description`}
-          value={values.description}
-          onChange={(e) => set("description", e.target.value)}
-          placeholder="Describe your tournament…"
-        />
-      </Field>
+      <FormField
+        control={control}
+        name="description"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Description</FormLabel>
+            <FormControl>
+              <Textarea placeholder="Describe your tournament…" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
-      <Field
-        id={`${idPrefix}-game`}
-        label="Game / category"
-        error={errors.game}
-      >
-        <Input
-          id={`${idPrefix}-game`}
-          value={values.game}
-          onChange={(e) => set("game", e.target.value)}
-          placeholder="e.g. Fighting"
-        />
-      </Field>
+      <FormField
+        control={control}
+        name="game"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Game / category</FormLabel>
+            <FormControl>
+              <Input placeholder="e.g. Fighting" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
       {/* Cover upload is deferred (metadata write path out of scope). */}
-      <Field id={`${idPrefix}-cover`} label="Cover image" hint="Coming soon">
+      <div className="flex flex-col gap-2">
+        <div className="flex items-baseline justify-between gap-2">
+          <span className="text-sm font-medium">Cover image</span>
+          <span className="text-xs text-muted-foreground">Coming soon</span>
+        </div>
         <div
           className="grid cursor-not-allowed place-items-center gap-1 rounded-lg border border-dashed border-input px-4 py-8 text-center opacity-70"
           aria-disabled
@@ -96,70 +118,91 @@ export function StepName({ idPrefix, values, errors, set }: StepProps) {
             PNG · JPG up to 5 MB
           </span>
         </div>
-      </Field>
+      </div>
     </div>
   );
 }
 
 // --- Step 2 · Format -----------------------------------------------------
 
-export function StepFormat({ idPrefix, values, errors, set }: StepProps) {
+export function StepFormat() {
+  const { control } = useFormContext<WizardValues>();
   return (
     <div className="flex flex-col gap-5">
-      <Field id={`${idPrefix}-format`} label="Format" error={errors.format}>
-        <Select value={values.format} onValueChange={(v) => set("format", v)}>
-          <SelectTrigger id={`${idPrefix}-format`} className="w-full">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {TOURNAMENT_FORMATS.map((f) => (
-              <SelectItem key={f.value} value={String(f.value)}>
-                {f.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </Field>
+      <FormField
+        control={control}
+        name="format"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Format</FormLabel>
+            <Select value={field.value} onValueChange={field.onChange}>
+              <FormControl>
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {TOURNAMENT_FORMATS.map((f) => (
+                  <SelectItem key={f.value} value={String(f.value)}>
+                    {f.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
-      <Field
-        id={`${idPrefix}-maxPlayers`}
-        label="Max players"
-        error={errors.maxPlayers}
-      >
-        <ChoiceGroup
-          className="grid-cols-4 sm:grid-cols-7"
-          value={values.maxPlayers}
-          onChange={(v) => set("maxPlayers", v)}
-          options={MAX_PLAYERS_OPTIONS.map((n) => ({
-            value: String(n),
-            label: String(n),
-          }))}
-        />
-      </Field>
+      <FormField
+        control={control}
+        name="maxPlayers"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Max players</FormLabel>
+            <FormControl>
+              <ChoiceGroup
+                className="grid-cols-4 sm:grid-cols-7"
+                value={field.value}
+                onChange={field.onChange}
+                options={MAX_PLAYERS_OPTIONS.map((n) => ({
+                  value: String(n),
+                  label: String(n),
+                }))}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
       <div className="grid gap-5 sm:grid-cols-2">
-        <Field
-          id={`${idPrefix}-start`}
-          label="Start date"
-          error={errors.startDate}
-        >
-          <Input
-            id={`${idPrefix}-start`}
-            type="datetime-local"
-            value={values.startDate}
-            onChange={(e) => set("startDate", e.target.value)}
-            aria-invalid={Boolean(errors.startDate)}
-          />
-        </Field>
-        <Field id={`${idPrefix}-end`} label="End date" error={errors.endDate}>
-          <Input
-            id={`${idPrefix}-end`}
-            type="datetime-local"
-            value={values.endDate}
-            onChange={(e) => set("endDate", e.target.value)}
-            aria-invalid={Boolean(errors.endDate)}
-          />
-        </Field>
+        <FormField
+          control={control}
+          name="startDate"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Start date</FormLabel>
+              <FormControl>
+                <Input type="datetime-local" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="endDate"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>End date</FormLabel>
+              <FormControl>
+                <Input type="datetime-local" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </div>
     </div>
   );
@@ -167,26 +210,37 @@ export function StepFormat({ idPrefix, values, errors, set }: StepProps) {
 
 // --- Step 3 · Prize ------------------------------------------------------
 
-export function StepPrize({ idPrefix, values, errors, set }: StepProps) {
-  const prize = ethDisplay(values.prize);
+export function StepPrize() {
+  const { control } = useFormContext<WizardValues>();
+  const prize = ethDisplay(useWatch({ control, name: "prize" }));
   return (
     <div className="flex flex-col gap-5">
       <div className="grid gap-5 sm:grid-cols-[1.4fr_1fr]">
-        <Field
-          id={`${idPrefix}-prize`}
-          label="Prize amount"
-          error={errors.prize}
-        >
-          <EthInput
-            id={`${idPrefix}-prize`}
-            value={values.prize}
-            onChange={(v) => set("prize", v)}
-            invalid={Boolean(errors.prize)}
-            emphasized
-          />
-        </Field>
+        <FormField
+          control={control}
+          name="prize"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Prize amount</FormLabel>
+              <FormControl>
+                <EthInput
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  emphasized
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         {/* Only native ETH is supported; ERC-20 selection is deferred. */}
-        <Field id={`${idPrefix}-token`} label="Token" hint="Coming soon">
+        <div className="flex flex-col gap-2">
+          <div className="flex items-baseline justify-between gap-2">
+            <span className="text-sm font-medium">Token</span>
+            <span className="text-xs text-muted-foreground">Coming soon</span>
+          </div>
           <div
             className="flex h-8 cursor-not-allowed items-center justify-between rounded-lg border border-input px-2.5 text-sm opacity-70"
             aria-disabled
@@ -196,7 +250,7 @@ export function StepPrize({ idPrefix, values, errors, set }: StepProps) {
             </span>
             <span className="text-muted-foreground">▾</span>
           </div>
-        </Field>
+        </div>
       </div>
 
       {/* Winner-takes-all: the contract pays a single champion. Multi-place
@@ -272,38 +326,52 @@ const JUDGE_MODES = [
   { value: "open", label: "Open pool" },
 ] as const;
 
-export function StepApply({ idPrefix, values, errors, set }: StepProps) {
+export function StepApply() {
+  const { control } = useFormContext<WizardValues>();
   return (
     <div className="flex flex-col gap-5">
-      <Field
-        id={`${idPrefix}-fee`}
-        label="Entry fee"
-        hint="Stored on-chain, not collected"
-        error={errors.entryFee}
-      >
-        <EthInput
-          id={`${idPrefix}-fee`}
-          value={values.entryFee}
-          onChange={(v) => set("entryFee", v)}
-          invalid={Boolean(errors.entryFee)}
-        />
-      </Field>
+      <FormField
+        control={control}
+        name="entryFee"
+        render={({ field }) => (
+          <FormItem>
+            <LabelWithHint
+              label="Entry fee"
+              hint="Stored on-chain, not collected"
+            />
+            <FormControl>
+              <EthInput
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                name={field.name}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
-      <Field
-        id={`${idPrefix}-judges`}
-        label="Judges"
-        hint="Optional · comma-separated addresses"
-        error={errors.judges}
-      >
-        <Input
-          id={`${idPrefix}-judges`}
-          value={values.judges}
-          onChange={(e) => set("judges", e.target.value)}
-          placeholder="0xabc…, 0xdef…"
-          className="font-mono"
-          aria-invalid={Boolean(errors.judges)}
-        />
-      </Field>
+      <FormField
+        control={control}
+        name="judges"
+        render={({ field }) => (
+          <FormItem>
+            <LabelWithHint
+              label="Judges"
+              hint="Optional · comma-separated addresses"
+            />
+            <FormControl>
+              <Input
+                placeholder="0xabc…, 0xdef…"
+                className="font-mono"
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
       {/* Registration fields + judge-selection mode are product placeholders —
           neither is captured by the current contract. */}
@@ -350,25 +418,33 @@ export function StepApply({ idPrefix, values, errors, set }: StepProps) {
 
 // --- Step 5 · Review -----------------------------------------------------
 
-export function StepReview({ values }: { values: WizardValues }) {
+export function StepReview() {
+  const { control } = useFormContext<WizardValues>();
+  const values = useWatch({ control });
   const formatLabel =
     TOURNAMENT_FORMATS.find((f) => String(f.value) === values.format)?.label ??
     values.format;
-  const prize = ethDisplay(values.prize);
-  const judges = judgeCount(values.judges);
+  const prize = ethDisplay(values.prize ?? "");
+  const judges = judgeCount(values.judges ?? "");
   return (
     <div className="flex flex-col gap-5">
       <dl className="grid gap-x-10 sm:grid-cols-2">
         <SummaryItem label="Name" value={values.name || "—"} />
         <SummaryItem label="Game" value={values.game || "—"} />
         <SummaryItem label="Format" value={formatLabel} />
-        <SummaryItem label="Start date" value={dateDisplay(values.startDate)} />
+        <SummaryItem
+          label="Start date"
+          value={dateDisplay(values.startDate ?? "")}
+        />
         <SummaryItem label="Max players" value={values.maxPlayers} mono />
-        <SummaryItem label="End date" value={dateDisplay(values.endDate)} />
+        <SummaryItem
+          label="End date"
+          value={dateDisplay(values.endDate ?? "")}
+        />
         <SummaryItem label="Prize pool" value={`Ξ${prize}`} mono />
         <SummaryItem
           label="Entry fee"
-          value={`Ξ${ethDisplay(values.entryFee)}`}
+          value={`Ξ${ethDisplay(values.entryFee ?? "")}`}
           mono
         />
         <SummaryItem
@@ -395,13 +471,13 @@ function SummaryItem({
   mono,
 }: {
   label: string;
-  value: string;
+  value?: string;
   mono?: boolean;
 }) {
   return (
     <div className="flex items-center justify-between border-b py-3 text-sm">
       <dt className="text-muted-foreground">{label}</dt>
-      <dd className={cn("text-right", mono && "font-mono")}>{value}</dd>
+      <dd className={cn("text-right", mono && "font-mono")}>{value ?? "—"}</dd>
     </div>
   );
 }

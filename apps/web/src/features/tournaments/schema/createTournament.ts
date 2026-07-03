@@ -133,15 +133,11 @@ export function prizeWei(values: CreateTournamentValues): bigint {
   return parseEther(values.prize);
 }
 
-// ---------------------------------------------------------------------------
-// Wizard support
-//
-// The create flow is a 5-step wizard (Name → Format → Prize → Apply → Review),
-// so the form state is the RAW string inputs (every field a string; the schema
-// coerces them). Each step owns a subset of fields for per-step validation.
-// ---------------------------------------------------------------------------
-
-/** Raw, all-string wizard state — the input the Zod schema parses. */
+/**
+ * Raw, all-string wizard state — the input the Zod schema parses (every field
+ * is a string; the schema coerces them). Each of the five wizard steps owns a
+ * subset of these fields for per-step validation.
+ */
 export type WizardValues = {
   name: string;
   description: string;
@@ -205,34 +201,14 @@ export const WIZARD_STEPS = [
   },
 ] as const;
 
-export type FieldErrors = Partial<Record<string, string>>;
-
-/** Full validation error map (first message per field), or `{}` when valid. */
-export function collectFieldErrors(values: WizardValues): FieldErrors {
-  const result = createTournamentSchema.safeParse(values);
-  if (result.success) return {};
-  const errors: FieldErrors = {};
-  for (const issue of result.error.issues) {
-    const key = String(issue.path[0] ?? "form");
-    errors[key] ??= issue.message;
-  }
-  return errors;
-}
-
-/** Errors owned by one wizard step (used to gate its "Continue" button). */
-export function stepFieldErrors(
-  step: number,
-  errors: FieldErrors,
-): FieldErrors {
-  const fields = WIZARD_STEPS[step]?.fields ?? [];
-  const scoped: FieldErrors = {};
-  for (const field of fields) {
-    if (errors[field]) scoped[field] = errors[field];
-  }
-  return scoped;
-}
-
-/** Index of the earliest step carrying an error, or -1 when the form is valid. */
-export function firstStepWithError(errors: FieldErrors): number {
+/**
+ * Index of the earliest wizard step carrying an error, or -1 when there are
+ * none. Accepts any field→error map (React Hook Form's `formState.errors`
+ * included, whose values are objects — only their presence matters here) so the
+ * "Deploy" handler can jump back to the first invalid step.
+ */
+export function firstStepWithError(
+  errors: Partial<Record<string, unknown>>,
+): number {
   return WIZARD_STEPS.findIndex((s) => s.fields.some((f) => errors[f]));
 }

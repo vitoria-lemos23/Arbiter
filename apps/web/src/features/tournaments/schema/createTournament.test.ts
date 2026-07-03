@@ -4,30 +4,13 @@ import {
   createTournamentSchema,
   prizeWei,
   toTournamentParams,
+  type WizardValues,
 } from "./createTournament";
-
-// `<input type="datetime-local">` yields a LOCAL wall-clock string with no
-// timezone, and the schema parses it as local time. Build fixtures the same way
-// (local getters, not `toISOString()`), or the test flips in non-UTC zones.
-function localDatetime(offsetMs: number): string {
-  const d = new Date(Date.now() + offsetMs);
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
+import { localDatetime, validWizardValues } from "./createTournament.fixtures";
 
 // A far-future / valid baseline the individual cases override per assertion.
-function base(overrides: Record<string, unknown> = {}) {
-  return {
-    name: "Spring Cup",
-    format: "0",
-    maxPlayers: "8",
-    startDate: localDatetime(3_600_000),
-    endDate: localDatetime(7_200_000),
-    prize: "1.5",
-    entryFee: "0.1",
-    judges: "",
-    ...overrides,
-  };
+function base(overrides: Partial<WizardValues> = {}): WizardValues {
+  return validWizardValues({ entryFee: "0.1", ...overrides });
 }
 
 describe("createTournamentSchema", () => {

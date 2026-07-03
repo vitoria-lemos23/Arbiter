@@ -10,8 +10,10 @@ import {
  * READ-ONLY Drizzle mapping of the `tournament` table that the Ponder indexer
  * owns and writes (see `apps/indexer`). Ponder creates and migrates this table
  * in its OWN Postgres schema (`ponder`); the app must never issue DDL or writes
- * against it. It is deliberately kept out of `schema.ts` — the only schema
- * `drizzle.config.ts` reads — so `drizzle-kit generate` never tries to manage it.
+ * against it. Drizzle has no first-class read-only table type — `pgSchema().table()`
+ * is the documented way to target another schema, and read-only is enforced by
+ * convention: this file is kept out of `schema.ts` (the only schema
+ * `drizzle.config.ts` reads), so `drizzle-kit generate` never tries to manage it.
  *
  * Column types mirror Ponder's `onchainTable` output: `t.bigint()` →
  * `numeric(78,0)` (full uint256), `t.hex()` → `text`, `t.integer()` →
