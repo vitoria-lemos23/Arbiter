@@ -13,7 +13,7 @@ import { WalletMenu } from "./WalletMenu";
 export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b bg-background">
-      <div className="flex h-14 items-center gap-3 px-5">
+      <div className="mx-auto flex h-14 max-w-7xl items-center gap-3 px-5">
         <Logo />
         <MainNav className="ml-3.5 hidden md:flex" />
         <div className="flex-1" />
