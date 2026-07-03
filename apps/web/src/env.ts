@@ -7,15 +7,19 @@ import { z } from "zod";
  * inline it at build time. Parsing happens once at import; a malformed value
  * fails fast instead of surfacing as a confusing runtime error later.
  */
+/** A 0x-prefixed 20-byte EVM address; optional (may be unset before deploy). */
+const optionalAddress = z
+  .custom<`0x${string}`>(
+    (v) => typeof v === "string" && /^0x[a-fA-F0-9]{40}$/.test(v),
+    "must be a 0x-prefixed 20-byte address",
+  )
+  .optional();
+
 export const envSchema = z.object({
   NEXT_PUBLIC_RPC_URL: z.url().default("http://127.0.0.1:8545"),
   NEXT_PUBLIC_CHAIN_ID: z.coerce.number().int().positive().default(31337),
-  NEXT_PUBLIC_COUNTER_ADDRESS: z
-    .custom<`0x${string}`>(
-      (v) => typeof v === "string" && /^0x[a-fA-F0-9]{40}$/.test(v),
-      "must be a 0x-prefixed 20-byte address",
-    )
-    .optional(),
+  NEXT_PUBLIC_COUNTER_ADDRESS: optionalAddress,
+  NEXT_PUBLIC_FACTORY_ADDRESS: optionalAddress,
 });
 
 // Treat empty strings (e.g. an unset `KEY=` line in .env) as absent so
@@ -26,4 +30,5 @@ export const env = envSchema.parse({
   NEXT_PUBLIC_RPC_URL: clean(process.env.NEXT_PUBLIC_RPC_URL),
   NEXT_PUBLIC_CHAIN_ID: clean(process.env.NEXT_PUBLIC_CHAIN_ID),
   NEXT_PUBLIC_COUNTER_ADDRESS: clean(process.env.NEXT_PUBLIC_COUNTER_ADDRESS),
+  NEXT_PUBLIC_FACTORY_ADDRESS: clean(process.env.NEXT_PUBLIC_FACTORY_ADDRESS),
 });

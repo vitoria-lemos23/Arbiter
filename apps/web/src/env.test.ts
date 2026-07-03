@@ -26,6 +26,19 @@ describe("envSchema", () => {
     ).toThrow();
   });
 
+  it("accepts a valid factory address and defaults it to undefined", () => {
+    expect(envSchema.parse({}).NEXT_PUBLIC_FACTORY_ADDRESS).toBeUndefined();
+    const address = `0x${"b".repeat(40)}`;
+    const env = envSchema.parse({ NEXT_PUBLIC_FACTORY_ADDRESS: address });
+    expect(env.NEXT_PUBLIC_FACTORY_ADDRESS).toBe(address);
+  });
+
+  it("rejects a malformed factory address", () => {
+    expect(() =>
+      envSchema.parse({ NEXT_PUBLIC_FACTORY_ADDRESS: "0xnope" }),
+    ).toThrow();
+  });
+
   it("rejects a non-url rpc endpoint", () => {
     expect(() =>
       envSchema.parse({ NEXT_PUBLIC_RPC_URL: "not-a-url" }),

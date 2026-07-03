@@ -7,4 +7,8 @@
  * during `build` — never edit them by hand.
  */
 
-export { counterAbi } from "./generated/abi";
+export {
+  counterAbi,
+  tournamentAbi,
+  tournamentFactoryAbi,
+} from "./generated/abi";

@@ -1,0 +1,25 @@
+{
+  "name": "@arbiter/indexer",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "ponder dev --schema ponder",
+    "start": "ponder start --schema ponder",
+    "codegen": "ponder codegen",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf .turbo .ponder node_modules"
+  },
+  "dependencies": {
+    "@arbiter/contracts": "workspace:*",
+    "hono": "^4.12.27",
+    "ponder": "^0.16.6",
+    "viem": "^2.53.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.0.1",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
+  }
+}

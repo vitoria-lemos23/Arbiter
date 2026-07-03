@@ -5,7 +5,7 @@
   "description": "Decentralized tournament platform",
   "packageManager": "pnpm@11.5.0",
   "engines": {
-    "node": ">=20"
+    "node": "^20.9.0 || ^22 || ^24"
   },
   "scripts": {
     "dev": "turbo run dev",

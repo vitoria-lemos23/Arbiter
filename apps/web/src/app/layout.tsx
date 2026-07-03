@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist_Mono, Outfit } from "next/font/google";
 import { headers } from "next/headers";
 import { cookieToInitialState } from "wagmi";
+import { Header } from "@/shared/layout/Header";
 import { ThemeProvider } from "@/shared/theme/ThemeProvider";
 import { Providers } from "@/shared/web3/components/Providers";
 import { config } from "@/shared/web3/config/wagmi";
@@ -52,7 +53,10 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Providers initialState={initialState}>{children}</Providers>
+          <Providers initialState={initialState}>
+            <Header />
+            {children}
+          </Providers>
         </ThemeProvider>
       </body>
     </html>

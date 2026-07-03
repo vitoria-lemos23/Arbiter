@@ -1,0 +1,134 @@
+"use client";
+
+import { tournamentFactoryAbi } from "@arbiter/contracts";
+import { useState } from "react";
+import { type Address, type Hex, toHex } from "viem";
+import {
+  useChainId,
+  useConnection,
+  useReadContract,
+  useSwitchChain,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
+import {
+  type config,
+  tournamentChainId,
+  tournamentFactoryAddress,
+} from "@/shared/web3/config/wagmi";
+import { predictCloneAddress } from "../lib/predictCloneAddress";
+import {
+  type CreateTournamentValues,
+  prizeWei,
+  toTournamentParams,
+} from "../schema/createTournament";
+
+type ConfiguredChainId = (typeof config.chains)[number]["id"];
+
+/** Fresh 32 random bytes per submission (a new salt ⇒ a new CREATE2 address). */
+function randomSalt(): Hex {
+  return toHex(crypto.getRandomValues(new Uint8Array(32)));
+}
+
+/**
+ * Owns all wallet/chain/transaction logic for creating a tournament: the signed
+ * `createTournament` write (with the prize as `msg.value`), mining state, and
+ * the client-side CREATE2 address prediction. The form stays presentational.
+ *
+ * @example
+ * const { createTournament, busy } = useCreateTournament();
+ * createTournament(validatedValues);
+ */
+export function useCreateTournament() {
+  const { isConnected } = useConnection();
+  const chainId = useChainId();
+  const { mutate: switchChain } = useSwitchChain();
+  const {
+    mutate: writeContract,
+    reset: resetWrite,
+    data: hash,
+    isPending,
+    error,
+  } = useWriteContract();
+  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+    hash,
+  });
+  const [predictedAddress, setPredictedAddress] = useState<Address | null>(
+    null,
+  );
+
+  // `implementation` is immutable on the factory — wagmi caches it, so this
+  // reads once and every prediction reuses it. Disabled until the factory
+  // address is configured.
+  const { data: implementation } = useReadContract({
+    address: tournamentFactoryAddress,
+    abi: tournamentFactoryAbi,
+    functionName: "implementation",
+    query: { enabled: Boolean(tournamentFactoryAddress) },
+  });
+
+  const wrongChain = isConnected && chainId !== tournamentChainId;
+  const canSubmit = Boolean(tournamentFactoryAddress);
+  const busy = isPending || isConfirming;
+
+  function switchNetwork() {
+    switchChain({ chainId: tournamentChainId as ConfiguredChainId });
+  }
+
+  // Clear the mined tx (so `hash`/`isSuccess` go back to idle) and the
+  // predicted address, letting the wizard leave the success screen.
+  function reset() {
+    resetWrite();
+    setPredictedAddress(null);
+  }
+
+  function createTournament(values: CreateTournamentValues) {
+    if (!tournamentFactoryAddress) return;
+    const salt = randomSalt();
+    const params = toTournamentParams(values);
+    const value = prizeWei(values);
+
+    // Predict the clone address before signing (pure fn of impl+salt+factory).
+    const predicted = implementation
+      ? predictCloneAddress({
+          implementation,
+          factory: tournamentFactoryAddress,
+          salt,
+        })
+      : null;
+    setPredictedAddress(predicted);
+
+    // Off-chain metadata; persisting it (name/description/game/image) is
+    // deferred to the metadata-write spec.
+    console.log("Creating tournament", {
+      name: values.name,
+      description: values.description,
+      game: values.game,
+      predictedAddress: predicted,
+      salt,
+    });
+
+    writeContract({
+      address: tournamentFactoryAddress,
+      abi: tournamentFactoryAbi,
+      functionName: "createTournament",
+      args: [params, salt],
+      value,
+    });
+  }
+
+  return {
+    isConnected,
+    wrongChain,
+    canSubmit,
+    busy,
+    isPending,
+    isConfirming,
+    isSuccess,
+    error,
+    predictedAddress,
+    switchNetwork,
+    createTournament,
+    reset,
+  };
+}

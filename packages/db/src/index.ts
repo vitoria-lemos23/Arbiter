@@ -26,4 +26,7 @@ if (process.env.NODE_ENV !== "production") {
 
 export const db = drizzle(client, { schema });
 
+// Read-only mapping of the Ponder-owned `tournament` table (separate schema;
+// not migrated by Drizzle). See ponderTournament.ts for the ownership contract.
+export * from "./ponderTournament";
 export * from "./schema";
