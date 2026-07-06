@@ -51,10 +51,12 @@ export function CreateTournamentWizard() {
     wrongChain,
     canSubmit,
     busy,
+    isSavingMetadata,
     isPending,
     isConfirming,
     isSuccess,
     error,
+    metadataError,
     predictedAddress,
     switchNetwork,
     createTournament,
@@ -128,11 +130,13 @@ export function CreateTournamentWizard() {
   );
 
   const meta = WIZARD_STEPS[step];
-  const deployLabel = isPending
-    ? "Confirm in wallet…"
-    : isConfirming
-      ? "Mining…"
-      : "Deploy →";
+  const deployLabel = isSavingMetadata
+    ? "Sign to save details…"
+    : isPending
+      ? "Confirm in wallet…"
+      : isConfirming
+        ? "Mining…"
+        : "Deploy →";
 
   return (
     <Form {...form}>
@@ -183,7 +187,9 @@ export function CreateTournamentWizard() {
           )}
         </div>
 
-        {error ? (
+        {metadataError ? (
+          <p className="text-sm text-destructive">{metadataError}</p>
+        ) : error ? (
           <p className="text-sm text-destructive">
             {error.message.split("\n")[0]}
           </p>

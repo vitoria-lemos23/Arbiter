@@ -65,10 +65,13 @@ const judgesField = z
 
 export const createTournamentSchema = z
   .object({
-    // Off-chain metadata (console.log'd for now, persisted in a later spec).
+    // Off-chain presentation metadata — persisted (signed) before the creation
+    // tx via `saveTournamentMetadata`; not part of the on-chain params.
     name: z.string().trim().min(1, "Name is required").max(255),
     description: z.string().trim().max(2000).optional(),
     game: z.string().trim().max(100).optional(),
+    // Populated by the cover uploader (a resolvable `/api/images/:id` URL).
+    imageUrl: z.string().trim().optional(),
     format: z.coerce.number().refine((n) => n === 0, "Unsupported format"),
     maxPlayers: z.coerce
       .number()
@@ -142,6 +145,7 @@ export type WizardValues = {
   name: string;
   description: string;
   game: string;
+  imageUrl: string;
   format: string;
   maxPlayers: string;
   startDate: string;
@@ -155,6 +159,7 @@ export const INITIAL_WIZARD_VALUES: WizardValues = {
   name: "",
   description: "",
   game: "",
+  imageUrl: "",
   format: "0",
   maxPlayers: "8",
   startDate: "",

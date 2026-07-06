@@ -23,6 +23,7 @@ import {
   TOURNAMENT_FORMATS,
   type WizardValues,
 } from "../../schema/createTournament";
+import { CoverImageField } from "./CoverImageField";
 import { ChoiceGroup, EthInput } from "./fields";
 
 /** Blank ETH input ⇒ "0" for read-only display. */
@@ -101,24 +102,7 @@ export function StepName() {
         )}
       />
 
-      {/* Cover upload is deferred (metadata write path out of scope). */}
-      <div className="flex flex-col gap-2">
-        <div className="flex items-baseline justify-between gap-2">
-          <span className="text-sm font-medium">Cover image</span>
-          <span className="text-xs text-muted-foreground">Coming soon</span>
-        </div>
-        <div
-          className="grid cursor-not-allowed place-items-center gap-1 rounded-lg border border-dashed border-input px-4 py-8 text-center opacity-70"
-          aria-disabled
-        >
-          <span className="text-sm text-muted-foreground">
-            Click to upload or drag &amp; drop
-          </span>
-          <span className="font-mono text-xs text-muted-foreground">
-            PNG · JPG up to 5 MB
-          </span>
-        </div>
-      </div>
+      <CoverImageField />
     </div>
   );
 }
