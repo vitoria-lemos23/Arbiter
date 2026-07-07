@@ -12,7 +12,8 @@
       "!**/*.css",
       "!**/public",
       "!**/drizzle",
-      "!**/generated"
+      "!**/generated",
+      "!**/design_extracted"
     ]
   },
   "formatter": {
