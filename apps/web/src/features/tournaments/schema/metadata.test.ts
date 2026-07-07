@@ -8,6 +8,7 @@ const wellFormed = {
   category: "Esports",
   tags: ["fps", "ranked"],
   imageUrl: "/api/images/abc",
+  rules: "Best of 3. No coaching.",
 };
 
 describe("tournamentMetadataSchema", () => {
@@ -82,6 +83,24 @@ describe("tournamentMetadataSchema", () => {
     const result = tournamentMetadataSchema.safeParse({
       name: "ok",
       imageUrl: "/uploads/hack",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts an optional rules string and treats it as optional", () => {
+    expect(
+      tournamentMetadataSchema.safeParse({ name: "ok", rules: "Be nice." })
+        .success,
+    ).toBe(true);
+    expect(tournamentMetadataSchema.safeParse({ name: "ok" }).success).toBe(
+      true,
+    );
+  });
+
+  it("rejects rules over 5000 characters", () => {
+    const result = tournamentMetadataSchema.safeParse({
+      name: "ok",
+      rules: "r".repeat(5001),
     });
     expect(result.success).toBe(false);
   });

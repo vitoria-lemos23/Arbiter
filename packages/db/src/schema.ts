@@ -68,6 +68,8 @@ export type TournamentMetadataDoc = {
   category?: string;
   tags: string[];
   imageUrl?: string;
+  /** Free-form tournament rules; plain text with preserved line breaks. */
+  rules?: string;
 };
 
 /**

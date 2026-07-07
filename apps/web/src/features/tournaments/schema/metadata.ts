@@ -31,6 +31,8 @@ export const tournamentMetadataSchema = z.object({
     .transform((list) => [...new Set(list)])
     .default([]),
   imageUrl: imageUrl.optional(),
+  // Plain text (not Markdown); rendered with preserved line breaks. See spec 004.
+  rules: z.string().trim().max(5000).optional(),
 });
 
 // Compile-time guarantee the Zod output matches the db doc type (single source
