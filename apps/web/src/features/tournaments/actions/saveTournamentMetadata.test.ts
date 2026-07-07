@@ -124,4 +124,24 @@ describe("updateTournamentMetadata", () => {
     expect(result).toEqual({ ok: true });
     expect(fakeDb.updateMetadata).toHaveBeenCalledTimes(1);
   });
+
+  it("round-trips a doc that includes rules when signed by the owner", async () => {
+    fakeDb.getMetadata.mockResolvedValue({
+      tournamentAddress: ADDRESS.toLowerCase(),
+      ownerAddress: account.address.toLowerCase(),
+      metadata: { name: "old", tags: [] },
+    });
+    const input = await signedInput({
+      name: "New",
+      tags: [],
+      rules: "Best of 5.",
+    });
+    const result = await updateTournamentMetadata(input);
+
+    expect(result).toEqual({ ok: true });
+    const row = fakeDb.updateMetadata.mock.calls[0]?.[0] as {
+      metadata: { rules?: string };
+    };
+    expect(row.metadata.rules).toBe("Best of 5.");
+  });
 });

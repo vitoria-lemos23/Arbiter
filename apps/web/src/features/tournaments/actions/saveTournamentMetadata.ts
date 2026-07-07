@@ -112,5 +112,7 @@ export async function updateTournamentMetadata(
     metadata,
   });
   revalidatePath("/discover");
+  // Reflect the edit immediately on the tournament's own details page.
+  revalidatePath("/tournaments/[address]", "page");
   return { ok: true };
 }
