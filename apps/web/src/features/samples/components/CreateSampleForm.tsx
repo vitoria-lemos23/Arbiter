@@ -11,7 +11,7 @@ export function CreateSampleForm() {
     <form action={formAction} className="flex gap-2">
       <Input name="name" placeholder="Sample name" />
       <Button type="submit" disabled={pending}>
-        {pending ? "Adding…" : "Add"}
+        {pending ? "Adding\u2026" : "Add"}
       </Button>
       {state.error ? (
         <span className="self-center text-sm text-destructive">

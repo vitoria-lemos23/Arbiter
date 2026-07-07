@@ -10,7 +10,7 @@ function formatLabel(format: number): string {
 }
 
 function shortAddress(address: string): string {
-  return `${address.slice(0, 6)}…${address.slice(-4)}`;
+  return `${address.slice(0, 6)}\u2026${address.slice(-4)}`;
 }
 
 function ethLabel(wei: string): string {

@@ -13,7 +13,7 @@ import type { TournamentMetadataDoc } from "@arbiter/db";
  */
 
 /** Fixed first line; kept as one literal so client and server never drift. */
-const MESSAGE_HEADER = "Arbiter — save tournament metadata";
+const MESSAGE_HEADER = "Arbiter \u2014 save tournament metadata";
 
 /**
  * Stable JSON with recursively sorted object keys so a doc hashes identically
@@ -49,7 +49,7 @@ export async function sha256Hex(input: string): Promise<string> {
 /**
  * The canonical signed message:
  *
- *   Arbiter — save tournament metadata
+ *   Arbiter \u2014 save tournament metadata
  *   address: <lowercased tournament address>
  *   hash: <sha-256 hex of canonical-JSON(metadata)>
  */

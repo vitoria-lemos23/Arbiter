@@ -14,7 +14,7 @@ import {
 import { useWalletConnect } from "@/shared/web3/hooks/useWalletConnect";
 
 function shorten(address: `0x${string}`) {
-  return `${address.slice(0, 6)}…${address.slice(-4)}`;
+  return `${address.slice(0, 6)}\u2026${address.slice(-4)}`;
 }
 
 function formatBalance(value: bigint, decimals: number, symbol: string) {
@@ -46,7 +46,7 @@ export function WalletMenu() {
         disabled={isPending || !injected}
         onClick={() => injected && connect({ connector: injected })}
       >
-        {isPending ? "Connecting…" : "Connect wallet"}
+        {isPending ? "Connecting\u2026" : "Connect wallet"}
       </Button>
     );
   }

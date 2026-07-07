@@ -1,7 +1,7 @@
 import { CreateTournamentWizard } from "@/features/tournaments/components/CreateTournamentWizard";
 
 export const metadata = {
-  title: "Create tournament — Arbiter",
+  title: "Create tournament \u2014 Arbiter",
 };
 
 export default function CreateTournamentPage() {

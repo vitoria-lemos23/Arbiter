@@ -44,9 +44,9 @@ export function IncrementCounterForm() {
       />
       <Button type="submit" disabled={busy || !canSubmit}>
         {isPending
-          ? "Confirm in wallet…"
+          ? "Confirm in wallet\u2026"
           : isConfirming
-            ? "Mining…"
+            ? "Mining\u2026"
             : "Increment"}
       </Button>
       {error ? (

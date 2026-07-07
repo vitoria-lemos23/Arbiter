@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useWalletConnect } from "../hooks/useWalletConnect";
 
 function shorten(address: `0x${string}`) {
-  return `${address.slice(0, 6)}…${address.slice(-4)}`;
+  return `${address.slice(0, 6)}\u2026${address.slice(-4)}`;
 }
 
 export function WalletConnect() {
@@ -36,7 +36,7 @@ export function WalletConnect() {
           onClick={() => connect({ connector })}
           disabled={isPending}
         >
-          {isPending ? "Connecting…" : `Connect ${connector.name}`}
+          {isPending ? "Connecting\u2026" : `Connect ${connector.name}`}
         </Button>
       ))}
     </div>
