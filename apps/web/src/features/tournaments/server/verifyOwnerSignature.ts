@@ -23,7 +23,7 @@ const defaultRecover: RecoverMessageAddress = ({ message, signature }) =>
 
 /**
  * @returns the checksummed signer address. Callers lowercase it for storage and
- *          comparison (addresses are stored lowercase per Business Rule #1).
+ *          comparison (addresses are stored and compared lowercase).
  */
 export async function recoverMetadataSigner(
   args: {

@@ -90,7 +90,7 @@ describe("listTournamentsWithMetadata", () => {
     expect(item.metadata).toEqual(doc);
   });
 
-  it("drops metadata when ownerAddress does not match the organizer (Rule #5)", async () => {
+  it("drops metadata when ownerAddress does not match the organizer", async () => {
     fake.db.rows = [
       chainRow(ORGANIZER, { ownerAddress: "0xdead", metadata: doc }),
     ];

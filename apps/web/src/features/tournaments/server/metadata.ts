@@ -11,7 +11,7 @@ import { eq, sql } from "drizzle-orm";
  * Data-access for the app-owned `tournament_metadata` table. Transport-agnostic
  * functions (per the samples convention) so they can be lifted into a shared
  * package if a separate backend is ever needed. Addresses are keyed/compared
- * lowercase (Business Rule #1); callers pass already-lowercased values.
+ * lowercase; callers pass already-lowercased values.
  */
 
 export async function getMetadata(
@@ -27,28 +27,19 @@ export async function getMetadata(
   return row;
 }
 
-/** Create on first write, overwrite on subsequent writes for the same address. */
-export async function upsertMetadata(
+/**
+ * Insert metadata on first write; leave an existing row untouched. Creation is
+ * one-shot (keyed to the freshly minted tournament address), so a conflict means
+ * the row already exists and must not be clobbered — edits go through
+ * `updateMetadata`, which is owner-gated.
+ */
+export async function createMetadata(
   row: NewTournamentMetadataRow,
-): Promise<TournamentMetadataRow> {
-  const values = {
-    ...row,
-    tournamentAddress: row.tournamentAddress.toLowerCase(),
-  };
-  const [saved] = await db
+): Promise<void> {
+  await db
     .insert(tournamentMetadata)
-    .values(values)
-    .onConflictDoUpdate({
-      target: tournamentMetadata.tournamentAddress,
-      set: {
-        ownerAddress: values.ownerAddress,
-        metadata: values.metadata,
-        // `defaultNow()` only fires on INSERT; bump explicitly on the update path.
-        updatedAt: sql`now()`,
-      },
-    })
-    .returning();
-  return saved;
+    .values({ ...row, tournamentAddress: row.tournamentAddress.toLowerCase() })
+    .onConflictDoNothing();
 }
 
 /** Overwrite an existing row's metadata (owner already verified by the caller). */

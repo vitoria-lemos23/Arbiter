@@ -11,10 +11,10 @@ import { count, desc, eq, sql } from "drizzle-orm";
 /**
  * The indexed `ponder.tournament` table is the source of truth for which
  * tournaments exist; `tournament_metadata` is a left-joined enrichment. Orphan
- * metadata (a row whose creation tx never mined) simply never appears here
- * (Business Rule #7), and metadata is only trusted when its `ownerAddress`
- * matches the on-chain `organizer` (Business Rule #5) — the on-chain organizer
- * is ground truth, which neutralizes any pre-mining metadata front-running.
+ * metadata (a row whose creation tx never mined) never appears here, and
+ * metadata is only trusted when its `ownerAddress` matches the on-chain
+ * `organizer` — the on-chain organizer is ground truth, which neutralizes any
+ * pre-mining metadata front-running.
  */
 
 export type TournamentListItem = {
@@ -52,7 +52,7 @@ export async function countTournaments(): Promise<number> {
   return row?.value ?? 0;
 }
 
-/** Rule #5: keep metadata only when the signer owns the on-chain tournament. */
+/** Keep metadata only when its owner matches the on-chain tournament organizer. */
 function reconcile(
   chain: Tournament,
   meta: { ownerAddress: string; metadata: TournamentMetadataDoc } | null,
