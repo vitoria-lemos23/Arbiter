@@ -3,6 +3,8 @@ import {
   countTournaments,
   listTournamentsWithMetadata,
 } from "@/features/tournaments/server/listTournaments";
+import { toInt } from "@/lib/searchParams";
+import { clamp } from "@/lib/utils";
 
 // Reads indexed data per request — not prerendered at build.
 export const dynamic = "force-dynamic";
@@ -10,19 +12,6 @@ export const dynamic = "force-dynamic";
 const DEFAULT_PAGE_SIZE = 12;
 const MIN_PAGE_SIZE = 1;
 const MAX_PAGE_SIZE = 48;
-
-function clamp(value: number, min: number, max: number): number {
-  return Math.min(max, Math.max(min, value));
-}
-
-/** Parse a numeric search param, falling back when absent/NaN. */
-function toInt(raw: string | string[] | undefined, fallback: number): number {
-  const value = Number.parseInt(
-    Array.isArray(raw) ? (raw[0] ?? "") : (raw ?? ""),
-    10,
-  );
-  return Number.isNaN(value) ? fallback : value;
-}
 
 export default async function DiscoverPage({
   searchParams,
