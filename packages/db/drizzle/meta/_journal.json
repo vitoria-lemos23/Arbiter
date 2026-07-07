@@ -15,6 +15,13 @@
       "when": 1782934810741,
       "tag": "0001_bent_grim_reaper",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1783269949435,
+      "tag": "0002_metadata_store",
+      "breakpoints": true
     }
   ]
 }

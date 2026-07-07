@@ -51,10 +51,12 @@ export function CreateTournamentWizard() {
     wrongChain,
     canSubmit,
     busy,
+    isSavingMetadata,
     isPending,
     isConfirming,
     isSuccess,
     error,
+    metadataError,
     predictedAddress,
     switchNetwork,
     createTournament,
@@ -74,7 +76,7 @@ export function CreateTournamentWizard() {
   if (wrongChain) {
     return (
       <div className="flex flex-col gap-3">
-        <Notice>This network isn’t supported. Switch to continue.</Notice>
+        <Notice>This network is not supported. Switch to continue.</Notice>
         <Button type="button" onClick={switchNetwork} className="self-start">
           Switch network
         </Button>
@@ -98,6 +100,8 @@ export function CreateTournamentWizard() {
     return (
       <SuccessCard
         address={predictedAddress}
+        savingMetadata={isSavingMetadata}
+        metadataError={metadataError}
         onReset={() => {
           reset();
           form.reset(INITIAL_WIZARD_VALUES);
@@ -183,7 +187,9 @@ export function CreateTournamentWizard() {
           )}
         </div>
 
-        {error ? (
+        {metadataError ? (
+          <p className="text-sm text-destructive">{metadataError}</p>
+        ) : error ? (
           <p className="text-sm text-destructive">
             {error.message.split("\n")[0]}
           </p>
@@ -196,9 +202,13 @@ export function CreateTournamentWizard() {
 /** Post-deploy confirmation with the mined clone address. */
 function SuccessCard({
   address,
+  savingMetadata,
+  metadataError,
   onReset,
 }: {
   address: string;
+  savingMetadata: boolean;
+  metadataError: string | null;
   onReset: () => void;
 }) {
   return (
@@ -210,8 +220,15 @@ function SuccessCard({
           <span className="font-mono break-all text-primary">{address}</span>.
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <Button type="button" onClick={onReset}>
+      <CardContent className="flex flex-col gap-3">
+        {savingMetadata ? (
+          <p className="text-sm text-muted-foreground">Saving details…</p>
+        ) : metadataError ? (
+          <p className="text-sm text-destructive">
+            {"Details couldn’t be saved:"} {metadataError}
+          </p>
+        ) : null}
+        <Button type="button" onClick={onReset} className="self-start">
           Create another
         </Button>
       </CardContent>

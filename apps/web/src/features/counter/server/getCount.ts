@@ -28,7 +28,7 @@ const publicClient = createPublicClient({ chain, transport: http(rpcUrl) });
 export async function getCount(): Promise<bigint> {
   if (!counterAddress) {
     throw new Error(
-      "NEXT_PUBLIC_COUNTER_ADDRESS is not set — deploy the Counter contract and set it in the environment.",
+      "NEXT_PUBLIC_COUNTER_ADDRESS is not set \u2014 deploy the Counter contract and set it in the environment.",
     );
   }
   return publicClient.readContract({

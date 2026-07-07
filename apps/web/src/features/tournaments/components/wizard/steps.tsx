@@ -23,6 +23,7 @@ import {
   TOURNAMENT_FORMATS,
   type WizardValues,
 } from "../../schema/createTournament";
+import { CoverImageField } from "./CoverImageField";
 import { ChoiceGroup, EthInput } from "./fields";
 
 /** Blank ETH input ⇒ "0" for read-only display. */
@@ -33,7 +34,7 @@ function ethDisplay(value: string): string {
 
 /** datetime-local string → a friendly label, or an em dash when unset. */
 function dateDisplay(value: string): string {
-  if (!value) return "—";
+  if (!value) return "\u2014";
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
 }
@@ -80,7 +81,10 @@ export function StepName() {
           <FormItem>
             <FormLabel>Description</FormLabel>
             <FormControl>
-              <Textarea placeholder="Describe your tournament…" {...field} />
+              <Textarea
+                placeholder={"Describe your tournament\u2026"}
+                {...field}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -101,24 +105,7 @@ export function StepName() {
         )}
       />
 
-      {/* Cover upload is deferred (metadata write path out of scope). */}
-      <div className="flex flex-col gap-2">
-        <div className="flex items-baseline justify-between gap-2">
-          <span className="text-sm font-medium">Cover image</span>
-          <span className="text-xs text-muted-foreground">Coming soon</span>
-        </div>
-        <div
-          className="grid cursor-not-allowed place-items-center gap-1 rounded-lg border border-dashed border-input px-4 py-8 text-center opacity-70"
-          aria-disabled
-        >
-          <span className="text-sm text-muted-foreground">
-            Click to upload or drag &amp; drop
-          </span>
-          <span className="font-mono text-xs text-muted-foreground">
-            PNG · JPG up to 5 MB
-          </span>
-        </div>
-      </div>
+      <CoverImageField />
     </div>
   );
 }
@@ -359,11 +346,11 @@ export function StepApply() {
           <FormItem>
             <LabelWithHint
               label="Judges"
-              hint="Optional · comma-separated addresses"
+              hint={"Optional \u00B7 comma-separated addresses"}
             />
             <FormControl>
               <Input
-                placeholder="0xabc…, 0xdef…"
+                placeholder={"0xabc\u2026, 0xdef\u2026"}
                 className="font-mono"
                 {...field}
               />
@@ -429,8 +416,8 @@ export function StepReview() {
   return (
     <div className="flex flex-col gap-5">
       <dl className="grid gap-x-10 sm:grid-cols-2">
-        <SummaryItem label="Name" value={values.name || "—"} />
-        <SummaryItem label="Game" value={values.game || "—"} />
+        <SummaryItem label="Name" value={values.name || "\u2014"} />
+        <SummaryItem label="Game" value={values.game || "\u2014"} />
         <SummaryItem label="Format" value={formatLabel} />
         <SummaryItem
           label="Start date"
@@ -477,7 +464,9 @@ function SummaryItem({
   return (
     <div className="flex items-center justify-between border-b py-3 text-sm">
       <dt className="text-muted-foreground">{label}</dt>
-      <dd className={cn("text-right", mono && "font-mono")}>{value ?? "—"}</dd>
+      <dd className={cn("text-right", mono && "font-mono")}>
+        {value ?? "\u2014"}
+      </dd>
     </div>
   );
 }
