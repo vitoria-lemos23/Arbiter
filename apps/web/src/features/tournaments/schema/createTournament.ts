@@ -70,6 +70,8 @@ export const createTournamentSchema = z
     name: z.string().trim().min(1, "Name is required").max(255),
     description: z.string().trim().max(2000).optional(),
     game: z.string().trim().max(100).optional(),
+    // Plain-text rules (preserved line breaks); mirrors the metadata schema cap.
+    rules: z.string().trim().max(5000).optional(),
     // Populated by the cover uploader (a resolvable `/api/images/:id` URL).
     imageUrl: z.string().trim().optional(),
     format: z.coerce.number().refine((n) => n === 0, "Unsupported format"),
@@ -145,6 +147,7 @@ export type WizardValues = {
   name: string;
   description: string;
   game: string;
+  rules: string;
   imageUrl: string;
   format: string;
   maxPlayers: string;
@@ -159,6 +162,7 @@ export const INITIAL_WIZARD_VALUES: WizardValues = {
   name: "",
   description: "",
   game: "",
+  rules: "",
   imageUrl: "",
   format: "0",
   maxPlayers: "8",
@@ -177,8 +181,8 @@ export const WIZARD_STEPS = [
   {
     title: "Name",
     heading: "Tournament name",
-    description: "Give your tournament a name, description, and cover.",
-    fields: ["name", "description", "game"],
+    description: "Give your tournament a name, description, rules, and cover.",
+    fields: ["name", "description", "game", "rules"],
   },
   {
     title: "Format",
