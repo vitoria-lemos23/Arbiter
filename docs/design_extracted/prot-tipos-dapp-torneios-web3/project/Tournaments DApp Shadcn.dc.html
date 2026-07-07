@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;font-family:'Geist',system-ui,sans-serif;color:oklch(0.21 0.006 107);}
+  *{box-sizing:border-box;}
+  .lbl{position:absolute;font-family:'Geist',sans-serif;}
+</style>
+</helmet>
+
+<!-- ========================= PAGE TITLE ========================= -->
+<div style="position:absolute;left:80px;top:32px;width:1200px">
+  <div style="font-weight:700;font-size:34px;color:oklch(0.21 0.006 107);letter-spacing:-.6px">TournyBox — shadcn/ui</div>
+  <div style="font-size:15px;color:oklch(0.55 0.025 107);margin-top:5px">Stone + Lime theme · light mode · Geist + Geist Mono. shadcn components: Card, Badge, Button, Tabs, Input, Avatar. On-chain data in mono.</div>
+</div>
+
+<!-- ============================================================= -->
+<!-- ROW 1 · AUTH + MY TOURNAMENTS                                 -->
+<!-- ============================================================= -->
+<div class="lbl" style="left:80px;top:150px;font-weight:600;font-size:22px;color:oklch(0.21 0.006 107);letter-spacing:-.3px">1 · Connect wallet</div>
+<div style="position:absolute;left:80px;top:226px;width:480px">
+  <div data-drags-parent="1" class="lbl" style="top:-23px;left:2px;font-size:13.5px;color:oklch(0.55 0.025 107)">Dialog over the app</div>
+  <div style="border-radius:16px;overflow:hidden;box-shadow:0 10px 30px -12px rgba(0,0,0,.22);border:1px solid oklch(0.922 0.006 107)">
+    <div style="position:relative;height:600px;background:oklch(0.985 0.003 107)">
+      <!-- app behind (dimmed) -->
+      <div style="position:absolute;inset:0;opacity:.55;padding:16px">
+        <div style="height:46px;border-radius:11px;background:#fff;border:1px solid oklch(0.922 0.006 107);margin-bottom:16px"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div style="height:150px;border-radius:13px;background:#fff;border:1px solid oklch(0.922 0.006 107)"></div>
+          <div style="height:150px;border-radius:13px;background:#fff;border:1px solid oklch(0.922 0.006 107)"></div>
+          <div style="height:150px;border-radius:13px;background:#fff;border:1px solid oklch(0.922 0.006 107)"></div>
+          <div style="height:150px;border-radius:13px;background:#fff;border:1px solid oklch(0.922 0.006 107)"></div>
+        </div>
+      </div>
+      <div style="position:absolute;inset:0;background:rgba(28,25,23,.32)"></div>
+      <!-- dialog -->
+      <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:392px;background:#fff;border:1px solid oklch(0.922 0.006 107);border-radius:16px;padding:26px 24px;box-shadow:0 24px 50px -18px rgba(0,0,0,.3)">
+        <div style="position:absolute;right:16px;top:14px;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;color:oklch(0.55 0.025 107);font-size:16px">×</div>
+        <div style="width:48px;height:48px;border-radius:13px;background:oklch(0.841 0.238 128.85);display:grid;place-items:center;font-weight:700;font-size:22px;color:oklch(0.40 0.09 131);margin-bottom:16px">T</div>
+        <div style="font-weight:600;font-size:21px;letter-spacing:-.3px">Connect your wallet</div>
+        <div style="font-size:13.5px;color:oklch(0.55 0.025 107);margin-top:5px;margin-bottom:20px;line-height:1.5">No email, no password. Sign in with the wallet you play with.</div>
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <div style="display:flex;align-items:center;gap:12px;border:1px solid oklch(0.922 0.006 107);border-radius:10px;padding:12px 14px">
+            <span style="width:32px;height:32px;border-radius:8px;background:linear-gradient(140deg,#f6a04b,#e8761c)"></span><span style="font-size:15px;font-weight:500">MetaMask</span><span style="margin-left:auto;font-size:11px;font-weight:600;color:oklch(0.40 0.09 131);background:oklch(0.841 0.238 128.85);padding:2px 8px;border-radius:6px">Detected</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;border:1px solid oklch(0.922 0.006 107);border-radius:10px;padding:12px 14px">
+            <span style="width:32px;height:32px;border-radius:8px;background:linear-gradient(140deg,#3b99fc,#1f6fe0)"></span><span style="font-size:15px;font-weight:500">WalletConnect</span><span style="margin-left:auto;color:oklch(0.7 0.02 107);font-size:17px">›</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;border:1px solid oklch(0.922 0.006 107);border-radius:10px;padding:12px 14px">
+            <span style="width:32px;height:32px;border-radius:8px;background:linear-gradient(140deg,#3f7bff,#244fd6)"></span><span style="font-size:15px;font-weight:500">Coinbase Wallet</span><span style="margin-left:auto;color:oklch(0.7 0.02 107);font-size:17px">›</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid oklch(0.922 0.006 107)">
+          <span style="width:22px;height:22px;border-radius:6px;background:oklch(0.966 0.005 107);color:oklch(0.45 0.02 107);display:grid;place-items:center;font-size:12px;font-family:'Geist Mono'">2</span>
+          <span style="font-size:12px;color:oklch(0.55 0.025 107)">Next: sign a message (SIWE) — no gas, no funds moved.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- My Tournaments -->
+<div class="lbl" style="left:620px;top:150px;width:1060px;font-weight:600;font-size:22px;color:oklch(0.21 0.006 107);letter-spacing:-.3px">2 · My Tournaments — tagged by role</div>
+<div style="position:absolute;left:620px;top:226px;width:1060px">
+  <div data-drags-parent="1" class="lbl" style="top:-23px;left:2px;font-size:13.5px;color:oklch(0.55 0.025 107)">Badge variants: Owner=default · Judge=secondary · Player=outline</div>
+  <div style="border-radius:16px;overflow:hidden;box-shadow:0 10px 30px -12px rgba(0,0,0,.18);border:1px solid oklch(0.922 0.006 107);background:oklch(0.985 0.003 107)">
+    <!-- topbar -->
+    <div style="display:flex;align-items:center;gap:16px;padding:12px 20px;border-bottom:1px solid oklch(0.922 0.006 107);background:#fff">
+      <div style="display:flex;align-items:center;gap:9px"><span style="width:28px;height:28px;border-radius:8px;background:oklch(0.841 0.238 128.85);display:grid;place-items:center;font-weight:700;font-size:15px;color:oklch(0.40 0.09 131)">T</span><span style="font-weight:600;font-size:17px;letter-spacing:-.2px">TournyBox</span></div>
+      <div style="display:flex;gap:6px;font-size:14px;margin-left:14px"><span style="color:oklch(0.21 0.006 107);font-weight:500;background:oklch(0.966 0.005 107);padding:6px 11px;border-radius:7px">My Tournaments</span><span style="color:oklch(0.55 0.025 107);padding:6px 11px">Discover</span><span style="color:oklch(0.55 0.025 107);padding:6px 11px">Profile</span></div>
+      <div style="flex:1"></div>
+      <div style="display:flex;align-items:center;gap:6px;background:oklch(0.841 0.238 128.85);color:oklch(0.40 0.09 131);border-radius:8px;padding:8px 14px;font-size:13.5px;font-weight:500;box-shadow:0 1px 2px rgba(0,0,0,.06)"><span style="font-size:16px;line-height:0">+</span>Create</div>
+      <div style="display:flex;align-items:center;gap:8px;border:1px solid oklch(0.922 0.006 107);background:#fff;border-radius:8px;padding:7px 11px;font-size:13px;box-shadow:0 1px 2px rgba(0,0,0,.04)"><span style="width:7px;height:7px;border-radius:50%;background:oklch(0.72 0.16 150)"></span><span style="font-family:'Geist Mono';color:oklch(0.3 0.01 107)">0x9f…2A1</span><span style="font-family:'Geist Mono';color:oklch(0.55 0.025 107)">1.84Ξ</span><span style="color:oklch(0.6 0.02 107)">▾</span></div>
+      <div style="width:32px;height:32px;border-radius:50%;background:oklch(0.966 0.005 107);display:grid;place-items:center;font-size:12px;font-weight:500;color:oklch(0.45 0.02 107)">PK</div>
+    </div>
+    <div style="padding:22px 22px 24px">
+      <div style="display:flex;align-items:center;margin-bottom:18px">
+        <div style="font-weight:600;font-size:21px;letter-spacing:-.3px">My Tournaments</div>
+        <div style="flex:1"></div>
+        <div style="display:flex;gap:2px;font-size:13px;background:oklch(0.966 0.005 107);border-radius:9px;padding:3px">
+          <span style="background:#fff;color:oklch(0.21 0.006 107);border-radius:6px;padding:5px 13px;font-weight:500;box-shadow:0 1px 2px rgba(0,0,0,.05)">All</span>
+          <span style="color:oklch(0.5 0.02 107);padding:5px 13px">Owner</span>
+          <span style="color:oklch(0.5 0.02 107);padding:5px 13px">Judge</span>
+          <span style="color:oklch(0.5 0.02 107);padding:5px 13px">Player</span>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+        <!-- OWNER -->
+        <div style="background:#fff;border:1px solid oklch(0.922 0.006 107);border-radius:13px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.04)">
+          <div style="position:relative;height:100px;background:oklch(0.966 0.005 107)"><span style="position:absolute;top:10px;left:10px;background:oklch(0.841 0.238 128.85);color:oklch(0.40 0.09 131);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600">OWNER</span><span style="position:absolute;bottom:8px;right:10px;font-family:'Geist Mono';font-size:10px;color:oklch(0.65 0.02 107)">cover</span></div>
+          <div style="padding:14px">
+            <div style="font-size:15.5px;font-weight:600">Spring Smash Cup</div>
+            <div style="font-size:12.5px;color:oklch(0.55 0.025 107);margin:4px 0 12px">16 players · starts Apr 12</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px"><span style="display:inline-flex;align-items:center;gap:6px;background:oklch(0.966 0.005 107);border-radius:6px;padding:3px 9px;font-size:11px;font-weight:500"><span style="width:6px;height:6px;border-radius:50%;background:oklch(0.72 0.16 150)"></span>Reg open</span><span style="font-family:'Geist Mono';font-size:13px">2.0Ξ</span></div>
+            <div style="border:1px solid oklch(0.922 0.006 107);border-radius:8px;text-align:center;padding:8px;font-size:13.5px;font-weight:500;box-shadow:0 1px 2px rgba(0,0,0,.04)">Manage</div>
+          </div>
+        </div>
+        <!-- JUDGE -->
+        <div style="background:#fff;border:1px solid oklch(0.922 0.006 107);border-radius:13px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.04)">
+          <div style="position:relative;height:100px;background:oklch(0.966 0.005 107)"><span style="position:absolute;top:10px;left:10px;background:oklch(0.967 0.001 286);border:1px solid oklch(0.9 0.006 107);color:oklch(0.35 0.015 107);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600">JUDGE</span><span style="position:absolute;bottom:8px;right:10px;font-family:'Geist Mono';font-size:10px;color:oklch(0.65 0.02 107)">cover</span></div>
+          <div style="padding:14px">
+            <div style="font-size:15.5px;font-weight:600">Pixel Brawlers Inv.</div>
+            <div style="font-size:12.5px;color:oklch(0.55 0.025 107);margin:4px 0 12px">2 matches need your vote</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px"><span style="background:oklch(0.841 0.238 128.85);color:oklch(0.40 0.09 131);border-radius:6px;padding:3px 9px;font-size:11px;font-weight:600">LIVE · SF</span><span style="font-family:'Geist Mono';font-size:13px">1.2Ξ</span></div>
+            <div style="background:oklch(0.841 0.238 128.85);color:oklch(0.40 0.09 131);border-radius:8px;text-align:center;padding:8px;font-size:13.5px;font-weight:500;box-shadow:0 1px 2px rgba(0,0,0,.06)">Vote now</div>
+          </div>
+        </div>
+        <!-- PLAYER -->
+        <div style="background:#fff;border:1px solid oklch(0.922 0.006 107);border-radius:13px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.04)">
+          <div style="position:relative;height:100px;background:oklch(0.966 0.005 107)"><span style="position:absolute;top:10px;left:10px;background:#fff;border:1px solid oklch(0.9 0.006 107);color:oklch(0.45 0.02 107);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600">PLAYER</span><span style="position:absolute;bottom:8px;right:10px;font-family:'Geist Mono';font-size:10px;color:oklch(0.65 0.02 107)">cover</span></div>
+          <div style="padding:14px">
+            <div style="font-size:15.5px;font-weight:600">Neon League S3</div>
+            <div style="font-size:12.5px;color:oklch(0.55 0.025 107);margin:4px 0 12px">Seed #5 · QF today</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px"><span style="background:oklch(0.841 0.238 128.85);color:oklch(0.40 0.09 131);border-radius:6px;padding:3px 9px;font-size:11px;font-weight:600">LIVE · QF</span><span style="font-family:'Geist Mono';font-size:13px">3.5Ξ</span></div>
+            <div style="border:1px solid oklch(0.922 0.006 107);border-radius:8px;text-align:center;padding:8px;font-size:13.5px;font-weight:500;box-shadow:0 1px 2px rgba(0,0,0,.04)">View match</div>
+          </div>
+        </div>
+        <!-- finished owner -->
+        <div style="background:#fff;border:1px solid oklch(0.922 0.006 107);border-radius:13px;overflow:hidden;opacity:.72">
+          <div style="position:relative;height:100px;background:oklch(0.966 0.005 107)"><span style="position:absolute;top:10px;left:10px;background:oklch(0.841 0.238 128.85);color:oklch(0.40 0.09 131);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600">OWNER</span></div>
+          <div style="padding:14px">
+            <div style="font-size:15.5px;font-weight:600">Winter Clash 2025</div>
+            <div style="font-size:12.5px;color:oklch(0.55 0.025 107);margin:4px 0 12px;font-family:'Geist Mono'">won by 0x71…9e</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px"><span style="border:1px solid oklch(0.9 0.006 107);color:oklch(0.5 0.02 107);border-radius:6px;padding:3px 9px;font-size:11px;font-weight:500">Finished</span><span style="font-family:'Geist Mono';font-size:13px;color:oklch(0.5 0.02 107)">2.0Ξ</span></div>
+            <div style="border:1px solid oklch(0.922 0.006 107);border-radius:8px;text-align:center;padding:8px;font-size:13.5px;font-weight:500">View results</div>
+          </div>
+        </div>
+        <!-- finished player -->
+        <div style="background:#fff;border:1px solid oklch(0.922 0.006 107);border-radius:13px;overflow:hidden;opacity:.72">
+          <div style="position:relative;height:100px;background:oklch(0.966 0.005 107)"><span style="position:absolute;top:10px;left:10px;background:#fff;border:1px solid oklch(0.9 0.006 107);color:oklch(0.45 0.02 107);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600">PLAYER</span></div>
+          <div style="padding:14px">
+            <div style="font-size:15.5px;font-weight:600">Retro Cup #4</div>
+            <div style="font-size:12.5px;color:oklch(0.577 0.245 27.325);margin:4px 0 12px">Eliminated · R16</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px"><span style="border:1px solid oklch(0.9 0.006 107);color:oklch(0.5 0.02 107);border-radius:6px;padding:3px 9px;font-size:11px;font-weight:500">Finished</span><span style="font-family:'Geist Mono';font-size:13px;color:oklch(0.5 0.02 107)">0.5Ξ</span></div>
+            <div style="border:1px solid oklch(0.922 0.006 107);border-radius:8px;text-align:center;padding:8px;font-size:13.5px;font-weight:500">View results</div>
+          </div>
+        </div>
+        <!-- create -->
+        <div style="border:1.5px dashed oklch(0.88 0.01 107);border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:oklch(0.5 0.02 107);min-height:196px">
+          <div style="width:40px;height:40px;border-radius:11px;background:oklch(0.966 0.005 107);display:grid;place-items:center;font-size:22px;font-weight:300">+</div>
+          <div style="font-size:13.5px;font-weight:500">New tournament</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================= -->
+<!-- ROW 2 · DISCOVER + CREATE                                     -->
+<!-- ============================================================= -->
+<div class="lbl" style="left:80px;top:1140px;width:1060px;font-weight:600;font-size:22px;color:oklch(0.21 0.006 107);letter-spacing:-.3px">3 · Discover</div>
+<div style="position:absolute;left:80px;top:1212px;width:1060px">
+  <div data-drags-parent="1" class="lbl" style="top:-23px;left:2px;font-size:13.5px;color:oklch(0.55 0.025 107)">Featured card · filter sidebar · grid + list</div>
+  <div style="border-radius:16px;overflow:hidden;box-shadow:0 10px 30px -12px rgba(0,0,0,.18);border:1px solid oklch(0.922 0.006 107);background:oklch(0.985 0.003 107)">
+    <div style="display:flex;align-items:center;gap:16px;padding:12px 20px;border-bottom:1px solid oklch(0.922 0.006 107);background:#fff">
+      <div style="display:flex;align-items:center;gap:9px"><span style="width:28px;height:28px;border-radius:8px;background:oklch(0.841 0.238 128.85);display:grid;place-items:center;font-weight:700;font-size:15px;color:oklch(0.40 0.09 131)">T</span><span style="font-weight:600;font-size:17px">TournyBox</span></div>
+      <div style="display:flex;gap:6px;font-size:14px;margin-left:14px"><span style="color:oklch(0.21 0.006 107);font-weight:500;background:oklch(0.966 0.005 107);padding:6px 11px;border-radius:7px">Discover</span><span style="color:oklch(0.55 0.025 107);padding:6px 11px">My Tournaments</span><span style="color:oklch(0.55 0.025 107);padding:6px 11px">Profile</span></div>
+      <div style="flex:1"></div>
+      <div style="display:flex;align-items:center;gap:8px;border:1px solid oklch(0.922 0.006 107);background:#fff;border-radius:8px;padding:7px 11px;font-size:13px"><span style="width:7px;height:7px;border-radius:50%;background:oklch(0.72 0.16 150)"></span><span style="font-family:'Geist Mono';color:oklch(0.3 0.01 107)">0x9f…2A1</span><span style="color:oklch(0.6 0.02 107)">▾</span></div>
+    </div>
+    <div style="padding:20px 22px 24px">
+      <!-- featured card -->
+      <div style="position:relative;border:1px solid oklch(0.922 0.006 107);border-radius:14px;overflow:hidden;margin-bottom:18px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04);display:flex">
+        <div style="width:240px;flex:none;background:oklch(0.966 0.005 107);position:relative"><span style="position:absolute;bottom:8px;left:11px;font-family:'Geist Mono';font-size:10px;color:oklch(0.65 0.02 107)">cover</span></div>
+        <div style="flex:1;padding:18px 20px;display:flex;flex-direction:column">
+          <div style="display:flex;align-items:center;gap:8px"><span style="background:oklch(0.841 0.238 128.85);color:oklch(0.40 0.09 131);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600">FEATURED</span><span style="display:inline-flex;align-items:center;gap:6px;background:oklch(0.966 0.005 107);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:500"><span style="width:6px;height:6px;border-radius:50%;background:oklch(0.72 0.16 150)"></span>Reg open</span></div>
+          <div style="font-weight:700;font-size:24px;letter-spacing:-.4px;margin-top:10px">Mega Smash Open</div>
+          <div style="font-size:13.5px;color:oklch(0.55 0.025 107);margin-top:3px">32 players · single elim · closes in 2 days · <span style="font-family:'Geist Mono'">0xAB…f2</span></div>
+          <div style="flex:1"></div>
+          <div style="display:flex;align-items:center;gap:16px;margin-top:14px">
+            <div><div style="font-size:11.5px;color:oklch(0.55 0.025 107)">Prize</div><div style="font-family:'Geist Mono';font-weight:600;font-size:19px">5.0Ξ</div></div>
+            <div style="flex:1"></div>
+            <div style="border:1px solid oklch(0.922 0.006 107);border-radius:8px;padding:9px 16px;font-size:13.5px;font-weight:500">Details</div>
+            <div style="background:oklch(0.841 0.238 128.85);color:oklch(0.40 0.09 131);border-radius:8px;padding:9px 22px;font-size:14px;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.06)">Join</div>
+          </div>
+        </div>
+      </div>
+      <!-- body -->
+      <div style="display:flex;gap:18px">
+        <div style="width:206px;flex:none;background:#fff;border:1px solid oklch(0.922 0.006 107);border-radius:13px;padding:16px;font-size:13.5px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
+          <div style="font-weight:600;font-size:14.5px;margin-bottom:14px">Filters</div>
+          <div style="color:oklch(0.5 0.02 107);font-size:11px;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin-bottom:9px">Status</div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;color:oklch(0.3 0.01 107)">
+            <div style="display:flex;align-items:center;gap:9px"><span style="width:16px;height:16px;border-radius:4px;background:oklch(0.841 0.238 128.85);display:grid;place-items:center;font-size:10px;color:oklch(0.40 0.09 131)">✓</span>Registration open</div>
+            <div style="display:flex;align-items:center;gap:9px;color:oklch(0.55 0.025 107)"><span style="width:16px;height:16px;border-radius:4px;border:1px solid oklch(0.85 0.01 107)"></span>Live</div>
+            <div style="display:flex;align-items:center;gap:9px;color:oklch(0.55 0.025 107)"><span style="width:16px;height:16px;border-radius:4px;border:1px solid oklch(0.85 0.01 107)"></span>Upcoming</div>
+            <div style="display:flex;align-items:center;gap:9px;color:oklch(0.55 0.025 107)"><span style="width:16px;height:16px;border-radius:4px;border:1px solid oklch(0.85 0.01 107)"></span>Finished</div>
+          </div>
+          <div style="color:oklch(0.5 0.02 107);font-size:11px;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin-bottom:9px">Game</div>
+          <div style="border:1px solid oklch(0.922 0.006 107);border-radius:8px;padding:8px 11px;color:oklch(0.55 0.025 107);margin-bottom:16px;display:flex;justify-content:space-between">All games<span>▾</span></div>
+          <div style="color:oklch(0.5 0.02 107);font-size:11px;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin-bottom:13px">Prize (Ξ)</div>
+          <div style="height:5px;background:oklch(0.92 0.006 107);border-radius:4px;position:relative;margin:0 3px 8px"><div style="position:absolute;left:18%;right:28%;top:0;bottom:0;background:oklch(0.841 0.238 128.85);border-radius:4px"></div><span style="position:absolute;left:18%;top:-6px;width:16px;height:16px;border-radius:50%;background:#fff;border:1px solid oklch(0.85 0.01 107);box-shadow:0 1px 2px rgba(0,0,0,.1)"></span><span style="position:absolute;left:72%;top:-6px;width:16px;height:16px;border-radius:50%;background:#fff;border:1px solid oklch(0.85 0.01 107);box-shadow:0 1px 2px rgba(0,0,0,.1)"></span></div>
+          <div style="display:flex;justify-content:space-between;font-family:'Geist Mono';font-size:11px;color:oklch(0.55 0.025 107);margin-bottom:16px"><span>0.5</span><span>8.0</span></div>
+          <div style="color:oklch(0.5 0.02 107);font-size:11px;text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin-bottom:9px">Format</div>
+          <div style="display:flex;align-items:center;gap:9px;color:oklch(0.3 0.01 107);margin-bottom:16px"><span style="width:16px;height:16px;border-radius:4px;background:oklch(0.841 0.238 128.85);display:grid;place-items:center;font-size:10px;color:oklch(0.40 0.09 131)">✓</span>Single elimination</div>
+          <div style="border-top:1px solid oklch(0.922 0.006 107);padding-top:13px;color:oklch(0.45 0.02 107);font-size:13px;font-weight:500">Clear all</div>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+            <div style="flex:1;border:1px solid oklch(0.922 0.006 107);background:#fff;border-radius:8px;padding:9px 13px;color:oklch(0.55 0.025 107);font-size:13.5px">Search tournaments, games, organizers…</div>
+            <div style="border:1px solid oklch(0.922 0.006 107);background:#fff;border-radius:8px;padding:9px 13px;font-size:13px;color:oklch(0.4 0.02 107)">Starting soon ▾</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px">
+            <div style="background:#fff;border:1px solid oklch(0.922 0.006 107);border-radius:12px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.04)">
+              <div style="height:78px;background:oklch(0.966 0.005 107)"></div>
+              <div style="padding:12px 13px">
+                <div style="font-size:14.5px;font-weight:600">Indie Fighter Cup</div>
+                <div style="font-size:12px;color:oklch(0.55 0.025 107);margin:3px 0 10px;font-family:'Geist Mono'">0x12…9c · 16p</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px"><span style="display:inline-flex;align-items:center;gap:5px;background:oklch(0.966 0.005 107);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:500"><span style="width:6px;height:6px;border-radius:50%;background:oklch(0.72 0.16 150)"></span>Reg open</span><span style="font-family:'Geist Mono';font-size:12.5px">1.5Ξ</span></div>
+                <div style="background:oklch(0.841 0.238 128.85);color:oklch(0.40 0.09 131);border-radius:8px;text-align:center;padding:8px;font-size:13px;font-weight:600">View &amp; join</div>
+              </div>
+            </div>
+            <div style="background:#fff;border:1px solid oklch(0.922 0.006 107);border-radius:12px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.04)">
+              <div style="height:78px;background:oklch(0.966 0.005 107)"></div>
+              <div style="padding:12px 13px">
+                <div style="font-size:14.5px;font-weight:600">Card Clash Weekly</div>
+                <div style="font-size:12px;color:oklch(0.55 0.025 107);margin:3px 0 10px;font-family:'Geist Mono'">0x5e…aa · 16p</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px"><span style="display:inline-flex;align-items:center;gap:5px;background:oklch(0.966 0.005 107);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:500"><span style="width:6px;height:6px;border-radius:50%;background:oklch(0.72 0.16 150)"></span>Reg open</span><span style="font-family:'Geist Mono';font-size:12.5px">1.0Ξ</span></div>
+                <div style="background:oklch(0.841 0.238 128.85);color:oklch(0.40 0.09 131);border-radius:8px;text-align:center;padding:8px;font-size:13px;font-weight:600">View &amp; join</div>
+              </div>
+            </div>
+            <div style="background:#fff;border:1px solid oklch(0.922 0.006 107);border-radius:12px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.04)">
+              <div style="height:78px;background:oklch(0.966 0.005 107)"></div>
+              <div style="padding:12px 13px">
+                <div style="font-size:14.5px;font-weight:600">Chain Chess Masters</div>
+                <div style="font-size:12px;color:oklch(0.55 0.025 107);margin:3px 0 10px;font-family:'Geist Mono'">0x77…1e · 64p</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px"><span style="display:inline-flex;align-items:center;gap:5px;background:oklch(0.966 0.005 107);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:500"><span style="width:6px;height:6px;border-radius:50%;background:oklch(0.75 0.14 70)"></span>Soon</span><span style="font-family:'Geist Mono';font-size:12.5px">8.0Ξ</span></div>
+                <div style="border:1px solid oklch(0.922 0.006 107);border-radius:8px;text-align:center;padding:8px;font-size:13px;font-weight:500">View</div>
+              </div>
+            </div>
+          </div>
+          <div style="font-weight:600;font-size:14.5px;margin-bottom:6px">More tournaments</div>
+          <div style="display:flex;flex-direction:column">
+            <div style="display:flex;align-items:center;gap:14px;padding:12px 4px;border-bottom:1px solid oklch(0.93 0.006 107)">
+              <div style="width:64px;height:42px;border-radius:8px;background:oklch(0.966 0.005 107);flex:none"></div>
+              <div style="flex:1"><div style="font-size:14.5px;font-weight:600">Speedrun Gauntlet</div><div style="font-size:12px;color:oklch(0.55 0.025 107)">8 players · single elim · <span style="font-family:'Geist Mono'">0x09…4d</span></div></div>
+              <span style="background:oklch(0.841 0.238 128.85);color:oklch(0.40 0.09 131);border-radius:6px;padding:3px 9px;font-size:11px;font-weight:600">LIVE</span>
+              <div style="width:60px;text-align:right;font-family:'Geist Mono';font-size:13px">0.8Ξ</div>
+              <div style="border:1px solid oklch(0.922 0.006 107);border-radius:8px;padding:7px 16px;font-size:13px;font-weight:500">Watch</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;padding:12px 4px;border-bottom:1px solid oklch(0.93 0.006 107)">
+              <div style="width:64px;height:42px;border-radius:8px;background:oklch(0.966 0.005 107);flex:none"></div>
+              <div style="flex:1"><div style="font-size:14.5px;font-weight:600">Block Battle Royale</div><div style="font-size:12px;color:oklch(0.55 0.025 107)">32 players · opens in 6d · <span style="font-family:'Geist Mono'">0xC1…7b</span></div></div>
+              <span style="display:inline-flex;align-items:center;gap:5px;border:1px solid oklch(0.9 0.006 107);color:oklch(0.45 0.02 107);border-radius:6px;padding:3px 9px;font-size:11px;font-weight:500"><span style="width:6px;height:6px;border-radius:50%;background:oklch(0.75 0.14 70)"></span>Soon</span>
+              <div style="width:60px;text-align:right;font-family:'Geist Mono';font-size:13px">4.2Ξ</div>
+              <div style="border:1px solid oklch(0.922 0.006 107);border-radius:8px;padding:7px 16px;font-size:13px;font-weight:500">View</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;padding:12px 4px">
+              <div style="width:64px;height:42px;border-radius:8px;background:oklch(0.966 0.005 107);flex:none"></div>
+              <div style="flex:1"><div style="font-size:14.5px;font-weight:600">Retro Rumble #5</div><div style="font-size:12px;color:oklch(0.55 0.025 107)">16 players · closes in 3d · <span style="font-family:'Geist Mono'">0x2a…61</span></div></div>
+              <span style="display:inline-flex;align-items:center;gap:5px;background:oklch(0.966 0.005 107);border-radius:6px;padding:3px 9px;font-size:11px;font-weight:500"><span style="width:6px;height:6px;border-radius:50%;background:oklch(0.72 0.16 150)"></span>Reg open</span>
+              <div style="width:60px;text-align:right;font-family:'Geist Mono';font-size:13px">0.6Ξ</div>
+              <div style="background:oklch(0.841 0.238 128.85);color:oklch(0.40 0.09 131);border-radius:8px;padding:7px 16px;font-size:13px;font-weight:600">Join</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create wizard -->
+<div class="lbl" style="left:1200px;top:1140px;width:1040px;font-weight:600;font-size:22px;color:oklch(0.21 0.006 107);letter-spacing:-.3px">4 · Create / Edit — wizard</div>
+<div class="lbl" style="left:1200px;top:1172px;width:1040px;font-size:13.5px;color:oklch(0.55 0.025 107);font-weight:400">Publish deploys an EIP-1167 proxy via the Factory + locks the prize in escrow.</div>
+<div style="position:absolute;left:1200px;top:1212px;width:1040px">
+  <div data-drags-parent="1" class="lbl" style="top:-23px;left:2px;font-size:13.5px;color:oklch(0.55 0.025 107)">Step 3 of 5 · Prize &amp; escrow</div>
+  <div style="border-radius:16px;overflow:hidden;box-shadow:0 10px 30px -12px rgba(0,0,0,.18);border:1px solid oklch(0.922 0.006 107);background:#fff">
+    <div style="display:flex;align-items:center;gap:16px;padding:12px 20px;border-bottom:1px solid oklch(0.922 0.006 107)">
+      <div style="display:flex;align-items:center;gap:9px"><span style="width:28px;height:28px;border-radius:8px;background:oklch(0.841 0.238 128.85);display:grid;place-items:center;font-weight:700;font-size:15px;color:oklch(0.40 0.09 131)">T</span><span style="font-weight:600;font-size:17px">TournyBox</span></div>
+      <div style="flex:1"></div>
+      <div style="font-size:13.5px;color:oklch(0.55 0.025 107)">Create tournament · <span style="color:oklch(0.21 0.006 107);font-weight:500">Step 3 / 5</span></div>
+    </div>
+    <!-- stepper -->
+    <div style="display:flex;align-items:center;padding:18px 24px 8px">
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:26px;height:26px;border-radius:50%;background:oklch(0.841 0.238 128.85);color:oklch(0.40 0.09 131);display:grid;place-items:center;font-size:12px;font-weight:700">✓</span><span style="font-size:12.5px;color:oklch(0.55 0.025 107)">Basics</span></div>
+      <div style="flex:1;height:2px;background:oklch(0.841 0.238 128.85);margin:0 9px;border-radius:2px"></div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:26px;height:26px;border-radius:50%;background:oklch(0.841 0.238 128.85);color:oklch(0.40 0.09 131);display:grid;place-items:center;font-size:12px;font-weight:700">✓</span><span style="font-size:12.5px;color:oklch(0.55 0.025 107)">Format</span></div>
+      <div style="flex:1;height:2px;background:oklch(0.841 0.238 128.85);margin:0 9px;border-radius:2px"></div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:26px;height:26px;border-radius:50%;background:oklch(0.21 0.006 107);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700">3</span><span style="font-size:12.5px;color:oklch(0.21 0.006 107);font-weight:500">Prize</span></div>
+      <div style="flex:1;height:2px;background:oklch(0.92 0.006 107);margin:0 9px;border-radius:2px"></div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:26px;height:26px;border-radius:50%;border:1px solid oklch(0.88 0.01 107);color:oklch(0.55 0.025 107);display:grid;place-items:center;font-size:12px">4</span><span style="font-size:12.5px;color:oklch(0.6 0.02 107)">Judges</span></div>
+      <div style="flex:1;height:2px;background:oklch(0.92 0.006 107);margin:0 9px;border-radius:2px"></div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:26px;height:26px;border-radius:50%;border:1px solid oklch(0.88 0.01 107);color:oklch(0.55 0.025 107);display:grid;place-items:center;font-size:12px">5</span><span style="font-size:12.5px;color:oklch(0.6 0.02 107)">Review</span></div>
+    </div>
+    <div style="padding:18px 24px;display:flex;gap:28px">
+      <div style="flex:1">
+        <div style="font-weight:600;font-size:21px;letter-spacing:-.3px">Prize &amp; escrow</div>
+        <div style="font-size:13.5px;color:oklch(0.55 0.025 107);margin:5px 0 22px;line-height:1.5">A fixed prize you deposit on publish. Held in the tournament's escrow contract and auto-released to the champion.</div>
+        <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:14px;margin-bottom:20px">
+          <div><div style="font-size:13px;color:oklch(0.45 0.02 107);margin-bottom:7px;font-weight:500">Prize amount</div><div style="border:1px solid oklch(0.841 0.238 128.85);border-radius:8px;padding:12px 13px;font-family:'Geist Mono';font-size:19px;font-weight:600;box-shadow:0 0 0 3px oklch(0.841 0.238 128.85 / 0.18)">2.0</div></div>
+          <div><div style="font-size:13px;color:oklch(0.45 0.02 107);margin-bottom:7px;font-weight:500">Token</div><div style="border:1px solid oklch(0.922 0.006 107);border-radius:8px;padding:12px 13px;font-size:16px;display:flex;justify-content:space-between;align-items:center"><span><span style="font-family:'Geist Mono'">Ξ</span> ETH</span><span style="color:oklch(0.6 0.02 107);font-size:13px">▾</span></div></div>
+        </div>
+        <div style="font-size:13px;color:oklch(0.45 0.02 107);margin-bottom:10px;font-weight:500">Payout split</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="width:90px;font-size:13.5px;color:oklch(0.3 0.01 107)">1st place</span><div style="flex:1;height:8px;background:oklch(0.93 0.006 107);border-radius:5px;position:relative"><div style="position:absolute;inset:0;background:oklch(0.841 0.238 128.85);border-radius:5px"></div></div><span style="font-family:'Geist Mono';font-size:13.5px;width:46px;text-align:right">100%</span></div>
+        <div style="font-size:13px;color:oklch(0.45 0.02 107);font-weight:500">+ Add 2nd / 3rd place split</div>
+      </div>
+      <div style="width:300px;flex:none;background:oklch(0.985 0.003 107);border:1px solid oklch(0.922 0.006 107);border-radius:13px;padding:18px;align-self:flex-start">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px"><span style="width:26px;height:26px;border-radius:7px;background:oklch(0.841 0.238 128.85);color:oklch(0.40 0.09 131);display:grid;place-items:center;font-size:13px">◆</span><span style="font-weight:600;font-size:14.5px">Escrow on publish</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;padding:7px 0"><span style="color:oklch(0.55 0.025 107)">Prize locked</span><span style="font-family:'Geist Mono'">2.0Ξ</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;padding:7px 0"><span style="color:oklch(0.55 0.025 107)">Proxy deploy (EIP-1167)</span><span style="font-family:'Geist Mono'">~0.004Ξ</span></div>
+        <div style="border-top:1px solid oklch(0.922 0.006 107);margin:9px 0"></div>
+        <div style="display:flex;justify-content:space-between;font-size:14.5px;font-weight:600;padding:5px 0"><span>Total to confirm</span><span style="font-family:'Geist Mono'">~2.004Ξ</span></div>
+        <div style="font-size:11.5px;color:oklch(0.55 0.025 107);margin-top:10px;line-height:1.5">Funds are returned if the tournament is cancelled before it starts.</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;padding:16px 24px;border-top:1px solid oklch(0.922 0.006 107);background:oklch(0.985 0.003 107)">
+      <div style="border:1px solid oklch(0.922 0.006 107);background:#fff;border-radius:8px;padding:9px 18px;font-size:13.5px;font-weight:500">← Back</div>
+      <div style="flex:1"></div>
+      <div style="font-size:12px;color:oklch(0.55 0.025 107)">Deposit happens at the final step</div>
+      <div style="background:oklch(0.841 0.238 128.85);color:oklch(0.40 0.09 131);border-radius:8px;padding:9px 22px;font-size:13.5px;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.06)">Next: Judges →</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================= -->
+<!-- ROW 3 · REGISTRATION + TOURNAMENT VIEW                        -->
+<!-- ============================================================= -->
+<div class="lbl" style="left:80px;top:2120px;width:1000px;font-weight:600;font-size:22px;color:oklch(0.21 0.006 107);letter-spacing:-.3px">5 · Register to play</div>
+<div style="position:absolute;left:80px;top:2196px;width:1000px">
+  <div data-drags-parent="1" class="lbl" style="top:-23px;left:2px;font-size:13.5px;color:oklch(0.55 0.025 107)">Off-chain profile · join on-chain with a signature</div>
+  <div style="border-radius:16px;overflow:hidden;box-shadow:0 10px 30px -12px rgba(0,0,0,.18);border:1px solid oklch(0.922 0.006 107);background:#fff">
+    <div style="display:flex;align-items:center;gap:16px;padding:12px 20px;border-bottom:1px solid oklch(0.922 0.006 107)">
+      <div style="display:flex;align-items:center;gap:9px"><span style="width:28px;height:28px;border-radius:8px;background:oklch(0.841 0.238 128.85);display:grid;place-items:center;font-weight:700;font-size:15px;color:oklch(0.40 0.09 131)">T</span><span style="font-weight:600;font-size:17px">TournyBox</span></div>
+      <div style="flex:1"></div>
+      <div style="display:flex;align-items:center;gap:8px;border:1px solid oklch(0.922 0.006 107);border-radius:8px;padding:7px 11px;font-size:13px"><span style="width:7px;height:7px;border-radius:50%;background:oklch(0.72 0.16 150)"></span><span style="font-family:'Geist Mono';color:oklch(0.3 0.01 107)">0x9f…2A1</span><span style="color:oklch(0.6 0.02 107)">▾</span></div>
+    </div>
+    <div style="display:flex">
+      <div style="width:344px;flex:none;border-right:1px solid oklch(0.922 0.006 107);padding:20px;background:oklch(0.985 0.003 107)">
+        <div style="height:120px;border-radius:11px;background:oklch(0.966 0.005 107);margin-bottom:14px;position:relative"><span style="position:absolute;bottom:8px;left:11px;font-family:'Geist Mono';font-size:10px;color:oklch(0.65 0.02 107)">cover</span></div>
+        <div style="font-weight:600;font-size:18px;letter-spacing:-.2px">Mega Smash Open</div>
+        <div style="font-size:12.5px;color:oklch(0.55 0.025 107);margin:4px 0 14px;font-family:'Geist Mono'">by 0xAB…f2</div>
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:16px"><span style="display:inline-flex;align-items:center;gap:6px;background:oklch(0.966 0.005 107);border-radius:6px;padding:3px 9px;font-size:11px;font-weight:500"><span style="width:6px;height:6px;border-radius:50%;background:oklch(0.72 0.16 150)"></span>Reg open</span><span style="font-size:12px;color:oklch(0.55 0.025 107)">closes in 2 days</span></div>
+        <div style="font-size:13px">
+          <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid oklch(0.93 0.006 107)"><span style="color:oklch(0.55 0.025 107)">Format</span><span>Single elim · 32</span></div>
+          <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid oklch(0.93 0.006 107)"><span style="color:oklch(0.55 0.025 107)">Slots filled</span><span style="font-family:'Geist Mono'">27 / 32</span></div>
+          <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid oklch(0.93 0.006 107)"><span style="color:oklch(0.55 0.025 107)">Prize (escrow)</span><span style="font-family:'Geist Mono'">5.0Ξ ✓</span></div>
+          <div style="display:flex;justify-content:space-between;padding:9px 0"><span style="color:oklch(0.55 0.025 107)">Entry fee</span><span>Free</span></div>
+        </div>
+      </div>
+      <div style="flex:1;padding:24px 26px">
+        <div style="font-weight:600;font-size:21px;letter-spacing:-.3px">Register to play</div>
+        <div style="font-size:13px;color:oklch(0.55 0.025 107);margin:5px 0 22px;line-height:1.5">Name &amp; avatar are stored off-chain (Supabase). Joining is recorded on-chain with a wallet signature.</div>
+        <div style="display:flex;align-items:center;gap:15px;margin-bottom:20px">
+          <div style="width:64px;height:64px;border-radius:50%;background:oklch(0.966 0.005 107);display:grid;place-items:center;font-size:20px;font-weight:500;color:oklch(0.45 0.02 107);flex:none">PK</div>
+          <div><div style="font-size:13.5px;font-weight:500;margin-bottom:3px">Profile avatar</div><div style="font-size:12px;color:oklch(0.55 0.025 107);border:1px solid oklch(0.922 0.006 107);border-radius:7px;padding:5px 11px;display:inline-block;margin-top:2px">Upload image</div></div>
+        </div>
+        <div style="margin-bottom:16px"><div style="font-size:13px;color:oklch(0.45 0.02 107);margin-bottom:7px;font-weight:500">Display name</div><div style="border:1px solid oklch(0.922 0.006 107);border-radius:8px;padding:10px 13px;font-size:14.5px;max-width:400px">PixelKnight</div></div>
+        <div style="margin-bottom:18px"><div style="font-size:13px;color:oklch(0.45 0.02 107);margin-bottom:7px;font-weight:500">In-game handle / ID <span style="color:oklch(0.6 0.02 107);font-weight:400">(optional)</span></div><div style="border:1px solid oklch(0.922 0.006 107);border-radius:8px;padding:10px 13px;font-size:14.5px;color:oklch(0.6 0.02 107);max-width:400px">e.g. PK#2031</div></div>
+        <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:22px;font-size:13.5px;color:oklch(0.3 0.01 107);max-width:430px"><span style="width:18px;height:18px;border-radius:4px;background:oklch(0.841 0.238 128.85);display:grid;place-items:center;font-size:11px;flex:none;margin-top:1px;color:oklch(0.40 0.09 131)">✓</span>I have read and accept the tournament rules &amp; judging policy.</div>
+        <div style="display:flex;align-items:center;gap:16px">
+          <div style="background:oklch(0.841 0.238 128.85);color:oklch(0.40 0.09 131);border-radius:8px;padding:12px 26px;font-size:14.5px;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.06)">Register &amp; sign</div>
+          <span style="font-size:12px;color:oklch(0.55 0.025 107);line-height:1.4">Signature in your wallet<br>~<span style="font-family:'Geist Mono'">0.0008Ξ</span> gas to join</span>
+        </div>
+        <div style="margin-top:22px;background:oklch(0.985 0.003 107);border:1px solid oklch(0.922 0.006 107);border-radius:9px;padding:13px 15px;font-size:12.5px;color:oklch(0.5 0.02 107)">You'll be seeded into the bracket when registration closes. You can withdraw any time before then.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tournament view -->
+<div class="lbl" style="left:1120px;top:2120px;width:1120px;font-weight:600;font-size:22px;color:oklch(0.21 0.006 107);letter-spacing:-.3px">6 · Tournament view — bracket + match panel</div>
+<div style="position:absolute;left:1120px;top:2196px;width:1120px">
+  <div data-drags-parent="1" class="lbl" style="top:-23px;left:2px;font-size:13.5px;color:oklch(0.55 0.025 107)">Full bracket · click a match for live judge votes</div>
+  <div style="border-radius:16px;overflow:hidden;box-shadow:0 10px 30px -12px rgba(0,0,0,.18);border:1px solid oklch(0.922 0.006 107);background:#fff">
+    <div style="display:flex;align-items:center;gap:16px;padding:12px 20px;border-bottom:1px solid oklch(0.922 0.006 107)">
+      <div style="display:flex;align-items:center;gap:9px"><span style="width:28px;height:28px;border-radius:8px;background:oklch(0.841 0.238 128.85);display:grid;place-items:center;font-weight:700;font-size:15px;color:oklch(0.40 0.09 131)">T</span><span style="font-weight:600;font-size:17px">TournyBox</span></div>
+      <div style="flex:1"></div>
+      <div style="display:flex;align-items:center;gap:8px;border:1px solid oklch(0.922 0.006 107);border-radius:8px;padding:7px 11px;font-size:13px"><span style="width:7px;height:7px;border-radius:50%;background:oklch(0.72 0.16 150)"></span><span style="font-family:'Geist Mono';color:oklch(0.3 0.01 107)">0x9f…2A1</span><span style="color:oklch(0.6 0.02 107)">▾</span></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:15px;padding:16px 22px;border-bottom:1px solid oklch(0.922 0.006 107)">
+      <div style="width:56px;height:42px;border-radius:9px;background:oklch(0.966 0.005 107);flex:none"></div>
+      <div><div style="font-weight:600;font-size:18px;letter-spacing:-.2px">Neon League · Season 3</div><div style="font-size:12.5px;color:oklch(0.55 0.025 107)">Single elim · 8 players · <span style="font-family:'Geist Mono'">0x77…1e</span></div></div>
+      <span style="background:oklch(0.841 0.238 128.85);color:oklch(0.40 0.09 131);border-radius:6px;padding:4px 11px;font-size:11.5px;font-weight:600">LIVE · SF</span>
+      <div style="flex:1"></div>
+      <div style="text-align:right"><div style="font-size:11.5px;color:oklch(0.55 0.025 107)">Prize in escrow</div><div style="font-family:'Geist Mono';font-weight:600;font-size:17px">3.5Ξ ✓</div></div>
+    </div>
+    <div style="display:flex;gap:22px;font-size:13.5px;padding:0 22px;border-bottom:1px solid oklch(0.922 0.006 107);color:oklch(0.55 0.025 107)"><span style="color:oklch(0.21 0.006 107);font-weight:500;padding:12px 0;border-bottom:2px solid oklch(0.21 0.006 107)">Bracket</span><span style="padding:12px 0">Overview</span><span style="padding:12px 0">Participants</span><span style="padding:12px 0">Rules</span></div>
+    <div style="display:flex">
+      <div style="flex:1;padding:24px 18px;display:flex;align-items:center;gap:28px;border-right:1px solid oklch(0.922 0.006 107)">
+        <div style="display:flex;flex-direction:column;gap:14px;flex:none">
+          <div style="font-size:11px;color:oklch(0.5 0.02 107);letter-spacing:.6px;font-weight:600">QUARTERFINALS</div>
+          <div style="border:1px solid oklch(0.922 0.006 107);border-radius:9px;width:148px;overflow:hidden"><div style="display:flex;justify-content:space-between;padding:7px 10px;border-left:3px solid oklch(0.841 0.238 128.85);font-size:12.5px;font-weight:600">PixelKnight<span style="font-family:'Geist Mono'">2</span></div><div style="display:flex;justify-content:space-between;padding:7px 10px;font-size:12.5px;color:oklch(0.55 0.025 107);font-family:'Geist Mono'">0x3c…b7<span>1</span></div></div>
+          <div style="border:1px solid oklch(0.922 0.006 107);border-radius:9px;width:148px;overflow:hidden"><div style="display:flex;justify-content:space-between;padding:7px 10px;font-size:12.5px;color:oklch(0.55 0.025 107);font-family:'Geist Mono'">0x91…4a<span>0</span></div><div style="display:flex;justify-content:space-between;padding:7px 10px;border-left:3px solid oklch(0.841 0.238 128.85);font-size:12.5px;font-weight:600">NovaStar<span style="font-family:'Geist Mono'">2</span></div></div>
+          <div style="border:1px solid oklch(0.922 0.006 107);border-radius:9px;width:148px;overflow:hidden"><div style="display:flex;justify-content:space-between;padding:7px 10px;border-left:3px solid oklch(0.841 0.238 128.85);font-size:12.5px;font-weight:600">ByteRider<span style="font-family:'Geist Mono'">2</span></div><div style="display:flex;justify-content:space-between;padding:7px 10px;font-size:12.5px;color:oklch(0.55 0.025 107);font-family:'Geist Mono'">0x08…d2<span>0</span></div></div>
+          <div style="border:1px solid oklch(0.922 0.006 107);border-radius:9px;width:148px;overflow:hidden"><div style="display:flex;justify-content:space-between;padding:7px 10px;font-size:12.5px;color:oklch(0.55 0.025 107);font-family:'Geist Mono'">0x55…ff<span>1</span></div><div style="display:flex;justify-content:space-between;padding:7px 10px;border-left:3px solid oklch(0.841 0.238 128.85);font-size:12.5px;font-weight:600">GlitchCat<span style="font-family:'Geist Mono'">2</span></div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:70px;flex:none">
+          <div style="font-size:11px;color:oklch(0.5 0.02 107);letter-spacing:.6px;font-weight:600">SEMIFINALS</div>
+          <div style="border:1px solid oklch(0.841 0.238 128.85);border-radius:9px;width:148px;overflow:hidden;box-shadow:0 0 0 3px oklch(0.841 0.238 128.85 / 0.18)"><div style="display:flex;justify-content:space-between;padding:7px 10px;font-size:12.5px;font-weight:600">PixelKnight<span style="color:oklch(0.6 0.02 107);font-family:'Geist Mono'">–</span></div><div style="display:flex;justify-content:space-between;padding:7px 10px;font-size:12.5px;font-weight:600">NovaStar<span style="color:oklch(0.6 0.02 107);font-family:'Geist Mono'">–</span></div></div>
+          <div style="border:1px solid oklch(0.922 0.006 107);border-radius:9px;width:148px;overflow:hidden"><div style="display:flex;justify-content:space-between;padding:7px 10px;font-size:12.5px">ByteRider<span style="color:oklch(0.6 0.02 107);font-family:'Geist Mono'">–</span></div><div style="display:flex;justify-content:space-between;padding:7px 10px;font-size:12.5px">GlitchCat<span style="color:oklch(0.6 0.02 107);font-family:'Geist Mono'">–</span></div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;flex:none;align-self:center">
+          <div style="font-size:11px;color:oklch(0.5 0.02 107);letter-spacing:.6px;font-weight:600">FINAL</div>
+          <div style="border:1px dashed oklch(0.86 0.01 107);border-radius:9px;width:148px;overflow:hidden;color:oklch(0.6 0.02 107)"><div style="display:flex;justify-content:space-between;padding:7px 10px;font-size:12.5px">TBD<span style="font-family:'Geist Mono'">–</span></div><div style="display:flex;justify-content:space-between;padding:7px 10px;font-size:12.5px">TBD<span style="font-family:'Geist Mono'">–</span></div></div>
+        </div>
+        <div style="flex:none;align-self:center;text-align:center">
+          <div style="font-size:11px;color:oklch(0.5 0.02 107);letter-spacing:.6px;font-weight:600;margin-bottom:12px">CHAMPION</div>
+          <div style="width:74px;height:74px;border-radius:15px;background:oklch(0.966 0.005 107);border:1px solid oklch(0.92 0.006 107);display:grid;place-items:center;font-size:24px;color:oklch(0.6 0.02 107)">?</div>
+          <div style="font-family:'Geist Mono';font-size:12.5px;margin-top:8px;color:oklch(0.4 0.02 107)">5.0Ξ</div>
+        </div>
+      </div>
+      <div style="width:316px;flex:none;padding:20px;background:oklch(0.985 0.003 107)">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:16px"><span style="background:oklch(0.841 0.238 128.85);color:oklch(0.40 0.09 131);border-radius:6px;padding:3px 9px;font-size:11px;font-weight:600">SF · LIVE</span><span style="font-size:12px;color:oklch(0.55 0.025 107)">awaiting judges</span></div>
+        <div style="display:flex;align-items:center;gap:11px;border:1px solid oklch(0.841 0.238 128.85);background:oklch(0.985 0.003 107);border-radius:10px;padding:11px;margin-bottom:9px;box-shadow:0 0 0 3px oklch(0.841 0.238 128.85 / 0.12)">
+          <div style="width:36px;height:36px;border-radius:50%;background:oklch(0.966 0.005 107);display:grid;place-items:center;font-size:12px;font-weight:500;color:oklch(0.45 0.02 107);flex:none">PK</div>
+          <div style="flex:1"><div style="font-size:14px;font-weight:600">PixelKnight</div><div style="font-size:11px;color:oklch(0.55 0.025 107);font-family:'Geist Mono'">0x9f…2A1 · seed 1</div></div>
+        </div>
+        <div style="text-align:center;font-size:12px;color:oklch(0.6 0.02 107);margin:5px 0">vs</div>
+        <div style="display:flex;align-items:center;gap:11px;border:1px solid oklch(0.922 0.006 107);border-radius:10px;padding:11px;margin-bottom:18px">
+          <div style="width:36px;height:36px;border-radius:50%;background:oklch(0.966 0.005 107);display:grid;place-items:center;font-size:12px;font-weight:500;color:oklch(0.45 0.02 107);flex:none">NS</div>
+          <div style="flex:1"><div style="font-size:14px;font-weight:600">NovaStar</div><div style="font-size:11px;color:oklch(0.55 0.025 107);font-family:'Geist Mono'">0x41…c8 · seed 4</div></div>
+        </div>
+        <div style="font-size:12.5px;color:oklch(0.55 0.025 107);margin-bottom:9px">Judge votes · majority of 3</div>
+        <div style="display:flex;flex-direction:column;gap:9px;font-size:13px;margin-bottom:18px">
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:'Geist Mono';color:oklch(0.35 0.015 107)">0x44…9a</span><span style="display:flex;align-items:center;gap:6px;color:oklch(0.3 0.01 107)"><span style="width:6px;height:6px;border-radius:50%;background:oklch(0.841 0.238 128.85)"></span>PixelKnight</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:'Geist Mono';color:oklch(0.35 0.015 107)">judge.eth</span><span style="color:oklch(0.6 0.02 107)">pending…</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:'Geist Mono';color:oklch(0.35 0.015 107)">0x7d…02</span><span style="color:oklch(0.6 0.02 107)">pending…</span></div>
+        </div>
+        <div style="border:1px solid oklch(0.922 0.006 107);background:#fff;border-radius:8px;text-align:center;padding:10px;font-size:13px;font-weight:500">View submissions</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================= -->
+<!-- ROW 4 · JUDGE VOTING + PROFILE                                -->
+<!-- ============================================================= -->
+<div class="lbl" style="left:80px;top:3010px;width:1040px;font-weight:600;font-size:22px;color:oklch(0.21 0.006 107);letter-spacing:-.3px">7 · Judge — vote on a match</div>
+<div style="position:absolute;left:80px;top:3086px;width:1040px">
+  <div data-drags-parent="1" class="lbl" style="top:-23px;left:2px;font-size:13.5px;color:oklch(0.55 0.025 107)">Pick winner + sign · majority decides, prize stays in escrow</div>
+  <div style="border-radius:16px;overflow:hidden;box-shadow:0 10px 30px -12px rgba(0,0,0,.18);border:1px solid oklch(0.922 0.006 107);background:#fff">
+    <div style="display:flex;align-items:center;gap:14px;padding:12px 20px;border-bottom:1px solid oklch(0.922 0.006 107)">
+      <div style="display:flex;align-items:center;gap:9px"><span style="width:28px;height:28px;border-radius:8px;background:oklch(0.841 0.238 128.85);display:grid;place-items:center;font-weight:700;font-size:15px;color:oklch(0.40 0.09 131)">T</span><span style="font-weight:600;font-size:17px">TournyBox</span></div>
+      <div style="font-size:12.5px;color:oklch(0.55 0.025 107);margin-left:8px">Pixel Brawlers Inv. <span style="color:oklch(0.72 0.02 107)">›</span> Semifinals <span style="color:oklch(0.72 0.02 107)">›</span> Match 1</div>
+      <div style="flex:1"></div>
+      <span style="background:oklch(0.967 0.001 286);border:1px solid oklch(0.9 0.006 107);color:oklch(0.35 0.015 107);border-radius:6px;padding:4px 11px;font-size:11.5px;font-weight:600">YOU ARE JUDGE</span>
+      <div style="display:flex;align-items:center;gap:8px;border:1px solid oklch(0.922 0.006 107);border-radius:8px;padding:7px 11px;font-size:13px"><span style="width:7px;height:7px;border-radius:50%;background:oklch(0.72 0.16 150)"></span><span style="font-family:'Geist Mono';color:oklch(0.3 0.01 107)">0x44…9a</span><span style="color:oklch(0.6 0.02 107)">▾</span></div>
+    </div>
+    <div style="padding:22px 24px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <div style="font-weight:600;font-size:21px;letter-spacing:-.3px">Who won this match?</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:12.5px;color:oklch(0.55 0.025 107)"><div style="display:flex;gap:4px"><span style="width:18px;height:5px;border-radius:3px;background:oklch(0.841 0.238 128.85)"></span><span style="width:18px;height:5px;border-radius:3px;background:oklch(0.92 0.006 107)"></span><span style="width:18px;height:5px;border-radius:3px;background:oklch(0.92 0.006 107)"></span></div>1 / 3 voted · majority needed</div>
+      </div>
+      <div style="display:flex;align-items:stretch;gap:18px;margin-bottom:22px">
+        <div style="flex:1;border:1.5px solid oklch(0.841 0.238 128.85);border-radius:13px;padding:18px;background:oklch(0.985 0.003 107);position:relative;box-shadow:0 0 0 3px oklch(0.841 0.238 128.85 / 0.14)">
+          <span style="position:absolute;top:14px;right:14px;width:22px;height:22px;border-radius:50%;background:oklch(0.841 0.238 128.85);display:grid;place-items:center;font-size:12px;color:oklch(0.40 0.09 131)">✓</span>
+          <div style="display:flex;align-items:center;gap:13px;margin-bottom:14px"><div style="width:48px;height:48px;border-radius:50%;background:oklch(0.966 0.005 107);display:grid;place-items:center;font-size:15px;font-weight:500;color:oklch(0.45 0.02 107);flex:none">PK</div><div><div style="font-size:17px;font-weight:600">PixelKnight</div><div style="font-size:12px;color:oklch(0.55 0.025 107);font-family:'Geist Mono'">0x9f…2A1 · seed 1</div></div></div>
+          <div style="position:relative;height:94px;border-radius:10px;background:oklch(0.966 0.005 107);margin-bottom:14px;overflow:hidden"><span style="position:absolute;bottom:8px;left:11px;font-family:'Geist Mono';font-size:10px;color:oklch(0.6 0.02 107)">submission / result screenshot</span></div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:8px;background:oklch(0.841 0.238 128.85);color:oklch(0.40 0.09 131);border-radius:8px;padding:11px;font-size:14.5px;font-weight:600">Selected as winner</div>
+        </div>
+        <div style="display:flex;align-items:center;font-weight:600;font-size:18px;color:oklch(0.65 0.02 107)">VS</div>
+        <div style="flex:1;border:1px solid oklch(0.922 0.006 107);border-radius:13px;padding:18px">
+          <div style="display:flex;align-items:center;gap:13px;margin-bottom:14px"><div style="width:48px;height:48px;border-radius:50%;background:oklch(0.966 0.005 107);display:grid;place-items:center;font-size:15px;font-weight:500;color:oklch(0.45 0.02 107);flex:none">NS</div><div><div style="font-size:17px;font-weight:600">NovaStar</div><div style="font-size:12px;color:oklch(0.55 0.025 107);font-family:'Geist Mono'">0x41…c8 · seed 4</div></div></div>
+          <div style="position:relative;height:94px;border-radius:10px;background:oklch(0.966 0.005 107);margin-bottom:14px;overflow:hidden"><span style="position:absolute;bottom:8px;left:11px;font-family:'Geist Mono';font-size:10px;color:oklch(0.6 0.02 107)">submission / result screenshot</span></div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid oklch(0.922 0.006 107);color:oklch(0.3 0.01 107);border-radius:8px;padding:11px;font-size:14.5px;font-weight:500">Pick as winner</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:18px;align-items:flex-end">
+        <div style="flex:1"><div style="font-size:13px;color:oklch(0.45 0.02 107);margin-bottom:7px;font-weight:500">Comment <span style="color:oklch(0.6 0.02 107);font-weight:400">(optional · off-chain)</span></div><div style="border:1px solid oklch(0.922 0.006 107);border-radius:8px;padding:11px 13px;color:oklch(0.6 0.02 107);font-size:13.5px">Reason for decision…</div></div>
+        <div style="background:oklch(0.841 0.238 128.85);color:oklch(0.40 0.09 131);border-radius:8px;padding:12px 26px;font-size:14.5px;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.06)">Submit vote &amp; sign</div>
+      </div>
+      <div style="margin-top:14px;font-size:12.5px;color:oklch(0.55 0.025 107)">Your vote is recorded on-chain. The match resolves automatically once a majority agrees.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Profile -->
+<div class="lbl" style="left:1160px;top:3010px;width:1040px;font-weight:600;font-size:22px;color:oklch(0.21 0.006 107);letter-spacing:-.3px">8 · User profile</div>
+<div style="position:absolute;left:1160px;top:3086px;width:1040px">
+  <div data-drags-parent="1" class="lbl" style="top:-23px;left:2px;font-size:13.5px;color:oklch(0.55 0.025 107)">Off-chain identity + on-chain record &amp; history</div>
+  <div style="border-radius:16px;overflow:hidden;box-shadow:0 10px 30px -12px rgba(0,0,0,.18);border:1px solid oklch(0.922 0.006 107);background:#fff">
+    <div style="display:flex;align-items:center;gap:16px;padding:12px 20px;border-bottom:1px solid oklch(0.922 0.006 107)">
+      <div style="display:flex;align-items:center;gap:9px"><span style="width:28px;height:28px;border-radius:8px;background:oklch(0.841 0.238 128.85);display:grid;place-items:center;font-weight:700;font-size:15px;color:oklch(0.40 0.09 131)">T</span><span style="font-weight:600;font-size:17px">TournyBox</span></div>
+      <div style="flex:1"></div>
+      <div style="display:flex;align-items:center;gap:8px;border:1px solid oklch(0.922 0.006 107);border-radius:8px;padding:7px 11px;font-size:13px"><span style="width:7px;height:7px;border-radius:50%;background:oklch(0.72 0.16 150)"></span><span style="font-family:'Geist Mono';color:oklch(0.3 0.01 107)">0x9f…2A1</span><span style="color:oklch(0.6 0.02 107)">▾</span></div>
+    </div>
+    <div style="position:relative">
+      <div style="height:90px;background:oklch(0.966 0.005 107);border-bottom:1px solid oklch(0.922 0.006 107)"></div>
+      <div style="display:flex;align-items:flex-end;gap:18px;padding:0 24px;margin-top:-34px;position:relative">
+        <div style="width:88px;height:88px;border-radius:22px;background:oklch(0.841 0.238 128.85);border:3px solid #fff;flex:none;display:grid;place-items:center;font-size:28px;font-weight:600;color:oklch(0.40 0.09 131)">PK</div>
+        <div style="flex:1;padding-bottom:6px">
+          <div style="font-weight:700;font-size:24px;letter-spacing:-.3px">PixelKnight</div>
+          <div style="display:flex;align-items:center;gap:9px;font-size:12.5px;color:oklch(0.55 0.025 107);margin-top:4px"><span style="font-family:'Geist Mono'">0x9f3a…cE2A1</span><span style="border:1px solid oklch(0.9 0.006 107);border-radius:6px;padding:1px 7px;font-size:11px;color:oklch(0.45 0.02 107)">copy</span><span>· joined 2024</span></div>
+        </div>
+        <div style="display:flex;gap:9px;padding-bottom:6px;align-items:center">
+          <span style="border:1px solid oklch(0.9 0.006 107);color:oklch(0.45 0.02 107);border-radius:7px;padding:5px 11px;font-size:11.5px;font-weight:600">14 PLAYED</span>
+          <span style="background:oklch(0.841 0.238 128.85);color:oklch(0.40 0.09 131);border-radius:7px;padding:5px 11px;font-size:11.5px;font-weight:600">3 OWNED</span>
+          <span style="background:oklch(0.967 0.001 286);border:1px solid oklch(0.9 0.006 107);color:oklch(0.35 0.015 107);border-radius:7px;padding:5px 11px;font-size:11.5px;font-weight:600">6 JUDGED</span>
+          <span style="border:1px solid oklch(0.922 0.006 107);border-radius:7px;padding:5px 13px;font-size:13px;font-weight:500;box-shadow:0 1px 2px rgba(0,0,0,.04)">Edit</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;margin:18px 24px 0;background:oklch(0.985 0.003 107);border:1px solid oklch(0.922 0.006 107);border-radius:12px;overflow:hidden">
+      <div style="flex:1;text-align:center;padding:16px;border-right:1px solid oklch(0.922 0.006 107)"><div style="font-weight:700;font-size:23px">2</div><div style="font-size:11.5px;color:oklch(0.55 0.025 107);margin-top:2px">Trophies</div></div>
+      <div style="flex:1;text-align:center;padding:16px;border-right:1px solid oklch(0.922 0.006 107)"><div style="font-weight:700;font-size:23px;font-family:'Geist Mono'">61%</div><div style="font-size:11.5px;color:oklch(0.55 0.025 107);margin-top:2px">Win rate</div></div>
+      <div style="flex:1;text-align:center;padding:16px;border-right:1px solid oklch(0.922 0.006 107)"><div style="font-weight:700;font-size:23px;font-family:'Geist Mono'">38–24</div><div style="font-size:11.5px;color:oklch(0.55 0.025 107);margin-top:2px">Match W–L</div></div>
+      <div style="flex:1;text-align:center;padding:16px"><div style="font-weight:700;font-size:23px;font-family:'Geist Mono'">4.2Ξ</div><div style="font-size:11.5px;color:oklch(0.55 0.025 107);margin-top:2px">Prizes won</div></div>
+    </div>
+    <div style="display:flex;gap:22px;font-size:13.5px;padding:18px 24px 4px;color:oklch(0.55 0.025 107)"><span style="color:oklch(0.21 0.006 107);font-weight:500;border-bottom:2px solid oklch(0.21 0.006 107);padding-bottom:8px">History</span><span style="padding-bottom:8px">Owned</span><span style="padding-bottom:8px">Judging</span></div>
+    <div style="padding:4px 24px 22px">
+      <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid oklch(0.93 0.006 107)">
+        <div style="width:48px;height:34px;border-radius:7px;background:oklch(0.966 0.005 107);flex:none"></div>
+        <div style="flex:1"><div style="font-size:14.5px;font-weight:600">Winter Clash 2025</div><div style="font-size:12px;color:oklch(0.55 0.025 107)">Player · reached Final</div></div>
+        <span style="border:1px solid oklch(0.9 0.006 107);color:oklch(0.4 0.02 107);border-radius:6px;padding:4px 11px;font-size:11.5px;font-weight:600;font-family:'Geist Mono'">2nd · 0.8Ξ</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid oklch(0.93 0.006 107)">
+        <div style="width:48px;height:34px;border-radius:7px;background:oklch(0.966 0.005 107);flex:none"></div>
+        <div style="flex:1"><div style="font-size:14.5px;font-weight:600">Retro Cup #4</div><div style="font-size:12px;color:oklch(0.55 0.025 107)">Player · eliminated R16</div></div>
+        <span style="border:1px solid oklch(0.9 0.006 107);color:oklch(0.6 0.02 107);border-radius:6px;padding:4px 11px;font-size:11.5px;font-weight:600">—</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;padding:12px 0">
+        <div style="width:48px;height:34px;border-radius:7px;background:oklch(0.966 0.005 107);flex:none"></div>
+        <div style="flex:1"><div style="font-size:14.5px;font-weight:600">Arcade Open Q4</div><div style="font-size:12px;color:oklch(0.55 0.025 107)">Player · Champion</div></div>
+        <span style="background:oklch(0.841 0.238 128.85);color:oklch(0.40 0.09 131);border-radius:6px;padding:4px 11px;font-size:11.5px;font-weight:600;font-family:'Geist Mono'">1st · 1.5Ξ</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- flow post-it -->
+<div style="position:absolute;left:2260px;top:3120px;width:256px;background:#fff;border:1px solid oklch(0.922 0.006 107);border-radius:13px;padding:16px;box-shadow:0 10px 30px -12px rgba(0,0,0,.16)">
+  <div style="font-weight:600;font-size:14px;margin-bottom:8px">Primary flow</div>
+  <div style="font-size:12.5px;line-height:1.65;color:oklch(0.5 0.02 107)">Connect wallet → Discover → Tournament view → Register → owner publishes &amp; deposits → matches play → judges vote → escrow auto-releases to champion → profile updates.</div>
+</div>
+</x-dc>
+</body>
+</html>
