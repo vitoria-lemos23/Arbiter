@@ -43,6 +43,7 @@ Use the following links to access the documentation for the libraries and framew
 - Monorepo: pnpm workspaces + TurboRepo. Run scripts from the repo root; target a workspace with `pnpm --filter @arbiter/<name> <script>`.
 - Formatting/linting: Biome owns formatting and linting (`pnpm check`, `pnpm format`); a husky pre-commit hook runs Biome on staged files. Do not add conflicting Prettier/ESLint *formatting* — the web app keeps `eslint-config-next` for Next-specific lint rules only. CSS, `public/`, drizzle, and generated files are excluded from Biome.
 - Web app structure: `src/app` holds App Router files only. Feature code lives in `src/features/<feature>/{components,hooks,actions,server,schema}`; cross-cutting code in `src/shared/`; shadcn primitives in `src/components/ui`.
+- App Router files (`page.tsx`, `route.ts`, `layout.tsx`, …) hold only the route entry — no helper functions, parsing, or business logic. Extract helpers to `src/lib/` (generic) or the relevant `src/features/<feature>/` module and import them.
 - File naming: component files are PascalCase `.tsx` (e.g. `IncrementCounterForm.tsx`); other modules are camelCase `.ts`. Leave Next.js framework files (`layout.tsx`, `page.tsx`, `error.tsx`, …) and shadcn `components/ui/*` in their conventional lowercase names.
 - Environment variables: access through the validated `apps/web/src/env.ts` (zod), not raw `process.env`. `@arbiter/db` requires `DATABASE_URL`.
 - Contract ABIs: generated from compiled artifacts into `packages/contracts/src/generated/` by `scripts/generate-abi.mjs` during `build` — never hand-edit them.
@@ -65,6 +66,7 @@ Use the following links to access the documentation for the libraries and framew
 - No code duplication. Extract shared logic into a function/module.
 - Early returns over nested ifs. Max 2 levels of indentation.
 - Exception messages must include the offending value and expected shape.
+- No raw non-ASCII characters in string literals or rendered UI text — use unicode escapes (`\u2026`, `\u2014`, `\u00B7`). In JSX text/attributes, wrap in an expression: `{"\u2026"}`. Prose in comments may keep readable punctuation.
 
 ## Comments
 
