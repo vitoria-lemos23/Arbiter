@@ -2,20 +2,32 @@
 
 import { useId, useRef, useState } from "react";
 import { useController, useFormContext } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   ALLOWED_IMAGE_MIME_TYPES,
-  MAX_IMAGE_BYTES,
+  imageUploadSchema,
 } from "@/features/images/schema/image";
 import { cn } from "@/lib/utils";
 import type { WizardValues } from "../../schema/createTournament";
 
-/** Client-side guard mirroring the server allow-list (Business Rule #6). */
+// shadcn/ui has no file-upload/dropzone primitive, so this composes the shared
+// primitives (Label/Button/Input) rather than hand-rolling new ones.
+
+/**
+ * Fast client-side pre-check reusing the same schema the upload route enforces
+ * on the actual bytes, so the two paths can't drift. Returns an error message
+ * or null.
+ */
 function validateFile(file: File): string | null {
-  if (!ALLOWED_IMAGE_MIME_TYPES.includes(file.type as never)) {
-    return "Image must be a PNG, JPEG, or WebP";
-  }
-  if (file.size > MAX_IMAGE_BYTES) return "Image must be 2 MB or smaller";
-  return null;
+  const result = imageUploadSchema.safeParse({
+    mimeType: file.type,
+    sizeBytes: file.size,
+  });
+  return result.success
+    ? null
+    : (result.error.issues[0]?.message ?? "Invalid image");
 }
 
 async function uploadImage(file: File): Promise<string> {
@@ -74,8 +86,8 @@ export function CoverImageField() {
 
   return (
     <div className="flex flex-col gap-2">
-      <span className="text-sm font-medium">Cover image</span>
-      <input
+      <Label htmlFor={inputId}>Cover image</Label>
+      <Input
         ref={inputRef}
         id={inputId}
         type="file"
@@ -98,10 +110,10 @@ export function CoverImageField() {
           )}
         >
           <span className="text-sm text-muted-foreground">
-            {uploading ? "Uploading…" : "Click to upload a cover image"}
+            {uploading ? "Uploading\u2026" : "Click to upload a cover image"}
           </span>
           <span className="font-mono text-xs text-muted-foreground">
-            PNG · JPG · WebP up to 2 MB
+            {"PNG \u00B7 JPG \u00B7 WebP up to 2 MB"}
           </span>
         </label>
       )}
@@ -122,27 +134,29 @@ function CoverPreview({
   return (
     <div className="flex flex-col gap-2">
       {/* Uploaded cover preview; plain <img> keeps this a single served route. */}
-      {/* biome-ignore lint/performance/noImgElement: previewing a just-uploaded blob URL */}
+      {/* biome-ignore lint/performance/noImgElement: previewing a just-uploaded image URL */}
       <img
         src={url}
         alt="Cover preview"
         className="h-40 w-full rounded-lg border border-input object-cover"
       />
       <div className="flex items-center gap-3 text-sm">
-        <button
+        <Button
           type="button"
+          variant="link"
+          className="h-auto p-0"
           onClick={onReplace}
-          className="text-primary hover:underline"
         >
           Replace
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
+          variant="link"
+          className="h-auto p-0 text-muted-foreground hover:text-destructive"
           onClick={onRemove}
-          className="text-muted-foreground hover:text-destructive"
         >
           Remove
-        </button>
+        </Button>
       </div>
     </div>
   );

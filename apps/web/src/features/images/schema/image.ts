@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-/** Cover-image constraints enforced on upload (Business Rule #6). */
+/** Cover-image constraints enforced on upload. */
 export const ALLOWED_IMAGE_MIME_TYPES = [
   "image/png",
   "image/jpeg",

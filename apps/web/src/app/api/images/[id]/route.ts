@@ -27,6 +27,8 @@ export async function GET(
       "Content-Type": image.mimeType,
       "Content-Length": String(image.data.length),
       "Cache-Control": "public, max-age=31536000, immutable",
+      // Bytes are validated on upload, but never let a browser re-interpret them.
+      "X-Content-Type-Options": "nosniff",
     },
   });
 }
