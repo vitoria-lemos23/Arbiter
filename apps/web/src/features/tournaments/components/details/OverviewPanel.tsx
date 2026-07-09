@@ -43,7 +43,7 @@ function EntryFeeFact({ wei }: { wei: string }) {
       <dt className="text-xs text-muted-foreground">Entry fee</dt>
       <dd className="font-mono">{ethLabel(wei)}</dd>
       <p className="text-xs text-muted-foreground">
-        Stored on-chain; not collected yet.
+        Paid on-chain when a player registers.
       </p>
     </div>
   );

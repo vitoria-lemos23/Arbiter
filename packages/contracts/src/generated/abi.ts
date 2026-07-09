@@ -58,6 +58,33 @@ export const tournamentAbi = [
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      }
+    ],
+    "name": "AlreadyRegistered",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "provided",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "required",
+        "type": "uint256"
+      }
+    ],
+    "name": "IncorrectEntryFee",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint64",
         "name": "startDate",
         "type": "uint64"
@@ -107,6 +134,22 @@ export const tournamentAbi = [
     "inputs": [
       {
         "internalType": "uint64",
+        "name": "nowTs",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint64",
+        "name": "startDate",
+        "type": "uint64"
+      }
+    ],
+    "name": "RegistrationClosed",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint64",
         "name": "startDate",
         "type": "uint64"
       },
@@ -117,6 +160,17 @@ export const tournamentAbi = [
       }
     ],
     "name": "StartDateInPast",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint32",
+        "name": "maxPlayers",
+        "type": "uint32"
+      }
+    ],
+    "name": "TournamentFull",
     "type": "error"
   },
   {
@@ -141,6 +195,31 @@ export const tournamentAbi = [
       }
     ],
     "name": "Initialized",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint32",
+        "name": "position",
+        "type": "uint32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "entryFeePaid",
+        "type": "uint256"
+      }
+    ],
+    "name": "PlayerRegistered",
     "type": "event"
   },
   {
@@ -290,6 +369,30 @@ export const tournamentAbi = [
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "offset",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "limit",
+        "type": "uint256"
+      }
+    ],
+    "name": "getParticipants",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "organizer_",
         "type": "address"
@@ -338,6 +441,25 @@ export const tournamentAbi = [
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "isRegistered",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "maxPlayers",
     "outputs": [
@@ -365,6 +487,19 @@ export const tournamentAbi = [
   },
   {
     "inputs": [],
+    "name": "participantCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "prize",
     "outputs": [
       {
@@ -374,6 +509,13 @@ export const tournamentAbi = [
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "register",
+    "outputs": [],
+    "stateMutability": "payable",
     "type": "function"
   },
   {
