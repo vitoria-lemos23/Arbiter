@@ -117,4 +117,75 @@ describe("Tournament registration", async () => {
       [1n, ENTRY_FEE],
     );
   });
+
+  it("generates a bracket automatically when the field fills", async () => {
+    const { tournament } = await networkHelpers.loadFixture(deployTournament);
+    const clients = await viem.getWalletClients();
+    // We already have bob, charlie, dave, alice? Wait, let's use the clients array.
+    // clients[1] to clients[4] are usually valid accounts.
+    const players = clients.slice(1, 5);
+
+    // Register first 3 players
+    for (let i = 0; i < 3; i++) {
+      await tournament.write.register({
+        account: players[i].account,
+        value: ENTRY_FEE,
+      });
+    }
+
+    assert.equal(await tournament.read.bracketGenerated(), false);
+    assert.equal(await tournament.read.matchCount(), 0n);
+
+    const registerPromise = tournament.write.register({
+      account: players[3].account,
+      value: ENTRY_FEE,
+    });
+
+    // Check the event
+    await viem.assertions.emitWithArgs(
+      registerPromise,
+      tournament,
+      "BracketGenerated",
+      [
+        4,
+        [
+          players[0].account.address,
+          players[3].account.address,
+          players[1].account.address,
+          players[2].account.address,
+        ].map((a) => getAddress(a)),
+      ],
+    );
+
+    assert.equal(await tournament.read.bracketGenerated(), true);
+    assert.equal(await tournament.read.matchCount(), 3n);
+
+    // Check tree shape via getMatches
+    const matches = await tournament.read.getMatches([0n, 3n]);
+    assert.equal(matches.length, 3);
+
+    // internal node
+    assert.equal(
+      matches[0].playerA,
+      "0x0000000000000000000000000000000000000000",
+    );
+
+    // leaves
+    assert.equal(
+      matches[1].playerA.toLowerCase(),
+      players[0].account.address.toLowerCase(),
+    );
+    assert.equal(
+      matches[1].playerB.toLowerCase(),
+      players[3].account.address.toLowerCase(),
+    );
+    assert.equal(
+      matches[2].playerA.toLowerCase(),
+      players[1].account.address.toLowerCase(),
+    );
+    assert.equal(
+      matches[2].playerB.toLowerCase(),
+      players[2].account.address.toLowerCase(),
+    );
+  });
 });

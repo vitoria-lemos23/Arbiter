@@ -15,7 +15,8 @@ import {
   RegistrationClosed,
   AlreadyRegistered,
   TournamentFull,
-  IncorrectEntryFee
+  IncorrectEntryFee,
+  Match
 } from "./Tournament.sol";
 
 contract TournamentTest is Test {
@@ -432,5 +433,120 @@ contract TournamentRegisterTest is Test {
     vm.prank(_player("p2"));
     t.register{value: FEE}();
     assertEq(t.participantCount(), 2);
+  }
+
+  // Bracket Generation Tests
+  event BracketGenerated(uint32 playerCount, address[] seeding);
+
+  function test_BracketAutoGeneratesOnFill() public {
+    uint32 n = 4;
+    Tournament t = _tournament(FEE, n);
+    
+    assertFalse(t.bracketGenerated());
+    assertEq(t.matchCount(), 0);
+
+    for (uint32 i = 1; i < n; i++) {
+      vm.prank(_player(string(abi.encodePacked("p", i))));
+      t.register{value: FEE}();
+      assertFalse(t.bracketGenerated());
+      assertEq(t.matchCount(), 0);
+    }
+
+    // Register final player
+    address lastPlayer = _player("p4");
+    
+    // Expect the BracketGenerated event
+    // The seeded order for 4 players is [p1, p4, p2, p3] because standard seeding for 4 is [1, 4, 2, 3]
+    address[] memory expectedSeeding = new address[](4);
+    expectedSeeding[0] = t.getParticipants(0, 4)[0]; // p1
+    expectedSeeding[1] = lastPlayer; // p4
+    expectedSeeding[2] = t.getParticipants(0, 4)[1]; // p2
+    expectedSeeding[3] = t.getParticipants(0, 4)[2]; // p3
+    
+    vm.expectEmit(false, false, false, true, address(t));
+    emit BracketGenerated(n, expectedSeeding);
+
+    vm.prank(lastPlayer);
+    t.register{value: FEE}();
+
+    assertTrue(t.bracketGenerated());
+    assertEq(t.bracketGeneratedAt(), block.timestamp);
+    assertEq(t.matchCount(), n - 1);
+  }
+
+  function test_BracketShapeAndSeeding() public {
+    uint32 n = 8;
+    Tournament t = _tournament(FEE, n);
+    address[] memory players = new address[](n);
+    for (uint32 i = 0; i < n; i++) {
+      players[i] = _player(string(abi.encodePacked("p", i)));
+      vm.prank(players[i]);
+      t.register{value: FEE}();
+    }
+
+    assertTrue(t.bracketGenerated());
+    assertEq(t.matchCount(), n - 1);
+
+    // Get all matches
+    Match[] memory matches = t.getMatches(0, n - 1);
+    assertEq(matches.length, 7);
+
+    // First 3 matches (internal nodes) should be TBD
+    for (uint256 i = 0; i < 3; i++) {
+      assertEq(matches[i].playerA, address(0));
+      assertEq(matches[i].playerB, address(0));
+      assertEq(matches[i].winner, address(0));
+    }
+
+    // Seeding for N=8 is [1, 8, 4, 5, 2, 7, 3, 6]
+    // Leaves are indices [3..6]
+    assertEq(matches[3].playerA, players[0]); // seed 1
+    assertEq(matches[3].playerB, players[7]); // seed 8
+    
+    assertEq(matches[4].playerA, players[3]); // seed 4
+    assertEq(matches[4].playerB, players[4]); // seed 5
+    
+    assertEq(matches[5].playerA, players[1]); // seed 2
+    assertEq(matches[5].playerB, players[6]); // seed 7
+    
+    assertEq(matches[6].playerA, players[2]); // seed 3
+    assertEq(matches[6].playerB, players[5]); // seed 6
+  }
+
+  function test_GetMatchesPaginatesAndClamps() public {
+    uint32 n = 4;
+    Tournament t = _tournament(FEE, n);
+    for (uint32 i = 0; i < n; i++) {
+      vm.prank(_player(string(abi.encodePacked("p", i))));
+      t.register{value: FEE}();
+    }
+
+    Match[] memory allMatches = t.getMatches(0, 10);
+    assertEq(allMatches.length, 3);
+
+    Match[] memory paged = t.getMatches(1, 1);
+    assertEq(paged.length, 1);
+    assertEq(paged[0].playerA, allMatches[1].playerA);
+    assertEq(paged[0].playerB, allMatches[1].playerB);
+
+    Match[] memory pastEnd = t.getMatches(3, 2);
+    assertEq(pastEnd.length, 0);
+  }
+
+  function test_NoOverRunAfterBracketGen() public {
+    uint32 n = 2;
+    Tournament t = _tournament(FEE, n);
+    vm.prank(_player("p1"));
+    t.register{value: FEE}();
+    vm.prank(_player("p2"));
+    t.register{value: FEE}();
+
+    assertTrue(t.bracketGenerated());
+
+    vm.expectRevert(
+      abi.encodeWithSelector(TournamentFull.selector, n)
+    );
+    vm.prank(_player("p3"));
+    t.register{value: FEE}();
   }
 }
