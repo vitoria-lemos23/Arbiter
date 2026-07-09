@@ -1,7 +1,8 @@
 import { deriveTournamentStatus } from "../../lib/tournamentStatus";
 import { listRegistrations } from "../../server/getRegistrations";
 import type { TournamentListItem } from "../../server/reconcileMetadata";
-import { ComingSoonPanel } from "./ComingSoonPanel";
+import { BracketPanel } from "./BracketPanel";
+
 import { EditTournamentButton } from "./EditTournamentButton";
 import { OverviewPanel } from "./OverviewPanel";
 import { ParticipantsPanel } from "./ParticipantsPanel";
@@ -51,9 +52,10 @@ export async function TournamentDetails({
         overview={<OverviewPanel item={item} />}
         rules={<RulesPanel rules={item.metadata?.rules} />}
         bracket={
-          <ComingSoonPanel
-            title="Bracket coming soon"
-            description="The bracket will appear here once matches are tracked on-chain."
+          <BracketPanel
+            tournamentAddress={tournament.address}
+            maxPlayers={tournament.maxPlayers}
+            registeredCount={registrations.length}
           />
         }
         participants={

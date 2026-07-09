@@ -43,3 +43,24 @@ export const registration = onchainTable(
     tournamentIdx: index().on(table.tournament),
   }),
 );
+
+export const match = onchainTable(
+  "match",
+  (t) => ({
+    id: t.text("id").primaryKey(), // `${tournament}-${matchIndex}` (lowercased)
+    tournament: t.hex("tournament").notNull(),
+    matchIndex: t.integer("match_index").notNull(), // heap index; 0 = final
+    round: t.integer("round").notNull(), // 1 = first round played; log2(N) = final
+    playerA: t.hex("player_a"), // null = TBD
+    playerB: t.hex("player_b"), // null = TBD
+    seedA: t.integer("seed_a"), // null = TBD
+    seedB: t.integer("seed_b"), // null = TBD
+    winner: t.hex("winner"), // always null this spec
+    blockNumber: t.bigint("block_number").notNull(),
+    txHash: t.hex("tx_hash").notNull(),
+    generatedAt: t.timestamp("generated_at").notNull(),
+  }),
+  (table) => ({
+    tournamentIdx: index().on(table.tournament),
+  }),
+);

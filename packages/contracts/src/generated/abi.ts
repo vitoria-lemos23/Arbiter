@@ -189,6 +189,25 @@ export const tournamentAbi = [
     "inputs": [
       {
         "indexed": false,
+        "internalType": "uint32",
+        "name": "playerCount",
+        "type": "uint32"
+      },
+      {
+        "indexed": false,
+        "internalType": "address[]",
+        "name": "seeding",
+        "type": "address[]"
+      }
+    ],
+    "name": "BracketGenerated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
         "internalType": "uint64",
         "name": "version",
         "type": "uint64"
@@ -270,6 +289,32 @@ export const tournamentAbi = [
     ],
     "name": "TournamentInitialized",
     "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "bracketGenerated",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "bracketGeneratedAt",
+    "outputs": [
+      {
+        "internalType": "uint64",
+        "name": "",
+        "type": "uint64"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
     "inputs": [],
@@ -379,6 +424,47 @@ export const tournamentAbi = [
         "type": "uint256"
       }
     ],
+    "name": "getMatches",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "playerA",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "playerB",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "winner",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct Match[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "offset",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "limit",
+        "type": "uint256"
+      }
+    ],
     "name": "getParticipants",
     "outputs": [
       {
@@ -454,6 +540,19 @@ export const tournamentAbi = [
         "internalType": "bool",
         "name": "",
         "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "matchCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",

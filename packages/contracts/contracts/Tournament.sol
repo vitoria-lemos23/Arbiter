@@ -20,6 +20,14 @@ struct TournamentParams {
   address[] judges; // stored for later judging logic; may be empty
 }
 
+/// @dev One node of the single-elimination binary tree. `winner` is reserved
+///      for spec #007 (result reporting) and is always address(0) here.
+struct Match {
+  address playerA; // address(0) => TBD (internal node, filled by #007)
+  address playerB;
+  address winner;  // address(0) => unresolved
+}
+
 error InvalidMaxPlayers(uint32 provided);
 error MaxPlayersNotPowerOfTwo(uint32 provided);
 error StartDateInPast(uint64 startDate, uint64 nowTs);
@@ -51,6 +59,16 @@ contract Tournament is Initializable {
   ///      `position` (the future bracket seed). Length is the single source of
   ///      truth for {participantCount} — no separate counter.
   address[] private _participants;
+
+  Match[] private _matches;         // heap-indexed; index 0 = final; length maxPlayers-1
+  bool public bracketGenerated;     // one-shot latch; true once the field fills
+  uint64 public bracketGeneratedAt; // block timestamp of generation
+
+  /// @notice Emitted once, from the register() that fills the final slot.
+  /// @param playerCount maxPlayers (the full field size, == N).
+  /// @param seeding     Players in standard bracket-slot order (length N); the
+  ///                    indexer derives every match (round 1 + TBD ancestors).
+  event BracketGenerated(uint32 playerCount, address[] seeding);
 
   /// @notice Emitted once, from {initialize}. Judges are omitted to bound log
   ///         cost; read the full list via {getJudges}.
@@ -138,6 +156,82 @@ contract Tournament is Initializable {
     _participants.push(msg.sender);
 
     emit PlayerRegistered(msg.sender, position, msg.value);
+
+    if (_participants.length == maxPlayers) {
+      _generateBracket();
+    }
+  }
+
+  /// @dev Seeds round-1 leaves via standard bracket seeding and reserves internal
+  ///      nodes as TBD. Reachable exactly once, when the field first fills
+  ///      (register() reverts TournamentFull afterwards), so no re-entry guard.
+  function _generateBracket() private {
+    bracketGenerated = true;
+    bracketGeneratedAt = uint64(block.timestamp);
+
+    uint32 n = maxPlayers;
+    // 1. Pre-size the tree: n-1 matches, all TBD.
+    for (uint256 i = 0; i < n - 1; i++) {
+      _matches.push(Match(address(0), address(0), address(0)));
+    }
+    // 2. Compute standard bracket-slot order (seeds) and fill the leaves
+    //    [n/2 - 1 .. n - 2] with the seeded player pairs.
+    address[] memory seeding = _seedLeaves(); // length n, players in slot order
+    for (uint256 k = 0; k < n / 2; k++) {
+      Match storage leaf = _matches[n / 2 - 1 + k];
+      leaf.playerA = seeding[2 * k];
+      leaf.playerB = seeding[2 * k + 1];
+    }
+    emit BracketGenerated(n, seeding);
+  }
+
+  function _seedLeaves() private view returns (address[] memory) {
+    uint32 n = maxPlayers;
+    uint32[] memory slots = new uint32[](1);
+    slots[0] = 1;
+
+    uint256 currentLen = 1;
+    while (currentLen < n) {
+      uint32 m = uint32(2 * currentLen + 1);
+      uint32[] memory newSlots = new uint32[](currentLen * 2);
+      for (uint256 i = 0; i < currentLen; i++) {
+        newSlots[2 * i] = slots[i];
+        newSlots[2 * i + 1] = m - slots[i];
+      }
+      slots = newSlots;
+      currentLen *= 2;
+    }
+
+    address[] memory seeding = new address[](n);
+    for (uint256 i = 0; i < n; i++) {
+      // Seed `s` corresponds to _participants[s - 1]
+      seeding[i] = _participants[slots[i] - 1];
+    }
+    return seeding;
+  }
+
+  function matchCount() external view returns (uint256) {
+    return _matches.length;
+  }
+
+  function getMatches(uint256 offset, uint256 limit)
+    external
+    view
+    returns (Match[] memory)
+  {
+    uint256 count = _matches.length;
+    if (offset >= count) {
+      return new Match[](0);
+    }
+    uint256 end = offset + limit;
+    if (end > count) {
+      end = count;
+    }
+    Match[] memory page = new Match[](end - offset);
+    for (uint256 i = offset; i < end; i++) {
+      page[i - offset] = _matches[i];
+    }
+    return page;
   }
 
   /// @notice Number of registered players (roster length).
