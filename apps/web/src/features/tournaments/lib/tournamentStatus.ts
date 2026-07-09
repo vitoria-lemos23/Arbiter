@@ -3,9 +3,9 @@
  * Pure and time-injected (no `Date.now()` inside) so it is deterministic and
  * node-testable, and callable from both server and client.
  *
- * Wording follows the design's badge labels (spec 004): the enrollment-era
- * "Reg open" label is intentionally NOT emitted here — Join is inert until a
- * future enrollment spec.
+ * Wording follows the design's badge labels (spec 004): no separate "Reg open"
+ * label — registration (spec 005) is open exactly while the status is "soon"
+ * (until `startDate`), so the badge already carries that information.
  *
  * @example
  * deriveTournamentStatus(start, end, new Date()); // → "soon" | "live" | "finished"

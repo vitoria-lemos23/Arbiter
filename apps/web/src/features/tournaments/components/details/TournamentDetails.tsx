@@ -1,19 +1,26 @@
 import { deriveTournamentStatus } from "../../lib/tournamentStatus";
+import { listRegistrations } from "../../server/getRegistrations";
 import type { TournamentListItem } from "../../server/reconcileMetadata";
 import { ComingSoonPanel } from "./ComingSoonPanel";
 import { EditTournamentButton } from "./EditTournamentButton";
-import { JoinTournamentButton } from "./JoinTournamentButton";
 import { OverviewPanel } from "./OverviewPanel";
+import { ParticipantsPanel } from "./ParticipantsPanel";
+import { RegisterLink } from "./RegisterLink";
 import { RulesPanel } from "./RulesPanel";
 import { TournamentHeader } from "./TournamentHeader";
 import { TournamentTabs } from "./TournamentTabs";
 
 /**
- * Server layout for one tournament: header + tabbed body. Status is derived at
- * request time from the indexed dates. Bracket/Participants are honest
- * "coming soon" empty states deferred to future specs.
+ * Server layout for one tournament: header + tabbed body. Status and the
+ * indexed roster are fetched at request time. Registration is open until
+ * `startDate` (status "soon"); the Bracket tab remains an honest "coming soon"
+ * empty state deferred to a future spec.
  */
-export function TournamentDetails({ item }: { item: TournamentListItem }) {
+export async function TournamentDetails({
+  item,
+}: {
+  item: TournamentListItem;
+}) {
   const status = deriveTournamentStatus(
     item.tournament.startDate,
     item.tournament.endDate,
@@ -21,6 +28,7 @@ export function TournamentDetails({ item }: { item: TournamentListItem }) {
   );
 
   const { tournament, metadata } = item;
+  const registrations = await listRegistrations(tournament.address);
 
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-col gap-8 p-6 sm:p-12">
@@ -33,7 +41,11 @@ export function TournamentDetails({ item }: { item: TournamentListItem }) {
               organizer={tournament.organizer}
               metadata={metadata}
             />
-            <JoinTournamentButton />
+            <RegisterLink
+              tournamentAddress={tournament.address}
+              isOpen={status === "soon"}
+              isFull={registrations.length >= tournament.maxPlayers}
+            />
           </>
         }
         overview={<OverviewPanel item={item} />}
@@ -45,9 +57,9 @@ export function TournamentDetails({ item }: { item: TournamentListItem }) {
           />
         }
         participants={
-          <ComingSoonPanel
-            title="Participants coming soon"
-            description="Enrollment is not open yet; participants will be listed here."
+          <ParticipantsPanel
+            registrations={registrations}
+            maxPlayers={tournament.maxPlayers}
           />
         }
       />
