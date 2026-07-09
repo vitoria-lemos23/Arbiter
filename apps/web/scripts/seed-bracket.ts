@@ -1,6 +1,19 @@
-import { loadEnvConfig } from "@next/env";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-loadEnvConfig(process.cwd());
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const envPath = path.resolve(__dirname, "../.env");
+
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, "utf-8");
+  for (const line of envContent.split("\n")) {
+    const match = line.match(/^([^=]+)=(.*)$/);
+    if (match) {
+      process.env[match[1]] = match[2];
+    }
+  }
+}
 
 import { tournamentAbi, tournamentFactoryAbi } from "@arbiter/contracts";
 import {
@@ -68,8 +81,8 @@ async function main() {
     format: 0, // SingleElimination
     maxPlayers: 4,
     entryFee,
-    startDate: now + 86400n, // starts tomorrow
-    endDate: now + 86400n * 2n,
+    startDate: now + BigInt(86400), // starts tomorrow
+    endDate: now + BigInt(86400) * BigInt(2),
     judges: [getAddress(organizerClient.account.address)] as `0x${string}`[],
   };
 
