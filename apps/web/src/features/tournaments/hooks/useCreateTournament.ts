@@ -103,6 +103,7 @@ export function useCreateTournament() {
       name: values.name,
       description: values.description || undefined,
       game: values.game || undefined,
+      rules: values.rules || undefined,
       imageUrl: values.imageUrl || undefined,
       tags: [],
     });

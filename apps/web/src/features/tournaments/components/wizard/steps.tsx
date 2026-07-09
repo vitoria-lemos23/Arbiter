@@ -105,6 +105,24 @@ export function StepName() {
         )}
       />
 
+      <FormField
+        control={control}
+        name="rules"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Rules</FormLabel>
+            <FormControl>
+              <Textarea
+                placeholder={"Match rules, conduct, tie-breakers\u2026"}
+                className="min-h-32"
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
       <CoverImageField />
     </div>
   );

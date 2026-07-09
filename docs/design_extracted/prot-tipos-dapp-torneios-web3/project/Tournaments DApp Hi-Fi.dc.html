@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;font-family:'Space Grotesk',system-ui,sans-serif;color:#f4f5f7;}
+  *{box-sizing:border-box;}
+  .lbl{position:absolute;font-family:'Space Grotesk',sans-serif;}
+</style>
+</helmet>
+
+<!-- ========================= PAGE TITLE ========================= -->
+<div style="position:absolute;left:80px;top:32px;width:1200px">
+  <div style="font-family:'Space Grotesk';font-weight:700;font-size:36px;color:#1d1f26;letter-spacing:-.5px">TournyBox — Hi-Fi Concept</div>
+  <div style="font-size:16px;color:#6b6f7a;margin-top:4px">Web3 tournament DApp · dark esports arena theme · wallet-only · single-elim · fixed prize in escrow. On-chain data shown in mono.</div>
+</div>
+
+<!-- ============================================================= -->
+<!-- ROW 1 · AUTH + MY TOURNAMENTS                                 -->
+<!-- ============================================================= -->
+<div class="lbl" style="left:80px;top:150px;font-weight:700;font-size:24px;color:#1d1f26;letter-spacing:-.3px">1 · Connect wallet</div>
+
+<div style="position:absolute;left:80px;top:230px;width:480px">
+  <div data-drags-parent="1" class="lbl" style="top:-24px;left:2px;font-size:14px;color:#6b6f7a">Auth modal over the app</div>
+  <div style="border-radius:18px;overflow:hidden;box-shadow:0 30px 60px -25px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.06)">
+    <div style="position:relative;height:600px;background:#0c0d12">
+      <!-- blurred app behind -->
+      <div style="position:absolute;inset:0;filter:blur(3px);opacity:.5;padding:16px">
+        <div style="height:46px;border-radius:12px;background:#15171f;margin-bottom:16px"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div style="height:150px;border-radius:14px;background:linear-gradient(160deg,#1d2030,#14161d)"></div>
+          <div style="height:150px;border-radius:14px;background:linear-gradient(160deg,#1d2030,#14161d)"></div>
+          <div style="height:150px;border-radius:14px;background:linear-gradient(160deg,#1d2030,#14161d)"></div>
+          <div style="height:150px;border-radius:14px;background:linear-gradient(160deg,#1d2030,#14161d)"></div>
+        </div>
+      </div>
+      <div style="position:absolute;inset:0;background:radial-gradient(80% 60% at 50% 40%,rgba(123,108,246,.18),rgba(8,9,13,.86))"></div>
+      <!-- modal -->
+      <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:392px;background:#15171f;border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:28px 26px;box-shadow:0 24px 50px -20px rgba(0,0,0,.7)">
+        <div style="position:absolute;right:18px;top:16px;width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,.05);display:grid;place-items:center;color:#8b91a0;font-size:16px">×</div>
+        <div style="width:54px;height:54px;border-radius:15px;background:linear-gradient(140deg,#7b6cf6,#5a3ff0);display:grid;place-items:center;font-weight:700;font-size:24px;box-shadow:0 8px 20px -6px rgba(123,108,246,.7);margin-bottom:16px">T</div>
+        <div style="font-weight:700;font-size:24px;letter-spacing:-.3px">Connect your wallet</div>
+        <div style="font-size:14px;color:#8b91a0;margin-top:4px;margin-bottom:20px;line-height:1.5">No email, no password. Sign in with the wallet you play with.</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:13px;border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:13px 15px;background:rgba(255,255,255,.02)">
+            <span style="width:34px;height:34px;border-radius:9px;background:linear-gradient(140deg,#f6a04b,#e8761c)"></span><span style="font-size:16px;font-weight:500">MetaMask</span><span style="margin-left:auto;font-size:12px;color:#7b6cf6;background:rgba(123,108,246,.14);padding:2px 8px;border-radius:6px">Detected</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:13px;border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:13px 15px;background:rgba(255,255,255,.02)">
+            <span style="width:34px;height:34px;border-radius:9px;background:linear-gradient(140deg,#3b99fc,#1f6fe0)"></span><span style="font-size:16px;font-weight:500">WalletConnect</span><span style="margin-left:auto;color:#5b6170;font-size:18px">›</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:13px;border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:13px 15px;background:rgba(255,255,255,.02)">
+            <span style="width:34px;height:34px;border-radius:9px;background:linear-gradient(140deg,#3f7bff,#244fd6)"></span><span style="font-size:16px;font-weight:500">Coinbase Wallet</span><span style="margin-left:auto;color:#5b6170;font-size:18px">›</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.07)">
+          <span style="width:24px;height:24px;border-radius:7px;background:rgba(123,108,246,.16);color:#a99cff;display:grid;place-items:center;font-size:13px;font-family:'JetBrains Mono'">2</span>
+          <span style="font-size:12.5px;color:#8b91a0">Next: sign a message (SIWE) — no gas, no funds moved.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- My Tournaments -->
+<div class="lbl" style="left:620px;top:150px;width:1060px;font-weight:700;font-size:24px;color:#1d1f26;letter-spacing:-.3px">2 · My Tournaments — tagged by role</div>
+<div style="position:absolute;left:620px;top:230px;width:1060px">
+  <div data-drags-parent="1" class="lbl" style="top:-24px;left:2px;font-size:14px;color:#6b6f7a">Role chip on every card · Owner / Judge / Player</div>
+  <div style="border-radius:18px;overflow:hidden;box-shadow:0 30px 60px -25px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.06);background:#0c0d12">
+    <!-- topbar -->
+    <div style="display:flex;align-items:center;gap:16px;padding:13px 22px;border-bottom:1px solid rgba(255,255,255,.07);background:linear-gradient(#181b24,#15171f)">
+      <div style="display:flex;align-items:center;gap:10px"><span style="width:30px;height:30px;border-radius:9px;background:linear-gradient(140deg,#7b6cf6,#5a3ff0);display:grid;place-items:center;font-weight:700;font-size:16px;box-shadow:0 6px 14px -4px rgba(123,108,246,.7)">T</span><span style="font-weight:700;font-size:18px;letter-spacing:-.2px">TournyBox</span></div>
+      <div style="display:flex;gap:22px;font-size:14.5px;color:#8b91a0;margin-left:16px"><span style="color:#f4f5f7;font-weight:500">My Tournaments</span><span>Discover</span><span>Profile</span></div>
+      <div style="flex:1"></div>
+      <div style="display:flex;align-items:center;gap:7px;background:#7b6cf6;color:#fff;border-radius:11px;padding:8px 15px;font-size:14px;font-weight:600;box-shadow:0 8px 18px -8px rgba(123,108,246,.8)"><span style="font-size:17px;line-height:0">+</span>Create</div>
+      <div style="display:flex;align-items:center;gap:9px;border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:7px 12px;background:rgba(255,255,255,.03)"><span style="width:8px;height:8px;border-radius:50%;background:#2fd98a;box-shadow:0 0 8px #2fd98a"></span><span style="font-family:'JetBrains Mono';font-size:12.5px;color:#cfd3db">0x9f…2A1</span><span style="font-family:'JetBrains Mono';font-size:12.5px;color:#8b91a0">1.84Ξ</span><span style="color:#6b7180">▾</span></div>
+      <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(140deg,#7b6cf6,#3fd0d6)"></div>
+    </div>
+    <div style="padding:22px 24px 26px">
+      <div style="display:flex;align-items:center;margin-bottom:18px">
+        <div style="font-weight:700;font-size:22px;letter-spacing:-.3px">My Tournaments</div>
+        <div style="flex:1"></div>
+        <div style="display:flex;gap:7px;font-size:13px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:4px">
+          <span style="background:#22252f;color:#f4f5f7;border-radius:8px;padding:6px 14px;font-weight:500">All</span>
+          <span style="color:#9aa0ac;padding:6px 14px">Owner</span>
+          <span style="color:#9aa0ac;padding:6px 14px">Judge</span>
+          <span style="color:#9aa0ac;padding:6px 14px">Player</span>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+        <!-- card OWNER live reg -->
+        <div style="background:#15171f;border:1px solid rgba(255,255,255,.07);border-radius:15px;overflow:hidden">
+          <div style="position:relative;height:104px;background:radial-gradient(120% 130% at 0% 0%,#2a2548,#14161d)">
+            <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:20px 20px"></div>
+            <span style="position:absolute;top:10px;left:10px;background:rgba(123,108,246,.2);color:#b8acff;border:1px solid rgba(123,108,246,.35);border-radius:8px;padding:3px 9px;font-size:11px;font-weight:600;letter-spacing:.3px">OWNER</span>
+            <span style="position:absolute;bottom:8px;right:10px;font-family:'JetBrains Mono';font-size:10px;color:rgba(255,255,255,.3)">cover</span>
+          </div>
+          <div style="padding:14px 14px 15px">
+            <div style="font-size:16px;font-weight:600">Spring Smash Cup</div>
+            <div style="font-size:12.5px;color:#8b91a0;margin:4px 0 12px">16 players · starts Apr 12</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px"><span style="background:rgba(47,217,138,.13);color:#3fe39a;border:1px solid rgba(47,217,138,.28);border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600">REG OPEN</span><span style="font-family:'JetBrains Mono';font-size:13px;color:#cfd3db">2.0Ξ</span></div>
+            <div style="border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.03);border-radius:10px;text-align:center;padding:9px;font-size:14px;font-weight:500">Manage</div>
+          </div>
+        </div>
+        <!-- card JUDGE live -->
+        <div style="background:#15171f;border:1px solid rgba(255,255,255,.07);border-radius:15px;overflow:hidden">
+          <div style="position:relative;height:104px;background:radial-gradient(120% 130% at 0% 0%,#23303a,#14161d)">
+            <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:20px 20px"></div>
+            <span style="position:absolute;top:10px;left:10px;background:rgba(63,208,214,.16);color:#6fe0e5;border:1px solid rgba(63,208,214,.32);border-radius:8px;padding:3px 9px;font-size:11px;font-weight:600;letter-spacing:.3px">JUDGE</span>
+            <span style="position:absolute;bottom:8px;right:10px;font-family:'JetBrains Mono';font-size:10px;color:rgba(255,255,255,.3)">cover</span>
+          </div>
+          <div style="padding:14px 14px 15px">
+            <div style="font-size:16px;font-weight:600">Pixel Brawlers Inv.</div>
+            <div style="font-size:12.5px;color:#8b91a0;margin:4px 0 12px">2 matches need your vote</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px"><span style="background:rgba(123,108,246,.16);color:#b8acff;border:1px solid rgba(123,108,246,.3);border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600">LIVE · SF</span><span style="font-family:'JetBrains Mono';font-size:13px;color:#cfd3db">1.2Ξ</span></div>
+            <div style="background:#7b6cf6;color:#fff;border-radius:10px;text-align:center;padding:9px;font-size:14px;font-weight:600;box-shadow:0 8px 16px -8px rgba(123,108,246,.8)">Vote now</div>
+          </div>
+        </div>
+        <!-- card PLAYER live -->
+        <div style="background:#15171f;border:1px solid rgba(255,255,255,.07);border-radius:15px;overflow:hidden">
+          <div style="position:relative;height:104px;background:radial-gradient(120% 130% at 0% 0%,#2c2a33,#14161d)">
+            <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:20px 20px"></div>
+            <span style="position:absolute;top:10px;left:10px;background:rgba(255,255,255,.08);color:#c2c7d0;border:1px solid rgba(255,255,255,.16);border-radius:8px;padding:3px 9px;font-size:11px;font-weight:600;letter-spacing:.3px">PLAYER</span>
+            <span style="position:absolute;bottom:8px;right:10px;font-family:'JetBrains Mono';font-size:10px;color:rgba(255,255,255,.3)">cover</span>
+          </div>
+          <div style="padding:14px 14px 15px">
+            <div style="font-size:16px;font-weight:600">Neon League S3</div>
+            <div style="font-size:12.5px;color:#8b91a0;margin:4px 0 12px">Seed #5 · QF today</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px"><span style="background:rgba(123,108,246,.16);color:#b8acff;border:1px solid rgba(123,108,246,.3);border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600">LIVE · QF</span><span style="font-family:'JetBrains Mono';font-size:13px;color:#cfd3db">3.5Ξ</span></div>
+            <div style="border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.03);border-radius:10px;text-align:center;padding:9px;font-size:14px;font-weight:500">View match</div>
+          </div>
+        </div>
+        <!-- finished owner -->
+        <div style="background:#13141a;border:1px solid rgba(255,255,255,.06);border-radius:15px;overflow:hidden;opacity:.72">
+          <div style="position:relative;height:104px;background:radial-gradient(120% 130% at 0% 0%,#1d1f28,#121319)">
+            <span style="position:absolute;top:10px;left:10px;background:rgba(123,108,246,.16);color:#b8acff;border:1px solid rgba(123,108,246,.3);border-radius:8px;padding:3px 9px;font-size:11px;font-weight:600">OWNER</span>
+          </div>
+          <div style="padding:14px 14px 15px">
+            <div style="font-size:16px;font-weight:600">Winter Clash 2025</div>
+            <div style="font-size:12.5px;color:#8b91a0;margin:4px 0 12px;font-family:'JetBrains Mono'">won by 0x71…9e</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px"><span style="background:rgba(255,255,255,.06);color:#8b91a0;border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600">FINISHED</span><span style="font-family:'JetBrains Mono';font-size:13px;color:#8b91a0">2.0Ξ</span></div>
+            <div style="border:1px solid rgba(255,255,255,.1);border-radius:10px;text-align:center;padding:9px;font-size:14px;font-weight:500;color:#c2c7d0">View results</div>
+          </div>
+        </div>
+        <!-- finished player -->
+        <div style="background:#13141a;border:1px solid rgba(255,255,255,.06);border-radius:15px;overflow:hidden;opacity:.72">
+          <div style="position:relative;height:104px;background:radial-gradient(120% 130% at 0% 0%,#1d1f28,#121319)">
+            <span style="position:absolute;top:10px;left:10px;background:rgba(255,255,255,.08);color:#c2c7d0;border:1px solid rgba(255,255,255,.16);border-radius:8px;padding:3px 9px;font-size:11px;font-weight:600">PLAYER</span>
+          </div>
+          <div style="padding:14px 14px 15px">
+            <div style="font-size:16px;font-weight:600">Retro Cup #4</div>
+            <div style="font-size:12.5px;color:#8b91a0;margin:4px 0 12px">Eliminated · R16</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px"><span style="background:rgba(255,255,255,.06);color:#8b91a0;border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600">FINISHED</span><span style="font-family:'JetBrains Mono';font-size:13px;color:#8b91a0">0.5Ξ</span></div>
+            <div style="border:1px solid rgba(255,255,255,.1);border-radius:10px;text-align:center;padding:9px;font-size:14px;font-weight:500;color:#c2c7d0">View results</div>
+          </div>
+        </div>
+        <!-- create -->
+        <div style="border:1.5px dashed rgba(255,255,255,.14);border-radius:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#7b6cf6;min-height:200px;background:rgba(123,108,246,.04)">
+          <div style="width:42px;height:42px;border-radius:12px;background:rgba(123,108,246,.16);display:grid;place-items:center;font-size:24px;font-weight:300">+</div>
+          <div style="font-size:14px;font-weight:500">New tournament</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================= -->
+<!-- ROW 2 · DISCOVER + CREATE                                     -->
+<!-- ============================================================= -->
+<div class="lbl" style="left:80px;top:1140px;width:1060px;font-weight:700;font-size:24px;color:#1d1f26;letter-spacing:-.3px">3 · Discover</div>
+<div style="position:absolute;left:80px;top:1216px;width:1060px">
+  <div data-drags-parent="1" class="lbl" style="top:-24px;left:2px;font-size:14px;color:#6b6f7a">Featured hero · lateral filter · grid + wide list</div>
+  <div style="border-radius:18px;overflow:hidden;box-shadow:0 30px 60px -25px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.06);background:#0c0d12">
+    <div style="display:flex;align-items:center;gap:16px;padding:13px 22px;border-bottom:1px solid rgba(255,255,255,.07);background:linear-gradient(#181b24,#15171f)">
+      <div style="display:flex;align-items:center;gap:10px"><span style="width:30px;height:30px;border-radius:9px;background:linear-gradient(140deg,#7b6cf6,#5a3ff0);display:grid;place-items:center;font-weight:700;font-size:16px">T</span><span style="font-weight:700;font-size:18px">TournyBox</span></div>
+      <div style="display:flex;gap:22px;font-size:14.5px;color:#8b91a0;margin-left:16px"><span style="color:#f4f5f7;font-weight:500">Discover</span><span>My Tournaments</span><span>Profile</span></div>
+      <div style="flex:1"></div>
+      <div style="display:flex;align-items:center;gap:9px;border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:7px 12px;background:rgba(255,255,255,.03)"><span style="width:8px;height:8px;border-radius:50%;background:#2fd98a;box-shadow:0 0 8px #2fd98a"></span><span style="font-family:'JetBrains Mono';font-size:12.5px;color:#cfd3db">0x9f…2A1</span><span style="color:#6b7180">▾</span></div>
+    </div>
+    <div style="padding:20px 22px 24px">
+      <!-- hero -->
+      <div style="position:relative;height:172px;border-radius:16px;overflow:hidden;margin-bottom:18px;background:linear-gradient(115deg,#2b2350 0%,#3a1f55 45%,#161826 100%)">
+        <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:28px 28px;opacity:.5"></div>
+        <div style="position:absolute;right:-30px;top:-30px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(123,108,246,.5),transparent 65%)"></div>
+        <div style="position:absolute;top:14px;left:16px;font-family:'JetBrains Mono';font-size:10px;color:rgba(255,255,255,.4)">featured</div>
+        <div style="position:absolute;left:0;right:0;bottom:0;padding:18px 20px;background:linear-gradient(transparent,rgba(8,9,13,.55))">
+          <span style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:8px;padding:3px 10px;font-size:11px;font-weight:600;letter-spacing:.3px">FEATURED · REG OPEN</span>
+          <div style="font-weight:700;font-size:26px;letter-spacing:-.4px;margin-top:8px">Mega Smash Open</div>
+          <div style="font-size:13.5px;color:#c2c7d0;margin-top:2px">32 players · single elim · closes in 2 days · <span style="font-family:'JetBrains Mono'">0xAB…f2</span></div>
+        </div>
+        <div style="position:absolute;right:20px;bottom:20px;display:flex;align-items:center;gap:12px">
+          <div style="text-align:right"><div style="font-size:11px;color:#c2c7d0">Prize</div><div style="font-family:'JetBrains Mono';font-weight:600;font-size:20px;color:#fff">5.0Ξ</div></div>
+          <div style="background:#fff;color:#15171f;border-radius:11px;padding:11px 22px;font-size:15px;font-weight:600">Join</div>
+        </div>
+      </div>
+      <!-- body -->
+      <div style="display:flex;gap:18px">
+        <!-- lateral filter -->
+        <div style="width:206px;flex:none;background:#13141a;border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:16px;font-size:13.5px">
+          <div style="font-weight:600;font-size:15px;margin-bottom:14px">Filters</div>
+          <div style="color:#6b7180;font-size:12px;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Status</div>
+          <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:16px;color:#c2c7d0">
+            <div style="display:flex;align-items:center;gap:9px"><span style="width:17px;height:17px;border-radius:5px;background:#7b6cf6;display:grid;place-items:center;font-size:11px;color:#fff">✓</span>Registration open</div>
+            <div style="display:flex;align-items:center;gap:9px;color:#8b91a0"><span style="width:17px;height:17px;border-radius:5px;border:1px solid rgba(255,255,255,.18)"></span>Live</div>
+            <div style="display:flex;align-items:center;gap:9px;color:#8b91a0"><span style="width:17px;height:17px;border-radius:5px;border:1px solid rgba(255,255,255,.18)"></span>Upcoming</div>
+            <div style="display:flex;align-items:center;gap:9px;color:#8b91a0"><span style="width:17px;height:17px;border-radius:5px;border:1px solid rgba(255,255,255,.18)"></span>Finished</div>
+          </div>
+          <div style="color:#6b7180;font-size:12px;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Game</div>
+          <div style="border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:8px 11px;color:#8b91a0;margin-bottom:16px;display:flex;justify-content:space-between">All games<span>▾</span></div>
+          <div style="color:#6b7180;font-size:12px;text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px">Prize (Ξ)</div>
+          <div style="height:5px;background:rgba(255,255,255,.1);border-radius:4px;position:relative;margin:0 3px 8px"><div style="position:absolute;left:18%;right:28%;top:0;bottom:0;background:#7b6cf6;border-radius:4px"></div><span style="position:absolute;left:18%;top:-6px;width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid #7b6cf6"></span><span style="position:absolute;left:72%;top:-6px;width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid #7b6cf6"></span></div>
+          <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono';font-size:11px;color:#8b91a0;margin-bottom:16px"><span>0.5</span><span>8.0</span></div>
+          <div style="color:#6b7180;font-size:12px;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Format</div>
+          <div style="display:flex;align-items:center;gap:9px;color:#c2c7d0;margin-bottom:16px"><span style="width:17px;height:17px;border-radius:5px;background:#7b6cf6;display:grid;place-items:center;font-size:11px;color:#fff">✓</span>Single elimination</div>
+          <div style="border-top:1px solid rgba(255,255,255,.07);padding-top:13px;color:#7b6cf6;font-size:13px;font-weight:500">Clear all</div>
+        </div>
+        <!-- content -->
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+            <div style="flex:1;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);border-radius:11px;padding:10px 15px;color:#8b91a0;font-size:14px;display:flex;align-items:center;gap:9px"><span style="width:14px;height:14px;border:1.5px solid #6b7180;border-radius:50%;position:relative;display:inline-block"></span>Search tournaments, games, organizers…</div>
+            <div style="border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:10px 15px;font-size:13px;color:#c2c7d0">Starting soon ▾</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px">
+            <div style="background:#15171f;border:1px solid rgba(255,255,255,.07);border-radius:14px;overflow:hidden">
+              <div style="position:relative;height:80px;background:radial-gradient(130% 130% at 0% 0%,#2a2548,#14161d)"><div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:18px 18px"></div></div>
+              <div style="padding:12px 13px 13px">
+                <div style="font-size:15px;font-weight:600">Indie Fighter Cup</div>
+                <div style="font-size:12px;color:#8b91a0;margin:3px 0 10px;font-family:'JetBrains Mono'">0x12…9c · 16p</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px"><span style="background:rgba(47,217,138,.13);color:#3fe39a;border:1px solid rgba(47,217,138,.28);border-radius:7px;padding:2px 8px;font-size:11px;font-weight:600">REG OPEN</span><span style="font-family:'JetBrains Mono';font-size:13px;color:#cfd3db">1.5Ξ</span></div>
+                <div style="background:#7b6cf6;color:#fff;border-radius:9px;text-align:center;padding:8px;font-size:13.5px;font-weight:600">View &amp; join</div>
+              </div>
+            </div>
+            <div style="background:#15171f;border:1px solid rgba(255,255,255,.07);border-radius:14px;overflow:hidden">
+              <div style="position:relative;height:80px;background:radial-gradient(130% 130% at 0% 0%,#23303a,#14161d)"><div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:18px 18px"></div></div>
+              <div style="padding:12px 13px 13px">
+                <div style="font-size:15px;font-weight:600">Card Clash Weekly</div>
+                <div style="font-size:12px;color:#8b91a0;margin:3px 0 10px;font-family:'JetBrains Mono'">0x5e…aa · 16p</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px"><span style="background:rgba(47,217,138,.13);color:#3fe39a;border:1px solid rgba(47,217,138,.28);border-radius:7px;padding:2px 8px;font-size:11px;font-weight:600">REG OPEN</span><span style="font-family:'JetBrains Mono';font-size:13px;color:#cfd3db">1.0Ξ</span></div>
+                <div style="background:#7b6cf6;color:#fff;border-radius:9px;text-align:center;padding:8px;font-size:13.5px;font-weight:600">View &amp; join</div>
+              </div>
+            </div>
+            <div style="background:#15171f;border:1px solid rgba(255,255,255,.07);border-radius:14px;overflow:hidden">
+              <div style="position:relative;height:80px;background:radial-gradient(130% 130% at 0% 0%,#332b1f,#14161d)"><div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:18px 18px"></div></div>
+              <div style="padding:12px 13px 13px">
+                <div style="font-size:15px;font-weight:600">Chain Chess Masters</div>
+                <div style="font-size:12px;color:#8b91a0;margin:3px 0 10px;font-family:'JetBrains Mono'">0x77…1e · 64p</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px"><span style="background:rgba(243,177,78,.14);color:#f6c168;border:1px solid rgba(243,177,78,.3);border-radius:7px;padding:2px 8px;font-size:11px;font-weight:600">SOON</span><span style="font-family:'JetBrains Mono';font-size:13px;color:#cfd3db">8.0Ξ</span></div>
+                <div style="border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.03);border-radius:9px;text-align:center;padding:8px;font-size:13.5px;font-weight:500">View</div>
+              </div>
+            </div>
+          </div>
+          <div style="font-weight:600;font-size:15px;margin-bottom:6px">More tournaments</div>
+          <div style="display:flex;flex-direction:column">
+            <div style="display:flex;align-items:center;gap:14px;padding:12px 4px;border-bottom:1px solid rgba(255,255,255,.06)">
+              <div style="width:64px;height:42px;border-radius:9px;background:radial-gradient(130% 130% at 0% 0%,#2c2a33,#14161d);flex:none"></div>
+              <div style="flex:1"><div style="font-size:15px;font-weight:600">Speedrun Gauntlet</div><div style="font-size:12px;color:#8b91a0">8 players · single elim · <span style="font-family:'JetBrains Mono'">0x09…4d</span></div></div>
+              <span style="background:rgba(123,108,246,.16);color:#b8acff;border:1px solid rgba(123,108,246,.3);border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600">LIVE</span>
+              <div style="width:64px;text-align:right;font-family:'JetBrains Mono';font-size:13px;color:#cfd3db">0.8Ξ</div>
+              <div style="border:1px solid rgba(255,255,255,.13);border-radius:9px;padding:7px 16px;font-size:13.5px;font-weight:500">Watch</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;padding:12px 4px;border-bottom:1px solid rgba(255,255,255,.06)">
+              <div style="width:64px;height:42px;border-radius:9px;background:radial-gradient(130% 130% at 0% 0%,#332b1f,#14161d);flex:none"></div>
+              <div style="flex:1"><div style="font-size:15px;font-weight:600">Block Battle Royale</div><div style="font-size:12px;color:#8b91a0">32 players · opens in 6d · <span style="font-family:'JetBrains Mono'">0xC1…7b</span></div></div>
+              <span style="background:rgba(243,177,78,.14);color:#f6c168;border:1px solid rgba(243,177,78,.3);border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600">SOON</span>
+              <div style="width:64px;text-align:right;font-family:'JetBrains Mono';font-size:13px;color:#cfd3db">4.2Ξ</div>
+              <div style="border:1px solid rgba(255,255,255,.13);border-radius:9px;padding:7px 16px;font-size:13.5px;font-weight:500">View</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;padding:12px 4px">
+              <div style="width:64px;height:42px;border-radius:9px;background:radial-gradient(130% 130% at 0% 0%,#2a2548,#14161d);flex:none"></div>
+              <div style="flex:1"><div style="font-size:15px;font-weight:600">Retro Rumble #5</div><div style="font-size:12px;color:#8b91a0">16 players · closes in 3d · <span style="font-family:'JetBrains Mono'">0x2a…61</span></div></div>
+              <span style="background:rgba(47,217,138,.13);color:#3fe39a;border:1px solid rgba(47,217,138,.28);border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600">REG OPEN</span>
+              <div style="width:64px;text-align:right;font-family:'JetBrains Mono';font-size:13px;color:#cfd3db">0.6Ξ</div>
+              <div style="background:#7b6cf6;color:#fff;border-radius:9px;padding:7px 16px;font-size:13.5px;font-weight:600">Join</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create wizard -->
+<div class="lbl" style="left:1200px;top:1140px;width:1040px;font-weight:700;font-size:24px;color:#1d1f26;letter-spacing:-.3px">4 · Create / Edit — wizard</div>
+<div class="lbl" style="left:1200px;top:1174px;width:1040px;font-size:14px;color:#6b6f7a;font-weight:400">Publish deploys an EIP-1167 proxy via the Factory + locks the prize in escrow.</div>
+<div style="position:absolute;left:1200px;top:1216px;width:1040px">
+  <div data-drags-parent="1" class="lbl" style="top:-24px;left:2px;font-size:14px;color:#6b6f7a">Step 3 of 5 · Prize &amp; escrow</div>
+  <div style="border-radius:18px;overflow:hidden;box-shadow:0 30px 60px -25px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.06);background:#0c0d12">
+    <div style="display:flex;align-items:center;gap:16px;padding:13px 22px;border-bottom:1px solid rgba(255,255,255,.07);background:linear-gradient(#181b24,#15171f)">
+      <div style="display:flex;align-items:center;gap:10px"><span style="width:30px;height:30px;border-radius:9px;background:linear-gradient(140deg,#7b6cf6,#5a3ff0);display:grid;place-items:center;font-weight:700;font-size:16px">T</span><span style="font-weight:700;font-size:18px">TournyBox</span></div>
+      <div style="flex:1"></div>
+      <div style="font-size:14px;color:#8b91a0">Create tournament · <span style="color:#f4f5f7;font-weight:500">Step 3 / 5</span></div>
+    </div>
+    <!-- stepper -->
+    <div style="display:flex;align-items:center;padding:18px 26px 8px">
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:28px;height:28px;border-radius:50%;background:#2fd98a;color:#0c0d12;display:grid;place-items:center;font-size:13px;font-weight:700">✓</span><span style="font-size:13px;color:#8b91a0">Basics</span></div>
+      <div style="flex:1;height:2px;background:#2fd98a;margin:0 10px;border-radius:2px"></div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:28px;height:28px;border-radius:50%;background:#2fd98a;color:#0c0d12;display:grid;place-items:center;font-size:13px;font-weight:700">✓</span><span style="font-size:13px;color:#8b91a0">Format</span></div>
+      <div style="flex:1;height:2px;background:linear-gradient(90deg,#2fd98a,#7b6cf6);margin:0 10px;border-radius:2px"></div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:28px;height:28px;border-radius:50%;background:#7b6cf6;color:#fff;display:grid;place-items:center;font-size:13px;font-weight:700;box-shadow:0 0 0 4px rgba(123,108,246,.2)">3</span><span style="font-size:13px;color:#f4f5f7;font-weight:500">Prize</span></div>
+      <div style="flex:1;height:2px;background:rgba(255,255,255,.1);margin:0 10px;border-radius:2px"></div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:28px;height:28px;border-radius:50%;border:1px solid rgba(255,255,255,.18);color:#8b91a0;display:grid;place-items:center;font-size:13px">4</span><span style="font-size:13px;color:#6b7180">Judges</span></div>
+      <div style="flex:1;height:2px;background:rgba(255,255,255,.1);margin:0 10px;border-radius:2px"></div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:28px;height:28px;border-radius:50%;border:1px solid rgba(255,255,255,.18);color:#8b91a0;display:grid;place-items:center;font-size:13px">5</span><span style="font-size:13px;color:#6b7180">Review</span></div>
+    </div>
+    <div style="padding:20px 26px;display:flex;gap:30px">
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:23px;letter-spacing:-.3px">Prize &amp; escrow</div>
+        <div style="font-size:14px;color:#8b91a0;margin:5px 0 22px;line-height:1.5">A fixed prize you deposit on publish. Held in the tournament's escrow contract and auto-released to the champion.</div>
+        <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:14px;margin-bottom:20px">
+          <div><div style="font-size:13px;color:#8b91a0;margin-bottom:7px">Prize amount</div><div style="border:1px solid #7b6cf6;background:rgba(123,108,246,.06);border-radius:11px;padding:13px 14px;font-family:'JetBrains Mono';font-size:20px;font-weight:600">2.0</div></div>
+          <div><div style="font-size:13px;color:#8b91a0;margin-bottom:7px">Token</div><div style="border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:13px 14px;font-size:18px;display:flex;justify-content:space-between;align-items:center"><span><span style="font-family:'JetBrains Mono'">Ξ</span> ETH</span><span style="color:#6b7180;font-size:14px">▾</span></div></div>
+        </div>
+        <div style="font-size:13px;color:#8b91a0;margin-bottom:10px">Payout split</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px"><span style="width:90px;font-size:14px;color:#c2c7d0">1st place</span><div style="flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:5px;position:relative"><div style="position:absolute;inset:0;background:linear-gradient(90deg,#7b6cf6,#9b8cff);border-radius:5px"></div></div><span style="font-family:'JetBrains Mono';font-size:14px;width:46px;text-align:right">100%</span></div>
+        <div style="font-size:13px;color:#7b6cf6;font-weight:500">+ Add 2nd / 3rd place split</div>
+      </div>
+      <!-- escrow summary -->
+      <div style="width:300px;flex:none;background:#13141a;border:1px solid rgba(123,108,246,.25);border-radius:15px;padding:18px;align-self:flex-start">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px"><span style="width:26px;height:26px;border-radius:8px;background:rgba(123,108,246,.18);color:#b8acff;display:grid;place-items:center;font-size:13px">◆</span><span style="font-weight:600;font-size:15px">Escrow on publish</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13.5px;color:#c2c7d0;padding:7px 0"><span style="color:#8b91a0">Prize locked</span><span style="font-family:'JetBrains Mono'">2.0Ξ</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13.5px;color:#c2c7d0;padding:7px 0"><span style="color:#8b91a0">Proxy deploy (EIP-1167)</span><span style="font-family:'JetBrains Mono'">~0.004Ξ</span></div>
+        <div style="border-top:1px solid rgba(255,255,255,.09);margin:9px 0"></div>
+        <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:600;padding:5px 0"><span>Total to confirm</span><span style="font-family:'JetBrains Mono';color:#b8acff">~2.004Ξ</span></div>
+        <div style="font-size:11.5px;color:#6b7180;margin-top:10px;line-height:1.5">Funds are returned to you if the tournament is cancelled before it starts.</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;padding:16px 26px;border-top:1px solid rgba(255,255,255,.07);background:#101117">
+      <div style="border:1px solid rgba(255,255,255,.13);border-radius:10px;padding:10px 18px;font-size:14px;font-weight:500;color:#c2c7d0">← Back</div>
+      <div style="flex:1"></div>
+      <div style="font-size:12.5px;color:#6b7180">Deposit happens at the final step</div>
+      <div style="background:#7b6cf6;color:#fff;border-radius:10px;padding:10px 22px;font-size:14px;font-weight:600;box-shadow:0 8px 18px -8px rgba(123,108,246,.8)">Next: Judges →</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================= -->
+<!-- ROW 3 · REGISTRATION + TOURNAMENT VIEW                        -->
+<!-- ============================================================= -->
+<div class="lbl" style="left:80px;top:2120px;width:1000px;font-weight:700;font-size:24px;color:#1d1f26;letter-spacing:-.3px">5 · Register to play</div>
+<div style="position:absolute;left:80px;top:2196px;width:1000px">
+  <div data-drags-parent="1" class="lbl" style="top:-24px;left:2px;font-size:14px;color:#6b6f7a">Set off-chain profile · join on-chain with a signature</div>
+  <div style="border-radius:18px;overflow:hidden;box-shadow:0 30px 60px -25px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.06);background:#0c0d12">
+    <div style="display:flex;align-items:center;gap:16px;padding:13px 22px;border-bottom:1px solid rgba(255,255,255,.07);background:linear-gradient(#181b24,#15171f)">
+      <div style="display:flex;align-items:center;gap:10px"><span style="width:30px;height:30px;border-radius:9px;background:linear-gradient(140deg,#7b6cf6,#5a3ff0);display:grid;place-items:center;font-weight:700;font-size:16px">T</span><span style="font-weight:700;font-size:18px">TournyBox</span></div>
+      <div style="flex:1"></div>
+      <div style="display:flex;align-items:center;gap:9px;border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:7px 12px;background:rgba(255,255,255,.03)"><span style="width:8px;height:8px;border-radius:50%;background:#2fd98a;box-shadow:0 0 8px #2fd98a"></span><span style="font-family:'JetBrains Mono';font-size:12.5px;color:#cfd3db">0x9f…2A1</span><span style="color:#6b7180">▾</span></div>
+    </div>
+    <div style="display:flex">
+      <!-- summary -->
+      <div style="width:344px;flex:none;border-right:1px solid rgba(255,255,255,.07);padding:20px;background:#101117">
+        <div style="position:relative;height:120px;border-radius:13px;overflow:hidden;background:linear-gradient(115deg,#2b2350,#161826);margin-bottom:14px"><div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:22px 22px;opacity:.5"></div></div>
+        <div style="font-weight:700;font-size:19px;letter-spacing:-.2px">Mega Smash Open</div>
+        <div style="font-size:12.5px;color:#8b91a0;margin:4px 0 14px;font-family:'JetBrains Mono'">by 0xAB…f2</div>
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:16px"><span style="background:rgba(47,217,138,.13);color:#3fe39a;border:1px solid rgba(47,217,138,.28);border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600">REG OPEN</span><span style="font-size:12.5px;color:#8b91a0">closes in 2 days</span></div>
+        <div style="font-size:13.5px">
+          <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06)"><span style="color:#8b91a0">Format</span><span>Single elim · 32</span></div>
+          <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06)"><span style="color:#8b91a0">Slots filled</span><span style="font-family:'JetBrains Mono'">27 / 32</span></div>
+          <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06)"><span style="color:#8b91a0">Prize (escrow)</span><span style="font-family:'JetBrains Mono';color:#3fe39a">5.0Ξ ✓</span></div>
+          <div style="display:flex;justify-content:space-between;padding:9px 0"><span style="color:#8b91a0">Entry fee</span><span>Free</span></div>
+        </div>
+      </div>
+      <!-- form -->
+      <div style="flex:1;padding:24px 26px">
+        <div style="font-weight:700;font-size:22px;letter-spacing:-.3px">Register to play</div>
+        <div style="font-size:13.5px;color:#8b91a0;margin:5px 0 22px;line-height:1.5">Name &amp; avatar are stored off-chain (Supabase). Joining is recorded on-chain with a wallet signature.</div>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+          <div style="width:66px;height:66px;border-radius:50%;background:linear-gradient(140deg,#7b6cf6,#3fd0d6);flex:none;position:relative"><span style="position:absolute;right:-2px;bottom:-2px;width:24px;height:24px;border-radius:50%;background:#15171f;border:1px solid rgba(255,255,255,.15);display:grid;place-items:center;font-size:12px;color:#c2c7d0">+</span></div>
+          <div><div style="font-size:14px;font-weight:500;margin-bottom:3px">Profile avatar</div><div style="font-size:12.5px;color:#8b91a0">PNG / JPG · stored off-chain</div></div>
+        </div>
+        <div style="margin-bottom:16px"><div style="font-size:13px;color:#8b91a0;margin-bottom:7px">Display name</div><div style="border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 13px;font-size:15px;max-width:400px">PixelKnight</div></div>
+        <div style="margin-bottom:18px"><div style="font-size:13px;color:#8b91a0;margin-bottom:7px">In-game handle / ID <span style="color:#6b7180">(optional)</span></div><div style="border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 13px;font-size:15px;color:#6b7180;max-width:400px">e.g. PK#2031</div></div>
+        <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:22px;font-size:13.5px;color:#c2c7d0;max-width:430px"><span style="width:18px;height:18px;border-radius:5px;background:#7b6cf6;display:grid;place-items:center;font-size:11px;flex:none;margin-top:1px;color:#fff">✓</span>I have read and accept the tournament rules &amp; judging policy.</div>
+        <div style="display:flex;align-items:center;gap:16px">
+          <div style="background:#7b6cf6;color:#fff;border-radius:11px;padding:13px 26px;font-size:15px;font-weight:600;box-shadow:0 10px 22px -8px rgba(123,108,246,.8)">Register &amp; sign</div>
+          <span style="font-size:12.5px;color:#8b91a0;line-height:1.4">Signature in your wallet<br>~<span style="font-family:'JetBrains Mono'">0.0008Ξ</span> gas to join</span>
+        </div>
+        <div style="margin-top:22px;background:rgba(63,208,214,.06);border:1px solid rgba(63,208,214,.2);border-radius:11px;padding:13px 15px;font-size:12.5px;color:#9fd9dc">You'll be seeded into the bracket when registration closes. You can withdraw any time before then.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tournament view -->
+<div class="lbl" style="left:1120px;top:2120px;width:1120px;font-weight:700;font-size:24px;color:#1d1f26;letter-spacing:-.3px">6 · Tournament view — bracket + match panel</div>
+<div style="position:absolute;left:1120px;top:2196px;width:1120px">
+  <div data-drags-parent="1" class="lbl" style="top:-24px;left:2px;font-size:14px;color:#6b6f7a">Full bracket · click a match for live judge votes</div>
+  <div style="border-radius:18px;overflow:hidden;box-shadow:0 30px 60px -25px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.06);background:#0c0d12">
+    <div style="display:flex;align-items:center;gap:16px;padding:13px 22px;border-bottom:1px solid rgba(255,255,255,.07);background:linear-gradient(#181b24,#15171f)">
+      <div style="display:flex;align-items:center;gap:10px"><span style="width:30px;height:30px;border-radius:9px;background:linear-gradient(140deg,#7b6cf6,#5a3ff0);display:grid;place-items:center;font-weight:700;font-size:16px">T</span><span style="font-weight:700;font-size:18px">TournyBox</span></div>
+      <div style="flex:1"></div>
+      <div style="display:flex;align-items:center;gap:9px;border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:7px 12px;background:rgba(255,255,255,.03)"><span style="width:8px;height:8px;border-radius:50%;background:#2fd98a"></span><span style="font-family:'JetBrains Mono';font-size:12.5px;color:#cfd3db">0x9f…2A1</span><span style="color:#6b7180">▾</span></div>
+    </div>
+    <!-- summary bar -->
+    <div style="display:flex;align-items:center;gap:15px;padding:16px 22px;border-bottom:1px solid rgba(255,255,255,.07)">
+      <div style="width:58px;height:42px;border-radius:10px;background:radial-gradient(130% 130% at 0% 0%,#2a2548,#14161d);flex:none"></div>
+      <div><div style="font-weight:700;font-size:19px;letter-spacing:-.2px">Neon League · Season 3</div><div style="font-size:12.5px;color:#8b91a0">Single elim · 8 players · <span style="font-family:'JetBrains Mono'">0x77…1e</span></div></div>
+      <span style="background:rgba(123,108,246,.16);color:#b8acff;border:1px solid rgba(123,108,246,.3);border-radius:8px;padding:4px 11px;font-size:12px;font-weight:600">LIVE · SF</span>
+      <div style="flex:1"></div>
+      <div style="text-align:right"><div style="font-size:11.5px;color:#8b91a0">Prize in escrow</div><div style="font-family:'JetBrains Mono';font-weight:600;font-size:18px;color:#3fe39a">3.5Ξ ✓</div></div>
+    </div>
+    <div style="display:flex;gap:24px;font-size:14px;padding:0 22px;border-bottom:1px solid rgba(255,255,255,.07);color:#8b91a0"><span style="color:#f4f5f7;font-weight:500;padding:12px 0;border-bottom:2px solid #7b6cf6">Bracket</span><span style="padding:12px 0">Overview</span><span style="padding:12px 0">Participants</span><span style="padding:12px 0">Rules</span></div>
+    <div style="display:flex">
+      <!-- bracket -->
+      <div style="flex:1;padding:24px 18px;display:flex;align-items:center;gap:28px;border-right:1px solid rgba(255,255,255,.07)">
+        <div style="display:flex;flex-direction:column;gap:14px;flex:none">
+          <div style="font-size:11px;color:#6b7180;letter-spacing:.6px;font-weight:600">QUARTERFINALS</div>
+          <div style="border:1px solid rgba(255,255,255,.1);border-radius:10px;width:148px;overflow:hidden;background:#15171f"><div style="display:flex;justify-content:space-between;padding:7px 10px;border-left:3px solid #7b6cf6;font-size:12.5px;font-weight:600">PixelKnight<span style="font-family:'JetBrains Mono'">2</span></div><div style="display:flex;justify-content:space-between;padding:7px 10px;font-size:12.5px;color:#8b91a0;font-family:'JetBrains Mono'">0x3c…b7<span>1</span></div></div>
+          <div style="border:1px solid rgba(255,255,255,.1);border-radius:10px;width:148px;overflow:hidden;background:#15171f"><div style="display:flex;justify-content:space-between;padding:7px 10px;font-size:12.5px;color:#8b91a0;font-family:'JetBrains Mono'">0x91…4a<span>0</span></div><div style="display:flex;justify-content:space-between;padding:7px 10px;border-left:3px solid #7b6cf6;font-size:12.5px;font-weight:600">NovaStar<span style="font-family:'JetBrains Mono'">2</span></div></div>
+          <div style="border:1px solid rgba(255,255,255,.1);border-radius:10px;width:148px;overflow:hidden;background:#15171f"><div style="display:flex;justify-content:space-between;padding:7px 10px;border-left:3px solid #7b6cf6;font-size:12.5px;font-weight:600">ByteRider<span style="font-family:'JetBrains Mono'">2</span></div><div style="display:flex;justify-content:space-between;padding:7px 10px;font-size:12.5px;color:#8b91a0;font-family:'JetBrains Mono'">0x08…d2<span>0</span></div></div>
+          <div style="border:1px solid rgba(255,255,255,.1);border-radius:10px;width:148px;overflow:hidden;background:#15171f"><div style="display:flex;justify-content:space-between;padding:7px 10px;font-size:12.5px;color:#8b91a0;font-family:'JetBrains Mono'">0x55…ff<span>1</span></div><div style="display:flex;justify-content:space-between;padding:7px 10px;border-left:3px solid #7b6cf6;font-size:12.5px;font-weight:600">GlitchCat<span style="font-family:'JetBrains Mono'">2</span></div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:70px;flex:none">
+          <div style="font-size:11px;color:#6b7180;letter-spacing:.6px;font-weight:600">SEMIFINALS</div>
+          <div style="border:1px solid #7b6cf6;border-radius:10px;width:148px;overflow:hidden;background:rgba(123,108,246,.08);box-shadow:0 0 0 3px rgba(123,108,246,.18)"><div style="display:flex;justify-content:space-between;padding:7px 10px;font-size:12.5px;font-weight:600">PixelKnight<span style="color:#6b7180;font-family:'JetBrains Mono'">–</span></div><div style="display:flex;justify-content:space-between;padding:7px 10px;font-size:12.5px;font-weight:600">NovaStar<span style="color:#6b7180;font-family:'JetBrains Mono'">–</span></div></div>
+          <div style="border:1px solid rgba(255,255,255,.1);border-radius:10px;width:148px;overflow:hidden;background:#15171f"><div style="display:flex;justify-content:space-between;padding:7px 10px;font-size:12.5px">ByteRider<span style="color:#6b7180;font-family:'JetBrains Mono'">–</span></div><div style="display:flex;justify-content:space-between;padding:7px 10px;font-size:12.5px">GlitchCat<span style="color:#6b7180;font-family:'JetBrains Mono'">–</span></div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;flex:none;align-self:center">
+          <div style="font-size:11px;color:#6b7180;letter-spacing:.6px;font-weight:600">FINAL</div>
+          <div style="border:1px dashed rgba(255,255,255,.16);border-radius:10px;width:148px;overflow:hidden;color:#6b7180"><div style="display:flex;justify-content:space-between;padding:7px 10px;font-size:12.5px">TBD<span style="font-family:'JetBrains Mono'">–</span></div><div style="display:flex;justify-content:space-between;padding:7px 10px;font-size:12.5px">TBD<span style="font-family:'JetBrains Mono'">–</span></div></div>
+        </div>
+        <div style="flex:none;align-self:center;text-align:center">
+          <div style="font-size:11px;color:#6b7180;letter-spacing:.6px;font-weight:600;margin-bottom:12px">CHAMPION</div>
+          <div style="width:76px;height:76px;border-radius:16px;background:linear-gradient(140deg,rgba(241,198,75,.18),rgba(255,255,255,.02));border:1px solid rgba(241,198,75,.3);display:grid;place-items:center;font-size:26px;color:#f1c64b">?</div>
+          <div style="font-family:'JetBrains Mono';font-size:12.5px;margin-top:8px;color:#f1c64b">5.0Ξ</div>
+        </div>
+      </div>
+      <!-- detail panel -->
+      <div style="width:316px;flex:none;padding:20px;background:#101117">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:16px"><span style="background:rgba(123,108,246,.16);color:#b8acff;border:1px solid rgba(123,108,246,.3);border-radius:7px;padding:3px 9px;font-size:11px;font-weight:600">SF · LIVE</span><span style="font-size:12px;color:#8b91a0">awaiting judges</span></div>
+        <div style="display:flex;align-items:center;gap:11px;border:1px solid #7b6cf6;background:rgba(123,108,246,.06);border-radius:11px;padding:11px;margin-bottom:9px">
+          <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(140deg,#7b6cf6,#3fd0d6);flex:none"></div>
+          <div style="flex:1"><div style="font-size:14.5px;font-weight:600">PixelKnight</div><div style="font-size:11px;color:#8b91a0;font-family:'JetBrains Mono'">0x9f…2A1 · seed 1</div></div>
+        </div>
+        <div style="text-align:center;font-size:12px;color:#6b7180;margin:5px 0">vs</div>
+        <div style="display:flex;align-items:center;gap:11px;border:1px solid rgba(255,255,255,.1);border-radius:11px;padding:11px;margin-bottom:18px">
+          <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(140deg,#f3b14e,#e8761c);flex:none"></div>
+          <div style="flex:1"><div style="font-size:14.5px;font-weight:600">NovaStar</div><div style="font-size:11px;color:#8b91a0;font-family:'JetBrains Mono'">0x41…c8 · seed 4</div></div>
+        </div>
+        <div style="font-size:12.5px;color:#8b91a0;margin-bottom:9px">Judge votes · majority of 3</div>
+        <div style="display:flex;flex-direction:column;gap:9px;font-size:13px;margin-bottom:18px">
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:'JetBrains Mono';color:#c2c7d0">0x44…9a</span><span style="color:#3fe39a;display:flex;align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:#3fe39a"></span>PixelKnight</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:'JetBrains Mono';color:#c2c7d0">judge.eth</span><span style="color:#6b7180">pending…</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:'JetBrains Mono';color:#c2c7d0">0x7d…02</span><span style="color:#6b7180">pending…</span></div>
+        </div>
+        <div style="border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.03);border-radius:10px;text-align:center;padding:10px;font-size:13.5px;font-weight:500">View submissions</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================= -->
+<!-- ROW 4 · JUDGE VOTING + PROFILE                                -->
+<!-- ============================================================= -->
+<div class="lbl" style="left:80px;top:3010px;width:1040px;font-weight:700;font-size:24px;color:#1d1f26;letter-spacing:-.3px">7 · Judge — vote on a match</div>
+<div style="position:absolute;left:80px;top:3086px;width:1040px">
+  <div data-drags-parent="1" class="lbl" style="top:-24px;left:2px;font-size:14px;color:#6b6f7a">Pick winner + sign · majority decides, prize stays in escrow</div>
+  <div style="border-radius:18px;overflow:hidden;box-shadow:0 30px 60px -25px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.06);background:#0c0d12">
+    <div style="display:flex;align-items:center;gap:14px;padding:13px 22px;border-bottom:1px solid rgba(255,255,255,.07);background:linear-gradient(#181b24,#15171f)">
+      <div style="display:flex;align-items:center;gap:10px"><span style="width:30px;height:30px;border-radius:9px;background:linear-gradient(140deg,#7b6cf6,#5a3ff0);display:grid;place-items:center;font-weight:700;font-size:16px">T</span><span style="font-weight:700;font-size:18px">TournyBox</span></div>
+      <div style="font-size:12.5px;color:#8b91a0;margin-left:10px">Pixel Brawlers Inv. <span style="color:#5b6170">›</span> Semifinals <span style="color:#5b6170">›</span> Match 1</div>
+      <div style="flex:1"></div>
+      <span style="background:rgba(63,208,214,.14);color:#6fe0e5;border:1px solid rgba(63,208,214,.3);border-radius:8px;padding:4px 11px;font-size:11.5px;font-weight:600">YOU ARE JUDGE</span>
+      <div style="display:flex;align-items:center;gap:9px;border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:7px 12px;background:rgba(255,255,255,.03)"><span style="width:8px;height:8px;border-radius:50%;background:#2fd98a"></span><span style="font-family:'JetBrains Mono';font-size:12.5px;color:#cfd3db">0x44…9a</span><span style="color:#6b7180">▾</span></div>
+    </div>
+    <div style="padding:22px 26px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <div style="font-weight:700;font-size:23px;letter-spacing:-.3px">Who won this match?</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:12.5px;color:#8b91a0"><div style="display:flex;gap:4px"><span style="width:18px;height:5px;border-radius:3px;background:#3fe39a"></span><span style="width:18px;height:5px;border-radius:3px;background:rgba(255,255,255,.12)"></span><span style="width:18px;height:5px;border-radius:3px;background:rgba(255,255,255,.12)"></span></div>1 / 3 voted · majority needed</div>
+      </div>
+      <div style="display:flex;align-items:stretch;gap:18px;margin-bottom:22px">
+        <!-- selected -->
+        <div style="flex:1;border:1.5px solid #7b6cf6;border-radius:15px;padding:18px;background:rgba(123,108,246,.07);position:relative">
+          <span style="position:absolute;top:14px;right:14px;width:22px;height:22px;border-radius:50%;background:#7b6cf6;display:grid;place-items:center;font-size:12px;color:#fff">✓</span>
+          <div style="display:flex;align-items:center;gap:13px;margin-bottom:14px"><div style="width:50px;height:50px;border-radius:50%;background:linear-gradient(140deg,#7b6cf6,#3fd0d6);flex:none"></div><div><div style="font-size:18px;font-weight:600">PixelKnight</div><div style="font-size:12px;color:#8b91a0;font-family:'JetBrains Mono'">0x9f…2A1 · seed 1</div></div></div>
+          <div style="position:relative;height:96px;border-radius:11px;background:radial-gradient(130% 130% at 0% 0%,#2a2548,#14161d);margin-bottom:14px;overflow:hidden"><div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:20px 20px"></div><span style="position:absolute;bottom:8px;left:11px;font-family:'JetBrains Mono';font-size:10px;color:rgba(255,255,255,.4)">submission / result screenshot</span></div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:8px;background:#7b6cf6;color:#fff;border-radius:10px;padding:11px;font-size:15px;font-weight:600">Selected as winner</div>
+        </div>
+        <div style="display:flex;align-items:center;font-weight:700;font-size:20px;color:#5b6170">VS</div>
+        <!-- other -->
+        <div style="flex:1;border:1px solid rgba(255,255,255,.1);border-radius:15px;padding:18px;background:#13141a">
+          <div style="display:flex;align-items:center;gap:13px;margin-bottom:14px"><div style="width:50px;height:50px;border-radius:50%;background:linear-gradient(140deg,#f3b14e,#e8761c);flex:none"></div><div><div style="font-size:18px;font-weight:600">NovaStar</div><div style="font-size:12px;color:#8b91a0;font-family:'JetBrains Mono'">0x41…c8 · seed 4</div></div></div>
+          <div style="position:relative;height:96px;border-radius:11px;background:radial-gradient(130% 130% at 0% 0%,#332b1f,#14161d);margin-bottom:14px;overflow:hidden"><div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:20px 20px"></div><span style="position:absolute;bottom:8px;left:11px;font-family:'JetBrains Mono';font-size:10px;color:rgba(255,255,255,.4)">submission / result screenshot</span></div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid rgba(255,255,255,.14);color:#c2c7d0;border-radius:10px;padding:11px;font-size:15px;font-weight:500">Pick as winner</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:18px;align-items:flex-end">
+        <div style="flex:1"><div style="font-size:13px;color:#8b91a0;margin-bottom:7px">Comment <span style="color:#6b7180">(optional · off-chain)</span></div><div style="border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 13px;color:#6b7180;font-size:14px">Reason for decision…</div></div>
+        <div style="background:#7b6cf6;color:#fff;border-radius:11px;padding:13px 26px;font-size:15px;font-weight:600;box-shadow:0 10px 22px -8px rgba(123,108,246,.8)">Submit vote &amp; sign</div>
+      </div>
+      <div style="margin-top:14px;font-size:12.5px;color:#6b7180">Your vote is recorded on-chain. The match resolves automatically once a majority agrees.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Profile -->
+<div class="lbl" style="left:1160px;top:3010px;width:1040px;font-weight:700;font-size:24px;color:#1d1f26;letter-spacing:-.3px">8 · User profile</div>
+<div style="position:absolute;left:1160px;top:3086px;width:1040px">
+  <div data-drags-parent="1" class="lbl" style="top:-24px;left:2px;font-size:14px;color:#6b6f7a">Off-chain identity + on-chain record &amp; history</div>
+  <div style="border-radius:18px;overflow:hidden;box-shadow:0 30px 60px -25px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.06);background:#0c0d12">
+    <div style="display:flex;align-items:center;gap:16px;padding:13px 22px;border-bottom:1px solid rgba(255,255,255,.07);background:linear-gradient(#181b24,#15171f)">
+      <div style="display:flex;align-items:center;gap:10px"><span style="width:30px;height:30px;border-radius:9px;background:linear-gradient(140deg,#7b6cf6,#5a3ff0);display:grid;place-items:center;font-weight:700;font-size:16px">T</span><span style="font-weight:700;font-size:18px">TournyBox</span></div>
+      <div style="flex:1"></div>
+      <div style="display:flex;align-items:center;gap:9px;border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:7px 12px;background:rgba(255,255,255,.03)"><span style="width:8px;height:8px;border-radius:50%;background:#2fd98a"></span><span style="font-family:'JetBrains Mono';font-size:12.5px;color:#cfd3db">0x9f…2A1</span><span style="color:#6b7180">▾</span></div>
+    </div>
+    <!-- header w/ banner -->
+    <div style="position:relative">
+      <div style="height:96px;background:linear-gradient(115deg,#2b2350,#3a1f55,#161826)"><div style="position:absolute;inset:0;height:96px;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:26px 26px;opacity:.5"></div></div>
+      <div style="display:flex;align-items:flex-end;gap:18px;padding:0 24px;margin-top:-38px;position:relative">
+        <div style="width:92px;height:92px;border-radius:24px;background:linear-gradient(140deg,#7b6cf6,#3fd0d6);border:3px solid #0c0d12;flex:none"></div>
+        <div style="flex:1;padding-bottom:6px">
+          <div style="font-weight:700;font-size:25px;letter-spacing:-.3px">PixelKnight</div>
+          <div style="display:flex;align-items:center;gap:9px;font-size:12.5px;color:#8b91a0;margin-top:4px"><span style="font-family:'JetBrains Mono'">0x9f3a…cE2A1</span><span style="border:1px solid rgba(255,255,255,.14);border-radius:6px;padding:1px 7px;font-size:11px;color:#c2c7d0">copy</span><span>· joined 2024</span></div>
+        </div>
+        <div style="display:flex;gap:9px;padding-bottom:6px">
+          <span style="background:rgba(255,255,255,.08);color:#c2c7d0;border:1px solid rgba(255,255,255,.14);border-radius:9px;padding:5px 11px;font-size:11.5px;font-weight:600">14 PLAYED</span>
+          <span style="background:rgba(123,108,246,.16);color:#b8acff;border:1px solid rgba(123,108,246,.3);border-radius:9px;padding:5px 11px;font-size:11.5px;font-weight:600">3 OWNED</span>
+          <span style="background:rgba(63,208,214,.14);color:#6fe0e5;border:1px solid rgba(63,208,214,.3);border-radius:9px;padding:5px 11px;font-size:11.5px;font-weight:600">6 JUDGED</span>
+          <span style="border:1px solid rgba(255,255,255,.14);border-radius:9px;padding:5px 13px;font-size:13px;font-weight:500;color:#c2c7d0">Edit</span>
+        </div>
+      </div>
+    </div>
+    <!-- stat strip -->
+    <div style="display:flex;margin:18px 24px 0;background:#13141a;border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden">
+      <div style="flex:1;text-align:center;padding:16px;border-right:1px solid rgba(255,255,255,.06)"><div style="font-weight:700;font-size:24px;color:#f1c64b">2</div><div style="font-size:11.5px;color:#8b91a0;margin-top:2px">Trophies</div></div>
+      <div style="flex:1;text-align:center;padding:16px;border-right:1px solid rgba(255,255,255,.06)"><div style="font-weight:700;font-size:24px;font-family:'JetBrains Mono'">61%</div><div style="font-size:11.5px;color:#8b91a0;margin-top:2px">Win rate</div></div>
+      <div style="flex:1;text-align:center;padding:16px;border-right:1px solid rgba(255,255,255,.06)"><div style="font-weight:700;font-size:24px;font-family:'JetBrains Mono'">38–24</div><div style="font-size:11.5px;color:#8b91a0;margin-top:2px">Match W–L</div></div>
+      <div style="flex:1;text-align:center;padding:16px"><div style="font-weight:700;font-size:24px;font-family:'JetBrains Mono';color:#3fe39a">4.2Ξ</div><div style="font-size:11.5px;color:#8b91a0;margin-top:2px">Prizes won</div></div>
+    </div>
+    <div style="display:flex;gap:24px;font-size:14px;padding:18px 24px 4px;color:#8b91a0"><span style="color:#f4f5f7;font-weight:500;border-bottom:2px solid #7b6cf6;padding-bottom:8px">History</span><span style="padding-bottom:8px">Owned</span><span style="padding-bottom:8px">Judging</span></div>
+    <div style="padding:4px 24px 22px">
+      <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.06)">
+        <div style="width:48px;height:34px;border-radius:8px;background:radial-gradient(130% 130% at 0% 0%,#1d1f28,#121319);flex:none"></div>
+        <div style="flex:1"><div style="font-size:15px;font-weight:600">Winter Clash 2025</div><div style="font-size:12px;color:#8b91a0">Player · reached Final</div></div>
+        <span style="background:rgba(217,167,43,.13);color:#e6bb52;border:1px solid rgba(217,167,43,.3);border-radius:8px;padding:4px 11px;font-size:11.5px;font-weight:600;font-family:'JetBrains Mono'">2nd · 0.8Ξ</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.06)">
+        <div style="width:48px;height:34px;border-radius:8px;background:radial-gradient(130% 130% at 0% 0%,#1d1f28,#121319);flex:none"></div>
+        <div style="flex:1"><div style="font-size:15px;font-weight:600">Retro Cup #4</div><div style="font-size:12px;color:#8b91a0">Player · eliminated R16</div></div>
+        <span style="background:rgba(255,255,255,.06);color:#8b91a0;border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:4px 11px;font-size:11.5px;font-weight:600">—</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;padding:12px 0">
+        <div style="width:48px;height:34px;border-radius:8px;background:radial-gradient(130% 130% at 0% 0%,#1d1f28,#121319);flex:none"></div>
+        <div style="flex:1"><div style="font-size:15px;font-weight:600">Arcade Open Q4</div><div style="font-size:12px;color:#8b91a0">Player · Champion</div></div>
+        <span style="background:rgba(47,217,138,.13);color:#3fe39a;border:1px solid rgba(47,217,138,.28);border-radius:8px;padding:4px 11px;font-size:11.5px;font-weight:600;font-family:'JetBrains Mono'">1st · 1.5Ξ</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- flow post-it -->
+<div style="position:absolute;left:2260px;top:3120px;width:256px;background:#15171f;border:1px solid rgba(123,108,246,.3);border-radius:14px;padding:16px;box-shadow:0 16px 40px -16px rgba(0,0,0,.6)">
+  <div style="font-weight:600;font-size:14px;color:#b8acff;margin-bottom:8px">Primary flow</div>
+  <div style="font-size:12.5px;line-height:1.65;color:#9aa0ac">Connect wallet → Discover → Tournament view → Register → owner publishes &amp; deposits → matches play → judges vote → escrow auto-releases to champion → profile updates.</div>
+</div>
+</x-dc>
+</body>
+</html>
