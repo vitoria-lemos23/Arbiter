@@ -3,24 +3,13 @@ import {
   BaseError,
   ContractFunctionRevertedError,
   encodeErrorResult,
+  type Hex,
 } from "viem";
 import { describe, expect, it } from "vitest";
 import { registrationErrorMessage } from "./registrationErrorMessage";
 
-type RegisterErrorName =
-  | "TournamentFull"
-  | "AlreadyRegistered"
-  | "RegistrationClosed"
-  | "IncorrectEntryFee";
-
 /** A viem error chain as produced by a reverted `register()` write/simulate. */
-function revertError(errorName: RegisterErrorName, args: unknown[]): BaseError {
-  const data = encodeErrorResult({
-    abi: tournamentAbi,
-    errorName,
-    // biome-ignore lint/suspicious/noExplicitAny: fixture builder covers several error shapes
-    args: args as any,
-  });
+function revertError(data: Hex): BaseError {
   const cause = new ContractFunctionRevertedError({
     abi: tournamentAbi,
     data,
@@ -35,26 +24,48 @@ describe("registrationErrorMessage", () => {
     expect(registrationErrorMessage(undefined)).toBeNull();
   });
 
-  const cases: [RegisterErrorName, unknown[], string][] = [
-    ["TournamentFull", [8], "This tournament is full."],
+  // Each case pre-encodes its revert data with a literal errorName so viem
+  // fully type-checks the args tuple (no casts).
+  const cases: [string, Hex, string][] = [
+    [
+      "TournamentFull",
+      encodeErrorResult({
+        abi: tournamentAbi,
+        errorName: "TournamentFull",
+        args: [8],
+      }),
+      "This tournament is full.",
+    ],
     [
       "AlreadyRegistered",
-      ["0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"],
+      encodeErrorResult({
+        abi: tournamentAbi,
+        errorName: "AlreadyRegistered",
+        args: ["0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"],
+      }),
       "This wallet is already registered.",
     ],
     [
       "RegistrationClosed",
-      [BigInt(2000), BigInt(2000)],
+      encodeErrorResult({
+        abi: tournamentAbi,
+        errorName: "RegistrationClosed",
+        args: [BigInt(2000), BigInt(2000)],
+      }),
       "Registration closed before your transaction was mined.",
     ],
     [
       "IncorrectEntryFee",
-      [BigInt(1), BigInt(2)],
+      encodeErrorResult({
+        abi: tournamentAbi,
+        errorName: "IncorrectEntryFee",
+        args: [BigInt(1), BigInt(2)],
+      }),
       "The transaction did not include the exact entry fee. Please try again.",
     ],
   ];
-  it.each(cases)("decodes the %s custom error", (name, args, expected) => {
-    expect(registrationErrorMessage(revertError(name, args))).toBe(expected);
+  it.each(cases)("decodes the %s custom error", (_name, data, expected) => {
+    expect(registrationErrorMessage(revertError(data))).toBe(expected);
   });
 
   it("falls back to viem's shortMessage for other BaseErrors", () => {
