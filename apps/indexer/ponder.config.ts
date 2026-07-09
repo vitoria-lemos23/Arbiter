@@ -1,5 +1,6 @@
-import { tournamentFactoryAbi } from "@arbiter/contracts";
-import { createConfig } from "ponder";
+import { tournamentAbi, tournamentFactoryAbi } from "@arbiter/contracts";
+import { createConfig, factory } from "ponder";
+import { getAbiItem } from "viem";
 
 /**
  * Indexer configuration. Points at the same chain the web app writes to and the
@@ -27,6 +28,22 @@ export default createConfig({
       abi: tournamentFactoryAbi,
       chain: "arbiter",
       address: factoryAddress as `0x${string}`,
+      startBlock,
+    },
+    // Tournament clones are created dynamically by the factory; Ponder's
+    // factory pattern discovers each child address from the TournamentCreated
+    // event's `tournament` param and indexes its logs (PlayerRegistered).
+    Tournament: {
+      abi: tournamentAbi,
+      chain: "arbiter",
+      address: factory({
+        address: factoryAddress as `0x${string}`,
+        event: getAbiItem({
+          abi: tournamentFactoryAbi,
+          name: "TournamentCreated",
+        }),
+        parameter: "tournament",
+      }),
       startBlock,
     },
   },
