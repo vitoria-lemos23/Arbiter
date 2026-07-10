@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { type Address, isAddress } from "viem";
+import { getProfilesByAddresses } from "@/features/profiles/server/getProfilesByAddresses";
 import { JudgeVoteScreen } from "@/features/tournaments/components/judge/JudgeVoteScreen";
 import { getRoundLabel } from "@/features/tournaments/lib/bracketRounds";
 import { shortAddress } from "@/features/tournaments/lib/formatTournament";
@@ -31,6 +32,11 @@ export default async function MatchVotePage({
   // No bracket yet, or an out-of-range index -> 404.
   if (!matchRow) notFound();
 
+  const playerAddresses = [matchRow.playerA, matchRow.playerB].filter(
+    (p): p is string => p !== null,
+  );
+  const profiles = await getProfilesByAddresses(playerAddresses);
+
   return (
     <JudgeVoteScreen
       tournamentAddress={address as Address}
@@ -39,6 +45,7 @@ export default async function MatchVotePage({
       tournamentHref={`/tournaments/${address}`}
       roundLabel={getRoundLabel(item.tournament.maxPlayers, matchRow.round)}
       seedByAddress={seedByAddress(matches)}
+      profiles={Object.fromEntries(profiles)}
     />
   );
 }

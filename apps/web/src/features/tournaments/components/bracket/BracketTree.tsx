@@ -1,4 +1,4 @@
-import type { Match } from "@arbiter/db";
+import type { Match, ProfileDoc } from "@arbiter/db";
 import { getRoundLabel, getRounds } from "../../lib/bracketRounds";
 import { ChampionDisplay } from "./ChampionDisplay";
 import { RoundColumn } from "./RoundColumn";
@@ -8,11 +8,13 @@ export function BracketTree({
   maxPlayers,
   champion,
   prizeWei,
+  profiles = new Map(),
 }: {
   matches: Match[];
   maxPlayers: number;
   champion: string | null;
   prizeWei: string;
+  profiles?: Map<string, ProfileDoc>;
 }) {
   const rounds = getRounds(maxPlayers);
 
@@ -34,6 +36,7 @@ export function BracketTree({
               key={r}
               label={getRoundLabel(maxPlayers, r)}
               matches={roundMatches}
+              profiles={profiles}
             />
           );
         })}
@@ -44,7 +47,13 @@ export function BracketTree({
             Champion
           </h3>
           <div className="flex flex-1 flex-col justify-around">
-            <ChampionDisplay champion={champion} prizeWei={prizeWei} />
+            <ChampionDisplay
+              champion={champion}
+              prizeWei={prizeWei}
+              profile={
+                champion ? profiles.get(champion.toLowerCase()) : undefined
+              }
+            />
           </div>
         </div>
       </div>

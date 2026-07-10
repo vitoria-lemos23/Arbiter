@@ -1,20 +1,23 @@
-import type { Registration } from "@arbiter/db";
-import { shortAddress } from "../../lib/formatTournament";
+import type { ProfileDoc, Registration } from "@arbiter/db";
+import { UserIdentity } from "@/features/profiles/components/UserIdentity";
+import { getProfilesByAddresses } from "@/features/profiles/server/getProfilesByAddresses";
 
 /**
- * Roster for the Participants tab (replaces the ComingSoonPanel): slots-filled
- * counter plus the registered addresses in registration order with join time.
- * Reads the indexed `ponder.registration` rows, so it is eventually consistent
- * with the chain (spec 005, business rule 8). Address-only by design — player
- * metadata is deferred.
+ * Roster for the Participants tab: slots-filled counter plus the registered
+ * addresses in registration order with join time. Profiles are batch-resolved
+ * in a single query (no N+1) and rendered via `UserIdentity`, which falls back
+ * to the generated avatar + `shortAddress` for unregistered addresses (spec 009).
  */
-export function ParticipantsPanel({
+export async function ParticipantsPanel({
   registrations,
   maxPlayers,
 }: {
   registrations: Registration[];
   maxPlayers: number;
 }) {
+  const addresses = registrations.map((r) => r.player);
+  const profiles = await getProfilesByAddresses(addresses);
+
   return (
     <section className="flex flex-col gap-4">
       <p className="text-sm text-muted-foreground">
@@ -32,7 +35,11 @@ export function ParticipantsPanel({
       ) : (
         <ul className="flex flex-col divide-y divide-border rounded-xl border border-input">
           {registrations.map((row) => (
-            <ParticipantRow key={row.id} row={row} />
+            <ParticipantRow
+              key={row.id}
+              row={row}
+              profile={profiles.get(row.player.toLowerCase())}
+            />
           ))}
         </ul>
       )}
@@ -40,31 +47,27 @@ export function ParticipantsPanel({
   );
 }
 
-function ParticipantRow({ row }: { row: Registration }) {
+function ParticipantRow({
+  row,
+  profile,
+}: {
+  row: Registration;
+  profile: ProfileDoc | undefined;
+}) {
   return (
     <li className="flex items-center gap-3 px-4 py-3">
-      <AddressAvatar address={row.player} />
-      <div className="flex flex-col">
-        <span className="font-mono text-sm">{shortAddress(row.player)}</span>
-        <span className="text-xs text-muted-foreground">
-          Joined {row.registeredAt.toLocaleString()}
-        </span>
-      </div>
+      <UserIdentity
+        address={row.player}
+        profile={profile}
+        subtitle={
+          <span className="text-xs text-muted-foreground">
+            Joined {row.registeredAt.toLocaleString()}
+          </span>
+        }
+      />
       <span className="ml-auto font-mono text-xs text-muted-foreground">
         #{row.position + 1}
       </span>
     </li>
-  );
-}
-
-/** Placeholder avatar from the first two hex chars (player metadata deferred). */
-function AddressAvatar({ address }: { address: string }) {
-  return (
-    <span
-      aria-hidden
-      className="grid size-8 shrink-0 place-items-center rounded-full bg-muted font-mono text-xs uppercase text-muted-foreground"
-    >
-      {address.slice(2, 4)}
-    </span>
   );
 }

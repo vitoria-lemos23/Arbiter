@@ -1,18 +1,23 @@
 "use client";
 
+import type { ProfileDoc } from "@arbiter/db";
 import { CheckCircleIcon } from "@phosphor-icons/react";
+import Link from "next/link";
 import type { Address } from "viem";
 import { Button } from "@/components/ui/button";
+import { UserAvatar } from "@/features/profiles/components/UserAvatar";
 import { shortAddress } from "../../lib/formatTournament";
 
 /**
  * One player's card on the judge vote screen (design screen 7): avatar, name
  * fallback (shortened address), full address + seed, live vote tally, and the
  * pick / selected control. Purely presentational — the parent owns selection
- * and transaction state.
+ * and transaction state. Avatar + name resolved from `profile` when available,
+ * falling back to the generated avatar + `shortAddress` (spec 009).
  */
 export function PlayerVoteCard({
   player,
+  profile,
   seed,
   votesFor,
   isWinner,
@@ -22,6 +27,7 @@ export function PlayerVoteCard({
   onPick,
 }: {
   player: Address;
+  profile?: ProfileDoc;
   seed?: number;
   votesFor: number;
   isWinner: boolean;
@@ -31,6 +37,7 @@ export function PlayerVoteCard({
   onPick: () => void;
 }) {
   const highlighted = isWinner || isMyVote || isSelected;
+  const name = profile?.displayName;
 
   return (
     <div
@@ -41,15 +48,25 @@ export function PlayerVoteCard({
       }`}
     >
       <div className="flex items-center gap-3">
-        <span
-          aria-hidden
-          className="grid size-10 shrink-0 place-items-center rounded-full bg-muted font-mono text-xs uppercase text-muted-foreground"
+        <Link
+          href={`/profile/${player.toLowerCase()}`}
+          className="shrink-0 transition-opacity hover:opacity-80"
         >
-          {player.slice(2, 4)}
-        </span>
-        <div className="flex flex-col">
-          <span className="font-medium">{shortAddress(player)}</span>
-          <span className="font-mono text-xs text-muted-foreground">
+          <UserAvatar
+            address={player}
+            avatarUrl={profile?.avatarUrl}
+            displayName={name}
+            size="md"
+          />
+        </Link>
+        <div className="flex min-w-0 flex-col">
+          <Link
+            href={`/profile/${player.toLowerCase()}`}
+            className="font-medium transition-colors hover:text-primary"
+          >
+            {name ?? shortAddress(player)}
+          </Link>
+          <span className="truncate font-mono text-xs text-muted-foreground">
             {player}
           </span>
         </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import type { ProfileDoc } from "@arbiter/db";
 import Link from "next/link";
 import { useState } from "react";
 import type { Address } from "viem";
@@ -25,6 +26,7 @@ export function JudgeVoteScreen({
   tournamentHref,
   roundLabel,
   seedByAddress,
+  profiles = {},
 }: {
   tournamentAddress: Address;
   matchIndex: number;
@@ -32,6 +34,7 @@ export function JudgeVoteScreen({
   tournamentHref: string;
   roundLabel: string;
   seedByAddress: Record<string, number>;
+  profiles?: Record<string, ProfileDoc>;
 }) {
   const { judges, match, votesByJudge, votesCast, isLoading, refetch } =
     useMatchVotes({ tournamentAddress, matchIndex });
@@ -101,6 +104,7 @@ export function JudgeVoteScreen({
             <PlayerVoteCard
               key={player}
               player={player}
+              profile={profiles[player.toLowerCase()]}
               seed={seedByAddress[player.toLowerCase()]}
               votesFor={votesFor(player)}
               isWinner={
