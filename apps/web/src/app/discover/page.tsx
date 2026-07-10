@@ -1,41 +1,34 @@
-import { TournamentList } from "@/features/tournaments/components/TournamentList";
+import { DiscoverFilters } from "@/features/discover/components/DiscoverFilters";
+import { DiscoverResults } from "@/features/discover/components/DiscoverResults";
+import { DiscoverSearchBar } from "@/features/discover/components/DiscoverSearchBar";
+import { FeaturedTournamentBanner } from "@/features/discover/components/FeaturedTournamentBanner";
+import { loadMoreHref } from "@/features/discover/lib/discoverHref";
 import {
-  countTournaments,
-  listTournamentsWithMetadata,
-} from "@/features/tournaments/server/listTournaments";
-import { toInt } from "@/lib/searchParams";
-import { clamp } from "@/lib/utils";
+  hasActiveFilters,
+  LIST_STEP,
+  MAX_SHOW,
+  parseDiscoverQuery,
+} from "@/features/discover/schema/discoverQuery";
+import { getDiscoverFacets } from "@/features/discover/server/getDiscoverFacets";
+import { getFeaturedTournament } from "@/features/discover/server/getFeaturedTournament";
+import { queryDiscoverTournaments } from "@/features/discover/server/queryDiscoverTournaments";
 
 // Reads indexed data per request — not prerendered at build.
 export const dynamic = "force-dynamic";
 
-const DEFAULT_PAGE_SIZE = 12;
-const MIN_PAGE_SIZE = 1;
-const MAX_PAGE_SIZE = 48;
+type RawSearchParams = Record<string, string | string[] | undefined>;
 
 export default async function DiscoverPage({
   searchParams,
 }: {
-  searchParams: Promise<{
-    page?: string | string[];
-    pageSize?: string | string[];
-  }>;
+  searchParams: Promise<RawSearchParams>;
 }) {
   const sp = await searchParams;
-  const pageSize = clamp(
-    toInt(sp.pageSize, DEFAULT_PAGE_SIZE),
-    MIN_PAGE_SIZE,
-    MAX_PAGE_SIZE,
-  );
-
-  const total = await countTournaments();
-  const lastPage = Math.max(1, Math.ceil(total / pageSize));
-  const page = clamp(toInt(sp.page, 1), 1, lastPage);
-
-  const items = await listTournamentsWithMetadata({ page, pageSize });
+  const query = parseDiscoverQuery(sp);
+  const featured = await getFeaturedTournament();
 
   return (
-    <main className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-12">
+    <main className="mx-auto flex w-full max-w-7xl flex-col gap-8 p-6 lg:p-12">
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-bold tracking-tight">
           Discover tournaments
@@ -44,12 +37,57 @@ export default async function DiscoverPage({
           Browse tournaments deployed on-chain.
         </p>
       </div>
-      <TournamentList
-        items={items}
-        page={page}
-        lastPage={lastPage}
-        pageSize={pageSize}
-      />
+
+      {featured ? (
+        <FeaturedTournamentBanner item={featured} />
+      ) : (
+        <div className="grid place-items-center rounded-xl border border-dashed py-20 text-center">
+          <p className="text-sm text-muted-foreground">No tournaments yet.</p>
+        </div>
+      )}
+
+      {featured ? (
+        <DiscoverBrowse query={query} rawParams={sp} featured={featured} />
+      ) : null}
     </main>
+  );
+}
+
+/**
+ * The filter/search/results section, rendered only when at least one tournament
+ * exists (the hero occupies the empty-DB case). Split out so the route entry
+ * stays a thin composition (AGENTS.md).
+ */
+async function DiscoverBrowse({
+  query,
+  rawParams,
+  featured,
+}: {
+  query: ReturnType<typeof parseDiscoverQuery>;
+  rawParams: RawSearchParams;
+  featured: NonNullable<Awaited<ReturnType<typeof getFeaturedTournament>>>;
+}) {
+  const [facets, results] = await Promise.all([
+    getDiscoverFacets(),
+    queryDiscoverTournaments(query, {
+      featuredAddress: featured.tournament.address,
+    }),
+  ]);
+
+  const nextShow = Math.min(query.show + LIST_STEP, MAX_SHOW);
+
+  return (
+    <div className="grid gap-8 lg:grid-cols-[240px_1fr]">
+      <DiscoverFilters facets={facets} />
+      <div className="flex flex-col gap-6">
+        <DiscoverSearchBar />
+        <DiscoverResults
+          items={results.items}
+          hasMore={results.hasMore}
+          hasActiveFilters={hasActiveFilters(query)}
+          loadMoreHref={loadMoreHref(rawParams, nextShow)}
+        />
+      </div>
+    </div>
   );
 }
