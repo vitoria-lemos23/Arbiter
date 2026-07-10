@@ -1,6 +1,7 @@
 import { ponder } from "ponder:registry";
-import { match, registration, tournament, vote } from "ponder:schema";
+import { judge, match, registration, tournament, vote } from "ponder:schema";
 import { getAddress } from "viem";
+import { toJudgeRow } from "./toJudgeRow";
 import { toMatchRows } from "./toMatchRows";
 import { toRegistrationRow } from "./toRegistrationRow";
 import { toTournamentRow } from "./toTournamentRow";
@@ -12,6 +13,10 @@ ponder.on("TournamentFactory:TournamentCreated", async ({ event, context }) => {
 
 ponder.on("Tournament:PlayerRegistered", async ({ event, context }) => {
   await context.db.insert(registration).values(toRegistrationRow(event));
+});
+
+ponder.on("Tournament:JudgeAssigned", async ({ event, context }) => {
+  await context.db.insert(judge).values(toJudgeRow(event));
 });
 
 ponder.on("Tournament:BracketGenerated", async ({ event, context }) => {
