@@ -1,5 +1,7 @@
+import type { Address } from "viem";
 import { deriveTournamentStatus } from "../../lib/tournamentStatus";
 import { listRegistrations } from "../../server/getRegistrations";
+import { getTournamentResult } from "../../server/getTournamentResult";
 import type { TournamentListItem } from "../../server/reconcileMetadata";
 import { BracketPanel } from "./BracketPanel";
 
@@ -10,6 +12,7 @@ import { RegisterLink } from "./RegisterLink";
 import { RulesPanel } from "./RulesPanel";
 import { TournamentHeader } from "./TournamentHeader";
 import { TournamentTabs } from "./TournamentTabs";
+import { WithdrawFeesButton } from "./WithdrawFeesButton";
 
 /**
  * Server layout for one tournament: header + tabbed body. Status and the
@@ -29,7 +32,11 @@ export async function TournamentDetails({
   );
 
   const { tournament, metadata } = item;
-  const registrations = await listRegistrations(tournament.address);
+  const [registrations, result] = await Promise.all([
+    listRegistrations(tournament.address),
+    getTournamentResult(tournament.address),
+  ]);
+  const isCompleted = result.champion !== null;
 
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-col gap-8 p-6 sm:p-12">
@@ -41,6 +48,11 @@ export async function TournamentDetails({
               tournamentAddress={tournament.address as `0x${string}`}
               organizer={tournament.organizer}
               metadata={metadata}
+            />
+            <WithdrawFeesButton
+              tournamentAddress={tournament.address as Address}
+              organizer={tournament.organizer}
+              isCompleted={isCompleted}
             />
             <RegisterLink
               tournamentAddress={tournament.address}
@@ -56,6 +68,8 @@ export async function TournamentDetails({
             tournamentAddress={tournament.address}
             maxPlayers={tournament.maxPlayers}
             registeredCount={registrations.length}
+            prizeWei={tournament.prize}
+            champion={result.champion}
           />
         }
         participants={

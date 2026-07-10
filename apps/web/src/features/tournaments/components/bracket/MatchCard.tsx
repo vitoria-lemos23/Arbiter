@@ -1,22 +1,56 @@
 import type { Match } from "@arbiter/db";
+import Link from "next/link";
 import { shortAddress } from "../../lib/formatTournament";
 
+/**
+ * One bracket match. Active matches (both players known, awaiting votes) glow
+ * with a lime ring and link to the judge/detail screen; completed matches
+ * accent the winner's slot (spec 007). TBD internal nodes render inert.
+ */
 export function MatchCard({ match }: { match: Match }) {
-  return (
-    <div className="flex w-64 flex-col overflow-hidden rounded-xl border border-input bg-card shadow-sm">
-      <PlayerSlot player={match.playerA} seed={match.seedA} />
+  const isActive = match.status === 1;
+  const winner = match.winner?.toLowerCase() ?? null;
+  const playable = Boolean(match.playerA && match.playerB);
+
+  const card = (
+    <div
+      className={`flex w-64 flex-col overflow-hidden rounded-xl border bg-card shadow-sm transition-colors ${
+        isActive ? "border-primary/60 ring-1 ring-primary/40" : "border-input"
+      } ${playable ? "hover:border-primary/60" : ""}`}
+    >
+      <PlayerSlot
+        player={match.playerA}
+        seed={match.seedA}
+        isWinner={winner != null && winner === match.playerA?.toLowerCase()}
+      />
       <div className="h-px w-full bg-border" />
-      <PlayerSlot player={match.playerB} seed={match.seedB} />
+      <PlayerSlot
+        player={match.playerB}
+        seed={match.seedB}
+        isWinner={winner != null && winner === match.playerB?.toLowerCase()}
+      />
     </div>
+  );
+
+  if (!playable) return card;
+  return (
+    <Link
+      href={`/tournaments/${match.tournament}/matches/${match.matchIndex}/vote`}
+      className="block"
+    >
+      {card}
+    </Link>
   );
 }
 
 function PlayerSlot({
   player,
   seed,
+  isWinner,
 }: {
   player: string | null;
   seed: number | null;
+  isWinner: boolean;
 }) {
   if (!player) {
     return (
@@ -28,14 +62,22 @@ function PlayerSlot({
   }
 
   return (
-    <div className="flex items-center gap-3 px-4 py-3">
+    <div
+      className={`flex items-center gap-3 px-4 py-3 ${
+        isWinner ? "border-l-4 border-l-primary bg-primary/5" : ""
+      }`}
+    >
       <AddressAvatar address={player} />
       <span className="font-mono text-sm">{shortAddress(player)}</span>
-      {seed && (
+      {isWinner ? (
+        <span className="ml-auto text-xs font-semibold uppercase text-primary">
+          Won
+        </span>
+      ) : seed ? (
         <span className="ml-auto font-mono text-xs text-muted-foreground">
           #{seed}
         </span>
-      )}
+      ) : null}
     </div>
   );
 }
