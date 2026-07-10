@@ -2,16 +2,26 @@ import { ImageIcon } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { MyTournamentRole } from "../actions/listMyTournaments";
 import { ethLabel, formatLabel, shortAddress } from "../lib/formatTournament";
 import type { TournamentListItem } from "../server/listTournaments";
+import { TournamentRoleBadge } from "./TournamentRoleBadge";
 
 /**
  * One tournament in the discover grid. The on-chain row always renders; the
  * off-chain metadata (cover, name, description, tags) enriches it when present
  * and reconciled — otherwise the card falls back to on-chain-only facts.
+ *
+ * On the "My Tournaments" dashboard (#008) the optional `roles` render as
+ * badges so the user sees their relationship to each event at a glance; on the
+ * discover grid `roles` is omitted and the badge row is absent.
  */
-export function TournamentCard({ item }: { item: TournamentListItem }) {
-  const { tournament, metadata } = item;
+export function TournamentCard({
+  item,
+}: {
+  item: TournamentListItem & { roles?: MyTournamentRole[] };
+}) {
+  const { tournament, metadata, roles } = item;
   const title = metadata?.name ?? shortAddress(tournament.address);
 
   return (
@@ -22,6 +32,13 @@ export function TournamentCard({ item }: { item: TournamentListItem }) {
       <Card className="gap-0 hover:ring-primary/40">
         <Cover url={metadata?.imageUrl} />
         <CardHeader className="pt-4">
+          {roles && roles.length > 0 ? (
+            <div className="flex flex-wrap gap-1.5 pb-1">
+              {roles.map((role) => (
+                <TournamentRoleBadge key={role} role={role} />
+              ))}
+            </div>
+          ) : null}
           <CardTitle className="truncate">{title}</CardTitle>
           {metadata?.description ? (
             <p className="line-clamp-2 text-sm text-muted-foreground">

@@ -47,6 +47,29 @@ export const registration = onchainTable(
   }),
 );
 
+/**
+ * The indexed `judge` table — one row per `JudgeAssigned` event, emitted once
+ * per judge during a clone's `initialize` (#008). Backs the "all tournaments I
+ * judge" query the same way `registration` backs the per-player list. Mirrored
+ * read-only by `@arbiter/db/ponderJudge.ts`; keep the two in sync.
+ */
+export const judge = onchainTable(
+  "judge",
+  (t) => ({
+    id: t.text("id").primaryKey(), // `${tournament}-${judge}` (lowercased)
+    tournament: t.hex("tournament").notNull(), // clone address (log source)
+    judge: t.hex("judge").notNull(),
+    blockNumber: t.bigint("block_number").notNull(),
+    txHash: t.hex("tx_hash").notNull(),
+    assignedAt: t.timestamp("assigned_at").notNull(), // block timestamp
+  }),
+  (table) => ({
+    // "all tournaments I judge" is an index scan on `judge`, not a full scan.
+    judgeIdx: index().on(table.judge),
+    tournamentIdx: index().on(table.tournament),
+  }),
+);
+
 export const match = onchainTable(
   "match",
   (t) => ({
