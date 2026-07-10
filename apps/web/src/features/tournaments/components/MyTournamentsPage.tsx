@@ -19,29 +19,34 @@ import { MyTournamentsList } from "./MyTournamentsList";
  * `listMyTournaments` server action. Renders a connect prompt when no wallet is
  * connected, a skeleton while loading, then the role-tabbed list.
  */
+/**
+ * Fetch result tagged with the wallet it belongs to, so a result from a
+ * previous wallet is never shown against the current one (loading is derived,
+ * not reset synchronously in the effect — see `MyTournamentsPage`).
+ */
+type LoadResult =
+  | { address: string; items: MyTournament[] }
+  | { address: string; error: string };
+
 export function MyTournamentsPage() {
   const { address, isConnected } = useWalletConnect();
-  const [items, setItems] = useState<MyTournament[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<LoadResult | null>(null);
 
   useEffect(() => {
-    if (!address) {
-      setItems(null);
-      return;
-    }
+    if (!address) return;
     // `active` guards against a resolved fetch for a wallet the user already
     // switched away from (React strict-mode double-run / fast reconnects).
     let active = true;
-    setItems(null);
-    setError(null);
     listMyTournaments(address)
-      .then((rows) => active && setItems(rows))
+      .then((items) => active && setResult({ address, items }))
       .catch(
         (err) =>
           active &&
-          setError(
-            err instanceof Error ? err.message : "Failed to load tournaments",
-          ),
+          setResult({
+            address,
+            error:
+              err instanceof Error ? err.message : "Failed to load tournaments",
+          }),
       );
     return () => {
       active = false;
@@ -49,6 +54,10 @@ export function MyTournamentsPage() {
   }, [address]);
 
   if (!isConnected || !address) return <ConnectWalletPrompt />;
+
+  // Ignore any result still tagged with a prior wallet: that renders as loading
+  // until this wallet's fetch resolves, without a synchronous state reset.
+  const current = result?.address === address ? result : null;
 
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-12">
@@ -61,12 +70,12 @@ export function MyTournamentsPage() {
           </Link>
         </Button>
       </div>
-      {error ? (
-        <p className="text-sm text-destructive">{error}</p>
-      ) : items === null ? (
+      {current === null ? (
         <LoadingGrid />
+      ) : "error" in current ? (
+        <p className="text-sm text-destructive">{current.error}</p>
       ) : (
-        <MyTournamentsList items={items} />
+        <MyTournamentsList items={current.items} />
       )}
     </main>
   );
