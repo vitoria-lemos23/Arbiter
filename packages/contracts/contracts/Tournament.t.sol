@@ -7,6 +7,8 @@ import {
   Tournament,
   TournamentParams,
   TournamentFormat,
+  MatchStatus,
+  TournamentStatus,
   InvalidMaxPlayers,
   MaxPlayersNotPowerOfTwo,
   StartDateInPast,
@@ -16,6 +18,16 @@ import {
   AlreadyRegistered,
   TournamentFull,
   IncorrectEntryFee,
+  EmptyJudgeArray,
+  OddJudgeCountRequired,
+  NotJudge,
+  MatchNotActive,
+  AlreadyVoted,
+  InvalidVoteTarget,
+  InvalidMatchIndex,
+  TournamentNotCompleted,
+  NotOrganizer,
+  NoFeesToWithdraw,
   Match
 } from "./Tournament.sol";
 
@@ -47,22 +59,27 @@ contract TournamentTest is Test {
     return Tournament(Clones.clone(address(impl)));
   }
 
+  /// @dev Default params carry a single judge (odd panel size is enforced at
+  ///      init, #007); tests that exercise the panel override `judges`.
   function _params() internal pure returns (TournamentParams memory) {
+    address[] memory judges = new address[](1);
+    judges[0] = address(0xBEEF);
     return TournamentParams({
       format: TournamentFormat.SingleElimination,
       maxPlayers: 8,
       entryFee: 1 ether,
       startDate: START,
       endDate: END,
-      judges: new address[](0)
+      judges: judges
     });
   }
 
   function test_InitializeStoresConfig() public {
     Tournament t = _clone();
-    address[] memory judges = new address[](2);
+    address[] memory judges = new address[](3);
     judges[0] = makeAddr("judge1");
     judges[1] = makeAddr("judge2");
+    judges[2] = makeAddr("judge3");
     TournamentParams memory p = _params();
     p.judges = judges;
 
@@ -76,9 +93,12 @@ contract TournamentTest is Test {
     assertEq(t.endDate(), END);
 
     address[] memory got = t.getJudges();
-    assertEq(got.length, 2);
+    assertEq(got.length, 3);
     assertEq(got[0], judges[0]);
     assertEq(got[1], judges[1]);
+    assertEq(got[2], judges[2]);
+    assertTrue(t.isJudge(judges[0]));
+    assertTrue(t.isJudge(judges[2]));
   }
 
   function test_DetailsReturnsEverything() public {
@@ -101,7 +121,7 @@ contract TournamentTest is Test {
     assertEq(entryFee_, 1 ether);
     assertEq(startDate_, START);
     assertEq(endDate_, END);
-    assertEq(judges_.length, 0);
+    assertEq(judges_.length, 1);
   }
 
   function test_InitializeEmitsEvent() public {
@@ -133,13 +153,49 @@ contract TournamentTest is Test {
     assertEq(address(t).balance, 0);
   }
 
-  function test_ZeroEntryFeeAndEmptyJudgesSucceed() public {
+  function test_ZeroEntryFeeSucceeds() public {
     Tournament t = _clone();
     TournamentParams memory p = _params();
     p.entryFee = 0;
     t.initialize(organizer, p);
     assertEq(t.entryFee(), 0);
-    assertEq(t.getJudges().length, 0);
+    assertEq(t.getJudges().length, 1);
+  }
+
+  function test_RevertWhenEmptyJudgeArray() public {
+    Tournament t = _clone();
+    TournamentParams memory p = _params();
+    p.judges = new address[](0);
+    vm.expectRevert(abi.encodeWithSelector(EmptyJudgeArray.selector));
+    t.initialize(organizer, p);
+  }
+
+  function test_RevertWhenEvenJudgeCount() public {
+    Tournament t = _clone();
+    address[] memory judges = new address[](2);
+    judges[0] = makeAddr("judge1");
+    judges[1] = makeAddr("judge2");
+    TournamentParams memory p = _params();
+    p.judges = judges;
+    vm.expectRevert(
+      abi.encodeWithSelector(OddJudgeCountRequired.selector, uint256(2))
+    );
+    t.initialize(organizer, p);
+  }
+
+  function test_OddJudgeCountsSucceed() public {
+    uint256[3] memory counts = [uint256(1), 3, 5];
+    for (uint256 c = 0; c < counts.length; c++) {
+      Tournament t = _clone();
+      address[] memory judges = new address[](counts[c]);
+      for (uint256 i = 0; i < counts[c]; i++) {
+        judges[i] = address(uint160(0x1000 + i + c * 10));
+      }
+      TournamentParams memory p = _params();
+      p.judges = judges;
+      t.initialize(organizer, p);
+      assertEq(t.getJudges().length, counts[c]);
+    }
   }
 
   function test_PowersOfTwoSucceed() public {
@@ -205,9 +261,10 @@ contract TournamentTest is Test {
 
   function test_RevertWhenZeroJudgeAddress() public {
     Tournament t = _clone();
-    address[] memory judges = new address[](2);
+    address[] memory judges = new address[](3);
     judges[0] = makeAddr("judge1");
     judges[1] = address(0);
+    judges[2] = makeAddr("judge3");
     TournamentParams memory p = _params();
     p.judges = judges;
     vm.expectRevert(abi.encodeWithSelector(ZeroJudgeAddress.selector, uint256(1)));
@@ -252,6 +309,8 @@ contract TournamentRegisterTest is Test {
     returns (Tournament)
   {
     Tournament t = Tournament(Clones.clone(address(impl)));
+    address[] memory judges = new address[](1);
+    judges[0] = address(0xBEEF);
     t.initialize(
       organizer,
       TournamentParams({
@@ -260,7 +319,7 @@ contract TournamentRegisterTest is Test {
         entryFee: entryFee,
         startDate: START,
         endDate: END,
-        judges: new address[](0)
+        judges: judges
       })
     );
     return t;
@@ -548,5 +607,337 @@ contract TournamentRegisterTest is Test {
     );
     vm.prank(_player("p3"));
     t.register{value: FEE}();
+  }
+}
+
+/// @dev Exercises the #007 voting engine: casting, auto-resolution by majority,
+///      bracket advancement, tournament completion + prize push, and fee
+///      withdrawal. Seeding for N=4 pairs leaf match 1 = [p0, p3] and leaf
+///      match 2 = [p1, p2]; the final is index 0.
+contract TournamentVoteTest is Test {
+  event VoteCast(
+    uint256 indexed matchIndex, address indexed judge, address indexed votedFor
+  );
+  event MatchResolved(
+    uint256 indexed matchIndex,
+    address indexed winner,
+    uint8 votesForWinner,
+    uint8 totalVotes
+  );
+  event MatchActivated(uint256 indexed matchIndex);
+  event TournamentCompleted(address indexed champion);
+  event PrizeClaimed(address indexed champion, uint256 amount);
+  event FeesWithdrawn(address indexed organizer, uint256 amount);
+
+  uint64 constant NOW_TS = 1000;
+  uint64 constant START = 2000;
+  uint64 constant END = 3000;
+  uint256 constant FEE = 1 ether;
+  uint256 constant PRIZE = 5 ether;
+
+  Tournament impl;
+  address organizer = makeAddr("organizer");
+  address[] judges;
+
+  function setUp() public {
+    impl = new Tournament();
+    vm.warp(NOW_TS);
+    judges.push(makeAddr("judge1"));
+    judges.push(makeAddr("judge2"));
+    judges.push(makeAddr("judge3"));
+  }
+
+  function _create(uint32 maxPlayers, address[] memory js)
+    internal
+    returns (Tournament)
+  {
+    Tournament t = Tournament(Clones.clone(address(impl)));
+    vm.deal(address(this), PRIZE);
+    t.initialize{value: PRIZE}(
+      organizer,
+      TournamentParams({
+        format: TournamentFormat.SingleElimination,
+        maxPlayers: maxPlayers,
+        entryFee: FEE,
+        startDate: START,
+        endDate: END,
+        judges: js
+      })
+    );
+    return t;
+  }
+
+  function _player(string memory name) internal returns (address) {
+    address p = makeAddr(name);
+    vm.deal(p, 10 ether);
+    return p;
+  }
+
+  /// @dev Registers p0..p{n-1}; returns the roster in registration order.
+  function _fill(Tournament t, uint32 n) internal returns (address[] memory) {
+    address[] memory players = new address[](n);
+    for (uint32 i = 0; i < n; i++) {
+      players[i] = _player(string(abi.encodePacked("player", i)));
+      vm.prank(players[i]);
+      t.register{value: FEE}();
+    }
+    return players;
+  }
+
+  /// @dev Casts `count` judge votes (judges[0..count-1]) for `player` on match.
+  function _vote(Tournament t, uint256 mi, address player, uint256 count)
+    internal
+  {
+    for (uint256 j = 0; j < count; j++) {
+      vm.prank(judges[j]);
+      t.castVote(mi, player);
+    }
+  }
+
+  function _status(Tournament t, uint256 mi)
+    internal
+    view
+    returns (MatchStatus)
+  {
+    return t.getMatches(mi, 1)[0].status;
+  }
+
+  function test_RoundOneMatchesActiveAndTournamentActive() public {
+    Tournament t = _create(4, judges);
+    _fill(t, 4);
+
+    assertEq(uint256(t.status()), uint256(TournamentStatus.Active));
+    assertEq(uint256(_status(t, 0)), uint256(MatchStatus.Pending));
+    assertEq(uint256(_status(t, 1)), uint256(MatchStatus.Active));
+    assertEq(uint256(_status(t, 2)), uint256(MatchStatus.Active));
+  }
+
+  function test_RevertWhenNotJudge() public {
+    Tournament t = _create(4, judges);
+    address[] memory players = _fill(t, 4);
+    address intruder = _player("intruder");
+
+    vm.expectRevert(abi.encodeWithSelector(NotJudge.selector, intruder));
+    vm.prank(intruder);
+    t.castVote(1, players[0]);
+  }
+
+  function test_RevertWhenMatchNotActive() public {
+    Tournament t = _create(4, judges);
+    address[] memory players = _fill(t, 4);
+
+    // Match 0 (the final) is still Pending — no players placed yet.
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        MatchNotActive.selector, uint256(0), MatchStatus.Pending
+      )
+    );
+    vm.prank(judges[0]);
+    t.castVote(0, players[0]);
+  }
+
+  function test_RevertWhenAlreadyVoted() public {
+    Tournament t = _create(4, judges);
+    address[] memory players = _fill(t, 4);
+
+    vm.prank(judges[0]);
+    t.castVote(1, players[0]);
+
+    vm.expectRevert(
+      abi.encodeWithSelector(AlreadyVoted.selector, uint256(1), judges[0])
+    );
+    vm.prank(judges[0]);
+    t.castVote(1, players[0]);
+  }
+
+  function test_RevertWhenInvalidVoteTarget() public {
+    Tournament t = _create(4, judges);
+    address[] memory players = _fill(t, 4);
+
+    // players[1] belongs to match 2, not match 1.
+    vm.expectRevert(
+      abi.encodeWithSelector(InvalidVoteTarget.selector, uint256(1), players[1])
+    );
+    vm.prank(judges[0]);
+    t.castVote(1, players[1]);
+  }
+
+  function test_RevertWhenInvalidMatchIndex() public {
+    Tournament t = _create(4, judges);
+    address[] memory players = _fill(t, 4);
+
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        InvalidMatchIndex.selector, uint256(3), uint256(3)
+      )
+    );
+    vm.prank(judges[0]);
+    t.castVote(3, players[0]);
+  }
+
+  function test_VoteStoresAndEmits() public {
+    Tournament t = _create(4, judges);
+    address[] memory players = _fill(t, 4);
+
+    vm.expectEmit(true, true, true, false, address(t));
+    emit VoteCast(1, judges[0], players[0]);
+    vm.prank(judges[0]);
+    t.castVote(1, players[0]);
+
+    assertEq(t.getVote(1, judges[0]), players[0]);
+    assertEq(t.getVotesFor(1, players[0]), 1);
+    assertEq(t.getMatches(1, 1)[0].voteCount, 1);
+    // One vote of three is not yet a majority.
+    assertEq(uint256(_status(t, 1)), uint256(MatchStatus.Active));
+  }
+
+  function test_AutoResolveWithMajorityOfThree() public {
+    Tournament t = _create(4, judges);
+    address[] memory players = _fill(t, 4);
+
+    vm.prank(judges[0]);
+    t.castVote(1, players[0]);
+
+    vm.expectEmit(true, true, false, true, address(t));
+    emit MatchResolved(1, players[0], 2, 2);
+    vm.prank(judges[1]);
+    t.castVote(1, players[0]);
+
+    assertEq(uint256(_status(t, 1)), uint256(MatchStatus.Completed));
+    assertEq(t.getMatches(1, 1)[0].winner, players[0]);
+  }
+
+  function test_AdvancesWinnerToParentSlots() public {
+    Tournament t = _create(4, judges);
+    address[] memory players = _fill(t, 4);
+
+    // Match 1 (odd, left child) -> parent 0 playerA.
+    _vote(t, 1, players[0], 2);
+    assertEq(t.getMatches(0, 1)[0].playerA, players[0]);
+    assertEq(uint256(_status(t, 0)), uint256(MatchStatus.Pending));
+
+    // Match 2 (even, right child) -> parent 0 playerB; both slots filled now.
+    vm.prank(judges[0]);
+    t.castVote(2, players[1]);
+    vm.expectEmit(true, false, false, false, address(t));
+    emit MatchActivated(0);
+    vm.prank(judges[1]);
+    t.castVote(2, players[1]);
+
+    assertEq(t.getMatches(0, 1)[0].playerB, players[1]);
+    assertEq(uint256(_status(t, 0)), uint256(MatchStatus.Active));
+  }
+
+  function test_SingleJudgeResolvesImmediately() public {
+    address[] memory solo = new address[](1);
+    solo[0] = judges[0];
+    Tournament t = _create(2, solo);
+    address[] memory players = _fill(t, 2);
+
+    // N=2: the only match (index 0) is both a leaf and the final.
+    vm.prank(judges[0]);
+    t.castVote(0, players[0]);
+    assertEq(uint256(t.status()), uint256(TournamentStatus.Completed));
+    assertEq(t.champion(), players[0]);
+  }
+
+  function test_FiveJudgesNeedThree() public {
+    address[] memory five = new address[](5);
+    for (uint256 i = 0; i < 5; i++) {
+      five[i] = makeAddr(string(abi.encodePacked("j5-", i)));
+    }
+    Tournament t = _create(2, five);
+    address[] memory players = _fill(t, 2);
+
+    for (uint256 i = 0; i < 2; i++) {
+      vm.prank(five[i]);
+      t.castVote(0, players[0]);
+    }
+    assertEq(uint256(_status(t, 0)), uint256(MatchStatus.Active)); // 2/5
+
+    vm.prank(five[2]);
+    t.castVote(0, players[0]); // 3/5 -> majority
+    assertEq(uint256(_status(t, 0)), uint256(MatchStatus.Completed));
+  }
+
+  function test_FullFourPlayerFlowPaysChampionAndFees() public {
+    Tournament t = _create(4, judges);
+    address[] memory players = _fill(t, 4);
+    assertEq(address(t).balance, PRIZE + 4 * FEE);
+
+    _vote(t, 1, players[0], 2); // p0 beats p3
+    _vote(t, 2, players[1], 2); // p1 beats p2
+
+    // Final: p0 vs p1. The resolving vote completes the tournament + pays out.
+    vm.prank(judges[0]);
+    t.castVote(0, players[0]);
+    vm.expectEmit(true, false, false, false, address(t));
+    emit TournamentCompleted(players[0]);
+    vm.expectEmit(true, false, false, true, address(t));
+    emit PrizeClaimed(players[0], PRIZE);
+    vm.prank(judges[1]);
+    t.castVote(0, players[0]);
+
+    assertEq(uint256(t.status()), uint256(TournamentStatus.Completed));
+    assertEq(t.champion(), players[0]);
+    // p0: 10 - 1 (fee) + 5 (prize) = 14 ether.
+    assertEq(players[0].balance, 14 ether);
+    // Only the entry fees remain in the contract.
+    assertEq(address(t).balance, 4 * FEE);
+
+    // Organizer withdraws the accumulated fees.
+    uint256 before = organizer.balance;
+    vm.expectEmit(true, false, false, true, address(t));
+    emit FeesWithdrawn(organizer, 4 * FEE);
+    vm.prank(organizer);
+    t.withdrawFees();
+    assertEq(organizer.balance, before + 4 * FEE);
+    assertEq(address(t).balance, 0);
+  }
+
+  function test_RevertWhenWithdrawByNonOrganizer() public {
+    Tournament t = _create(2, _soloPanel());
+    address[] memory players = _fill(t, 2);
+    vm.prank(judges[0]);
+    t.castVote(0, players[0]); // completes
+
+    vm.expectRevert(
+      abi.encodeWithSelector(NotOrganizer.selector, players[0])
+    );
+    vm.prank(players[0]);
+    t.withdrawFees();
+  }
+
+  function test_RevertWhenWithdrawBeforeCompletion() public {
+    Tournament t = _create(4, judges);
+    _fill(t, 4);
+
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        TournamentNotCompleted.selector, TournamentStatus.Active
+      )
+    );
+    vm.prank(organizer);
+    t.withdrawFees();
+  }
+
+  function test_RevertWhenWithdrawTwice() public {
+    Tournament t = _create(2, _soloPanel());
+    address[] memory players = _fill(t, 2);
+    vm.prank(judges[0]);
+    t.castVote(0, players[0]); // completes, prize paid
+
+    vm.prank(organizer);
+    t.withdrawFees(); // drains fees
+
+    vm.expectRevert(abi.encodeWithSelector(NoFeesToWithdraw.selector));
+    vm.prank(organizer);
+    t.withdrawFees();
+  }
+
+  function _soloPanel() internal view returns (address[] memory) {
+    address[] memory solo = new address[](1);
+    solo[0] = judges[0];
+    return solo;
   }
 }
