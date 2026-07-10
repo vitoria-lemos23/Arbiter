@@ -5,44 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  ALLOWED_IMAGE_MIME_TYPES,
-  imageUploadSchema,
-} from "@/features/images/schema/image";
+  uploadImage,
+  validateImageFile,
+} from "@/features/images/lib/uploadImage";
+import { ALLOWED_IMAGE_MIME_TYPES } from "@/features/images/schema/image";
 import { cn } from "@/lib/utils";
 
 // shadcn/ui has no file-upload/dropzone primitive, so this composes the shared
 // primitives (Label/Button/Input) rather than hand-rolling new ones. Controlled
 // via `value`/`onChange` so it works both inside React Hook Form (the create
 // wizard) and with plain local state (the edit dialog).
-
-/**
- * Fast client-side pre-check reusing the same schema the upload route enforces
- * on the actual bytes, so the two paths can't drift. Returns an error message
- * or null.
- */
-function validateFile(file: File): string | null {
-  const result = imageUploadSchema.safeParse({
-    mimeType: file.type,
-    sizeBytes: file.size,
-  });
-  return result.success
-    ? null
-    : (result.error.issues[0]?.message ?? "Invalid image");
-}
-
-async function uploadImage(file: File): Promise<string> {
-  const body = new FormData();
-  body.append("file", file);
-  const res = await fetch("/api/images", { method: "POST", body });
-  if (!res.ok) {
-    const { error } = (await res.json().catch(() => ({}))) as {
-      error?: string;
-    };
-    throw new Error(error ?? "Upload failed");
-  }
-  const { url } = (await res.json()) as { url: string };
-  return url;
-}
 
 /**
  * Cover picker: validates + uploads the file immediately to `/api/images` and
@@ -64,7 +36,7 @@ export function CoverImagePicker({
 
   async function onSelect(file: File | undefined) {
     if (!file) return;
-    const invalid = validateFile(file);
+    const invalid = validateImageFile(file);
     if (invalid) {
       setError(invalid);
       onChange("");

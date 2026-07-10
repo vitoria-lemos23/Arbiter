@@ -25,12 +25,6 @@ export function Header() {
         </Button>
         <ModeToggle />
         <WalletMenu />
-        <span
-          className="grid size-8 shrink-0 place-items-center rounded-full bg-muted text-xs font-medium text-muted-foreground"
-          aria-hidden="true"
-        >
-          PK
-        </span>
       </div>
     </header>
   );

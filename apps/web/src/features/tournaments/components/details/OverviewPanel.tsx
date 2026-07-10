@@ -1,14 +1,19 @@
 import { Badge } from "@/components/ui/badge";
+import { UserIdentity } from "@/features/profiles/components/UserIdentity";
+import { getProfile } from "@/features/profiles/server/getProfile";
 import { ethLabel, formatLabel } from "../../lib/formatTournament";
 import type { TournamentListItem } from "../../server/reconcileMetadata";
 
 /**
  * On-chain facts plus reconciled off-chain metadata for the Overview tab. The
  * on-chain block always renders; description/game/category/tags only appear when
- * trusted metadata is present.
+ * trusted metadata is present. The organizer is rendered via `UserIdentity` so
+ * their display name + avatar appear if they have a profile (spec 009).
  */
-export function OverviewPanel({ item }: { item: TournamentListItem }) {
+export async function OverviewPanel({ item }: { item: TournamentListItem }) {
   const { tournament, metadata } = item;
+  const organizerProfile = await getProfile(tournament.organizer);
+
   return (
     <div className="flex flex-col gap-6">
       {metadata?.description ? (
@@ -30,7 +35,15 @@ export function OverviewPanel({ item }: { item: TournamentListItem }) {
         <EntryFeeFact wei={tournament.entryFee} />
         <Fact label="Starts" value={tournament.startDate.toLocaleString()} />
         <Fact label="Ends" value={tournament.endDate.toLocaleString()} />
-        <Fact label="Organizer" value={tournament.organizer} mono wide />
+        <div className="flex flex-col gap-1 sm:col-span-2">
+          <dt className="text-xs text-muted-foreground">Organizer</dt>
+          <dd>
+            <UserIdentity
+              address={tournament.organizer}
+              profile={organizerProfile?.metadata}
+            />
+          </dd>
+        </div>
         <Fact label="Contract" value={tournament.address} mono wide />
       </dl>
     </div>

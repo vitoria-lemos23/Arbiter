@@ -99,3 +99,34 @@ export const tournamentMetadata = pgTable("tournament_metadata", {
 
 export type TournamentMetadataRow = typeof tournamentMetadata.$inferSelect;
 export type NewTournamentMetadataRow = typeof tournamentMetadata.$inferInsert;
+
+/**
+ * Public, user-editable profile fields (stored as the `jsonb` document).
+ * Minimal by design (spec 009). Validated by Zod in the web app
+ * (`features/profiles/schema/profile.ts`); typed here for `$type`.
+ */
+export type ProfileDoc = {
+  displayName: string; // 1..50 chars, trimmed, no control characters
+  avatarUrl?: string; // relative `/api/images/:id` only (own-upload)
+};
+
+/**
+ * Off-chain, self-authenticated user profile (spec 009). Unlike
+ * `tournamentMetadata`, there is NO separate `ownerAddress` column — for a
+ * profile the primary key IS the owner: a write is only accepted when the
+ * recovered `personal_sign` signer equals `userAddress`. No smart contract, no
+ * gas. The address is stored lowercased (see the web feature).
+ */
+export const profiles = pgTable("profiles", {
+  userAddress: text("user_address").primaryKey(),
+  metadata: jsonb("metadata").$type<ProfileDoc>().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+export type ProfileRow = typeof profiles.$inferSelect;
+export type NewProfileRow = typeof profiles.$inferInsert;

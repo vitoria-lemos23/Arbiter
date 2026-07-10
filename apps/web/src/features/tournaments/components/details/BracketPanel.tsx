@@ -1,3 +1,4 @@
+import { getProfilesByAddresses } from "@/features/profiles/server/getProfilesByAddresses";
 import { listMatches } from "../../server/getBracket";
 import { BracketTree } from "../bracket/BracketTree";
 
@@ -28,6 +29,16 @@ export async function BracketPanel({
     );
   }
 
+  // Collect all player addresses across all matches for a single batch lookup.
+  const playerAddresses = [
+    ...new Set(
+      matches.flatMap(
+        (m) => [m.playerA, m.playerB].filter(Boolean) as string[],
+      ),
+    ),
+  ];
+  const profiles = await getProfilesByAddresses(playerAddresses);
+
   return (
     <div className="rounded-xl border border-input bg-card p-6 shadow-sm">
       <BracketTree
@@ -35,6 +46,7 @@ export async function BracketPanel({
         maxPlayers={maxPlayers}
         champion={champion}
         prizeWei={prizeWei}
+        profiles={profiles}
       />
     </div>
   );
