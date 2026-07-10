@@ -364,7 +364,7 @@ export function StepApply() {
           <FormItem>
             <LabelWithHint
               label="Judges"
-              hint={"Optional \u00B7 comma-separated addresses"}
+              hint={"Required \u00B7 odd count, comma-separated"}
             />
             <FormControl>
               <Input

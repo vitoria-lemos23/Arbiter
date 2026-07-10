@@ -82,11 +82,26 @@ describe("createTournamentSchema", () => {
   it("parses a list of distinct judges", () => {
     const a = `0x${"a".repeat(40)}`;
     const b = `0x${"b".repeat(40)}`;
+    const c = `0x${"c".repeat(40)}`;
     const result = createTournamentSchema.safeParse(
-      base({ judges: `${a}\n${b}` }),
+      base({ judges: `${a}\n${b}\n${c}` }),
     );
     expect(result.success).toBe(true);
-    if (result.success) expect(result.data.judges).toHaveLength(2);
+    if (result.success) expect(result.data.judges).toHaveLength(3);
+  });
+
+  it("rejects an empty judge panel", () => {
+    expect(createTournamentSchema.safeParse(base({ judges: "" })).success).toBe(
+      false,
+    );
+  });
+
+  it("rejects an even-sized judge panel", () => {
+    const a = `0x${"a".repeat(40)}`;
+    const b = `0x${"b".repeat(40)}`;
+    expect(
+      createTournamentSchema.safeParse(base({ judges: `${a}, ${b}` })).success,
+    ).toBe(false);
   });
 
   it("rejects a negative prize", () => {

@@ -23,6 +23,9 @@ export function validWizardValues(
     startDate: localDatetime(3_600_000),
     endDate: localDatetime(7_200_000),
     prize: "1.5",
+    // A non-empty, odd-sized panel is required on-chain (#007); the baseline
+    // carries a single judge so cases that don't touch judges stay valid.
+    judges: `0x${"a".repeat(40)}`,
     ...overrides,
   };
 }
