@@ -1,13 +1,18 @@
 import type { Match } from "@arbiter/db";
 import { getRoundLabel, getRounds } from "../../lib/bracketRounds";
+import { ChampionDisplay } from "./ChampionDisplay";
 import { RoundColumn } from "./RoundColumn";
 
 export function BracketTree({
   matches,
   maxPlayers,
+  champion,
+  prizeWei,
 }: {
   matches: Match[];
   maxPlayers: number;
+  champion: string | null;
+  prizeWei: string;
 }) {
   const rounds = getRounds(maxPlayers);
 
@@ -39,14 +44,7 @@ export function BracketTree({
             Champion
           </h3>
           <div className="flex flex-1 flex-col justify-around">
-            <div className="flex w-64 items-center gap-3 rounded-xl border border-dashed border-input bg-muted/30 px-4 py-6">
-              <div className="grid size-8 shrink-0 place-items-center rounded-full border border-dashed border-input bg-muted/50 font-mono text-xs text-muted-foreground">
-                ?
-              </div>
-              <span className="text-sm font-medium text-muted-foreground">
-                TBD
-              </span>
-            </div>
+            <ChampionDisplay champion={champion} prizeWei={prizeWei} />
           </div>
         </div>
       </div>

@@ -34,13 +34,15 @@ contract TournamentFactoryTest is Test {
   }
 
   function _params() internal pure returns (TournamentParams memory) {
+    address[] memory judges = new address[](1);
+    judges[0] = address(0xBEEF);
     return TournamentParams({
       format: TournamentFormat.SingleElimination,
       maxPlayers: 8,
       entryFee: 1 ether,
       startDate: START,
       endDate: END,
-      judges: new address[](0)
+      judges: judges
     });
   }
 

@@ -28,7 +28,8 @@ const baseParams = {
   entryFee: 0n, // free tournament
   startDate: now + 3_600n, // starts in 1h
   endDate: now + 7_200n, // ends in 2h
-  judges: [] as `0x${string}`[],
+  // Odd, non-empty panel required at init (#007).
+  judges: [getAddress(bob.account.address)] as `0x${string}`[],
 };
 
 // createTournament returns the clone address on-chain, but a write tx resolves

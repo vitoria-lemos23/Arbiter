@@ -30,6 +30,8 @@ export const match = ponder.table("match", {
   seedA: integer("seed_a"),
   seedB: integer("seed_b"),
   winner: text("winner"),
+  // MatchStatus enum index: 0 = Pending, 1 = Active, 2 = Completed (#007).
+  status: integer("status").notNull(),
   blockNumber: numeric("block_number", { precision: 78, scale: 0 }).notNull(),
   txHash: text("tx_hash").notNull(),
   generatedAt: timestamp("generated_at").notNull(),

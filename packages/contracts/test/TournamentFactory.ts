@@ -7,7 +7,7 @@ import { getAddress, parseEther, toHex } from "viem";
 describe("TournamentFactory", async () => {
   const { viem, networkHelpers } = await network.create();
   const publicClient = await viem.getPublicClient();
-  const [alice, bob] = await viem.getWalletClients();
+  const [alice, bob, judge] = await viem.getWalletClients();
 
   // Deploy a fresh implementation + factory for each test (isolated state).
   async function deployFactory() {
@@ -26,7 +26,8 @@ describe("TournamentFactory", async () => {
       entryFee: 1_000_000_000_000_000_000n,
       startDate: now + 1_000n,
       endDate: now + 2_000n,
-      judges: [] as `0x${string}`[],
+      // Odd, non-empty panel required at init (#007).
+      judges: [judge.account.address] as `0x${string}`[],
     };
   }
 
@@ -164,7 +165,7 @@ describe("TournamentFactory", async () => {
     assert.equal(entryFee, params.entryFee);
     assert.equal(startDate, params.startDate);
     assert.equal(endDate, params.endDate);
-    assert.deepEqual(judges, []);
+    assert.deepEqual(judges, [getAddress(judge.account.address)]);
   });
 
   it("isolates storage between tournaments from different organizers", async () => {

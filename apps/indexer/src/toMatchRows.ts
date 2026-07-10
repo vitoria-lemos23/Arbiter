@@ -62,6 +62,11 @@ export function toMatchRows(event: BracketGeneratedEvent) {
       seedA,
       seedB,
       winner: null,
+      // Round-1 leaves are auto-activated at generation (#007); internal nodes
+      // stay Pending until both children resolve. Mirrors MatchStatus: the
+      // contract also emits MatchActivated for each leaf, but seeding the
+      // status here keeps the row correct regardless of handler ordering.
+      status: isLeaf ? 1 : 0,
       blockNumber: event.block.number,
       txHash: event.transaction.hash,
       generatedAt: unixToDate(event.block.timestamp),

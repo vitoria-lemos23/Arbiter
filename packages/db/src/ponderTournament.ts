@@ -32,6 +32,9 @@ export const tournament = ponder.table("tournament", {
   prize: numeric("prize", { precision: 78, scale: 0 }).notNull(),
   startDate: timestamp("start_date").notNull(),
   endDate: timestamp("end_date").notNull(),
+  // Set on TournamentCompleted (#007); null until the final match resolves.
+  champion: text("champion"),
+  completedAt: timestamp("completed_at"),
   blockNumber: numeric("block_number", { precision: 78, scale: 0 }).notNull(),
   txHash: text("tx_hash").notNull(),
   createdAt: timestamp("created_at").notNull(),

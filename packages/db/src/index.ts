@@ -31,4 +31,5 @@ export * from "./ponderMatch";
 // by Drizzle). See ponderTournament.ts for the ownership contract.
 export * from "./ponderRegistration";
 export * from "./ponderTournament";
+export * from "./ponderVote";
 export * from "./schema";

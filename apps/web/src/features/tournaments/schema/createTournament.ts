@@ -60,6 +60,19 @@ const judgesField = z
         }
         seen.add(key);
       });
+      // The contract requires a non-empty, odd-sized panel so a strict majority
+      // is always reachable without a tiebreaker (#007, _storeJudges).
+      if (list.length === 0) {
+        ctx.addIssue({
+          code: "custom",
+          message: "At least one judge is required",
+        });
+      } else if (list.length % 2 === 0) {
+        ctx.addIssue({
+          code: "custom",
+          message: "The number of judges must be odd (e.g. 1, 3, 5)",
+        });
+      }
     }),
   );
 

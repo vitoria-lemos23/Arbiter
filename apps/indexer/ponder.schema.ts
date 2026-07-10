@@ -15,6 +15,9 @@ export const tournament = onchainTable("tournament", (t) => ({
   prize: t.bigint("prize").notNull(),
   startDate: t.timestamp("start_date").notNull(),
   endDate: t.timestamp("end_date").notNull(),
+  // Set on TournamentCompleted (#007); null until the final match resolves.
+  champion: t.hex("champion"),
+  completedAt: t.timestamp("completed_at"),
   blockNumber: t.bigint("block_number").notNull(),
   txHash: t.hex("tx_hash").notNull(),
   createdAt: t.timestamp("created_at").notNull(),
@@ -55,12 +58,36 @@ export const match = onchainTable(
     playerB: t.hex("player_b"), // null = TBD
     seedA: t.integer("seed_a"), // null = TBD
     seedB: t.integer("seed_b"), // null = TBD
-    winner: t.hex("winner"), // always null this spec
+    winner: t.hex("winner"), // set on MatchResolved (#007); null = unresolved
+    // MatchStatus enum index: 0 = Pending, 1 = Active, 2 = Completed.
+    status: t.integer("status").notNull(),
     blockNumber: t.bigint("block_number").notNull(),
     txHash: t.hex("tx_hash").notNull(),
     generatedAt: t.timestamp("generated_at").notNull(),
   }),
   (table) => ({
     tournamentIdx: index().on(table.tournament),
+  }),
+);
+
+/**
+ * The indexed `vote` table — one row per `VoteCast` event on a Tournament clone.
+ * Votes are immutable (#007), so rows are insert-only. Mirrored read-only by
+ * `@arbiter/db/ponderVote.ts`; keep the two in sync.
+ */
+export const vote = onchainTable(
+  "vote",
+  (t) => ({
+    id: t.text("id").primaryKey(), // `${tournament}-${matchIndex}-${judge}`
+    tournament: t.hex("tournament").notNull(),
+    matchIndex: t.integer("match_index").notNull(),
+    judge: t.hex("judge").notNull(),
+    votedFor: t.hex("voted_for").notNull(),
+    blockNumber: t.bigint("block_number").notNull(),
+    txHash: t.hex("tx_hash").notNull(),
+    votedAt: t.timestamp("voted_at").notNull(),
+  }),
+  (table) => ({
+    matchIdx: index().on(table.tournament, table.matchIndex),
   }),
 );

@@ -5,10 +5,14 @@ export async function BracketPanel({
   tournamentAddress,
   maxPlayers,
   registeredCount,
+  prizeWei,
+  champion,
 }: {
   tournamentAddress: string;
   maxPlayers: number;
   registeredCount: number;
+  prizeWei: string;
+  champion: string | null;
 }) {
   const matches = await listMatches(tournamentAddress);
 
@@ -26,7 +30,12 @@ export async function BracketPanel({
 
   return (
     <div className="rounded-xl border border-input bg-card p-6 shadow-sm">
-      <BracketTree matches={matches} maxPlayers={maxPlayers} />
+      <BracketTree
+        matches={matches}
+        maxPlayers={maxPlayers}
+        champion={champion}
+        prizeWei={prizeWei}
+      />
     </div>
   );
 }
