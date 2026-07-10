@@ -155,6 +155,12 @@ contract Tournament is Initializable, ReentrancyGuard {
   /// @notice Emitted once when the final match (index 0) resolves.
   event TournamentCompleted(address indexed champion);
 
+  /// @notice Emitted once per judge during {initialize}. Both params are indexed
+  ///         so the ponder indexer can build a per-judge tournament list (the
+  ///         "tournaments I judge" query) efficiently, mirroring how
+  ///         {PlayerRegistered} backs the per-player list (#008).
+  event JudgeAssigned(address indexed tournament, address indexed judge);
+
   /// @notice Emitted when the prize is pushed to the champion.
   event PrizeClaimed(address indexed champion, uint256 amount);
 
@@ -538,6 +544,9 @@ contract Tournament is Initializable, ReentrancyGuard {
       }
       _judges.push(judges[i]);
       isJudge[judges[i]] = true;
+      // Indexed per-judge so ponder can build the "tournaments I judge" list
+      // without scanning every tournament's getJudges() (#008).
+      emit JudgeAssigned(address(this), judges[i]);
     }
   }
 }

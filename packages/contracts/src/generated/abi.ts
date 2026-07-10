@@ -395,6 +395,25 @@ export const tournamentAbi = [
     "inputs": [
       {
         "indexed": true,
+        "internalType": "address",
+        "name": "tournament",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "judge",
+        "type": "address"
+      }
+    ],
+    "name": "JudgeAssigned",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
         "internalType": "uint256",
         "name": "matchIndex",
         "type": "uint256"

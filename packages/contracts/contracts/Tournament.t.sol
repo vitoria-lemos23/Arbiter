@@ -2,6 +2,7 @@
 pragma solidity ^0.8.28;
 
 import {Test} from "forge-std/Test.sol";
+import {Vm} from "forge-std/Vm.sol";
 import {Clones} from "@openzeppelin/contracts/proxy/Clones.sol";
 import {
   Tournament,
@@ -42,6 +43,9 @@ contract TournamentTest is Test {
     uint64 startDate,
     uint64 endDate
   );
+
+  // Mirror of Tournament's per-judge event (#008).
+  event JudgeAssigned(address indexed tournament, address indexed judge);
 
   uint64 constant NOW_TS = 1000;
   uint64 constant START = 2000;
@@ -131,6 +135,62 @@ contract TournamentTest is Test {
       organizer, TournamentFormat.SingleElimination, 8, 1 ether, 0, START, END
     );
     t.initialize(organizer, _params());
+  }
+
+  /// @dev #008 relies on one indexed JudgeAssigned per judge to build the
+  ///      per-judge tournament list; assert the ordered, per-judge emission.
+  function test_InitializeEmitsJudgeAssignedPerJudge() public {
+    Tournament t = _clone();
+    address[] memory judges = new address[](3);
+    judges[0] = makeAddr("judge1");
+    judges[1] = makeAddr("judge2");
+    judges[2] = makeAddr("judge3");
+    TournamentParams memory p = _params();
+    p.judges = judges;
+
+    for (uint256 i = 0; i < judges.length; i++) {
+      // Both topics indexed (tournament, judge); no data to check.
+      vm.expectEmit(true, true, false, false, address(t));
+      emit JudgeAssigned(address(t), judges[i]);
+    }
+    t.initialize(organizer, p);
+  }
+
+  /// @dev Exactly one JudgeAssigned per judge — no duplicates, no extras.
+  function test_InitializeEmitsExactlyOneJudgeAssignedPerJudge() public {
+    Tournament t = _clone();
+    address[] memory judges = new address[](5);
+    for (uint256 i = 0; i < judges.length; i++) {
+      judges[i] = address(uint160(0x2000 + i));
+    }
+    TournamentParams memory p = _params();
+    p.judges = judges;
+
+    vm.recordLogs();
+    t.initialize(organizer, p);
+    Vm.Log[] memory logs = vm.getRecordedLogs();
+
+    bytes32 sig = keccak256("JudgeAssigned(address,address)");
+    uint256 assigned = 0;
+    for (uint256 i = 0; i < logs.length; i++) {
+      if (logs[i].topics[0] == sig) assigned++;
+    }
+    assertEq(assigned, judges.length);
+  }
+
+  /// @dev The empty-panel path reverts before storing/emitting; no judge is
+  ///      indexed for a tournament that never initialises.
+  function test_InitializeEmitsNoJudgeAssignedWhenJudgesEmpty() public {
+    Tournament t = _clone();
+    TournamentParams memory p = _params();
+    p.judges = new address[](0);
+
+    vm.recordLogs();
+    vm.expectRevert(abi.encodeWithSelector(EmptyJudgeArray.selector));
+    t.initialize(organizer, p);
+
+    // Logs from a reverted call are discarded by the EVM.
+    assertEq(vm.getRecordedLogs().length, 0);
   }
 
   function test_InitializeStoresPrizeFromValue() public {
