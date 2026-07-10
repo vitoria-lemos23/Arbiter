@@ -53,7 +53,11 @@ const tournamentA: Tournament = {
   startDate: now,
   endDate: now,
   champion: null,
-  judges: [],
+  index: "0",
+  blockNumber: "1",
+  createdAt: now,
+  txHash: "0x123",
+  completedAt: null,
 };
 
 const tournamentB: Tournament = {
@@ -66,7 +70,11 @@ const tournamentB: Tournament = {
   startDate: now,
   endDate: now,
   champion: "0xplayer",
-  judges: [],
+  index: "1",
+  blockNumber: "2",
+  createdAt: now,
+  txHash: "0x456",
+  completedAt: now,
 };
 
 beforeEach(() => {
